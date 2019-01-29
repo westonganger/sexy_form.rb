@@ -1,0 +1,11 @@
+name: form_builder
+version: 0.1.0
+
+authors:
+  - Weston Ganger <weston@westonganger.com>
+
+description: Dead simple HTML form builder for Crystal
+
+crystal: 0.24.1
+
+license: MIT
