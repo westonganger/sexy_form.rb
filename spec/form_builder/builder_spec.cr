@@ -1,6 +1,23 @@
 require "../../spec_helper"
 
-describe FormBuilder::Forms do
+shared_builder = FormBuilder::Builder.new
+
+describe FormBuilder::Builder do
+
+  describe "#content" do
+    it "accepts a content string" do
+      shared_builder.content(element_name: :span, options: {:id => "bar"}, content: "Hello").should eq("<span id=\"bar\">Hello</span>")
+    end
+
+    it "accepts a block as input" do
+      result = shared_builder.content(element_name: :div, options: {:id => "foo"}) do
+        shared_builder.content(element_name: :span, options: {:id => "bar"}, content: "Hello")
+      end
+
+      result.should eq("<div id=\"foo\"><span id=\"bar\">Hello</span></div>")
+    end
+  end
+
   # describe "#text_field" do
   #   it "main param works with string" do
   #     expected = "<input type=\"text\" name=\"my-great-text-input\" id=\"my-great-text-input\"/>"
@@ -88,26 +105,6 @@ describe FormBuilder::Forms do
   #         check_box(:allowed)
   #       )
   #     end.should eq(expected)
-  #   end
-  # end
-
-  # describe "#form" do
-  #   it "allows for nested input fields" do
-  #     result = form(id: "myForm") do
-  #       text_field(:name)
-  #     end
-  #     expected = "<form id=\"myForm\" method=\"post\"><input type=\"text\" name=\"name\" id=\"name\"/></form>"
-
-  #     result.should eq(expected)
-  #   end
-
-  #   it "sets up form for multipart" do
-  #     result = form(method: :post, action: "/test/1", id: "myForm", multipart: true) do
-  #       text_field(:name)
-  #     end
-  #     expected = %(<form action="/test/1" id="myForm" multipart="true" method="post" enctype="multipart/form-data"><input type="text" name="name" id="name"/></form>)
-
-  #     result.should eq(expected)
   #   end
   # end
 
@@ -231,4 +228,6 @@ describe FormBuilder::Forms do
   #     check_box(:allowed, checked: false).should eq(expected)
   #   end
   # end
+
+
 end

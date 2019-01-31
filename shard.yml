@@ -1,11 +1,16 @@
 name: form_builder
-version: 0.1.0
+version: 0.9.0
 
 authors:
   - Weston Ganger <weston@westonganger.com>
 
-description: Dead simple HTML form builder for Crystal
+description: Dead simple HTML form builder for Crystal with built-in support for many popular UI libraries such as Bootstrap
 
 crystal: 0.24.1
 
 license: MIT
+
+development_dependencies:
+  ameba:
+    github: veelenga/ameba
+    version: ~> 0.9.0
