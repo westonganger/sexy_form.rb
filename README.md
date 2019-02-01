@@ -13,6 +13,12 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 - Implement FormBuilder::Builder according to Theme design
 - Complete all missing specs
 
+# Features
+
+- Generate styled HTML markup for forms, labels, and inputs
+- Integrates with many UI libraries
+- Custom theme support
+
 # Supported UI Libraries
 
 Out of the box Form Builder can generate HTML markup for the following UI libraries:
@@ -20,6 +26,7 @@ Out of the box Form Builder can generate HTML markup for the following UI librar
 - Bootstrap 4
 - Bootstrap 3
 - Bootstrap 2
+- None (do not set :theme or `nil`, output per field is simply "label + input")
 
 If you dont see your favourite UI library here feel free to create a PR to add it. I recommend creating an issue to discuss it first.
 
@@ -51,11 +58,11 @@ require "form_builder"
 
 ```slim
 == FormBuilder.form(theme: :bootstrap_4, action: "/products", method: :post, style: "margin-top: 20px;", "data-foo" => "bar") do |f|
-  == f.input name: "product[name]", type: :text, ### type is also aliased as :string
-  == f.input name: "product[description]", type: :textarea
-  == f.input name: "product[type]", type: :select
-  == f.input name: "product[available]", type: :checkbox
-  == f.input name: "product[class]", type: :radio
+  == f.input name: "product[name]", label: "Name", type: :text, ### type :text is also aliased as :string
+  == f.input name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"} 
+  == f.input name: "product[type]", label: "Type", type: :select, collection: product_types, selected: product_type, disabled: disabled_product_types
+  == f.input name: "product[available]", type: :checkbox, label: "In Stock?"
+  == f.input name: "product[class]", type: :radio, label: false
   == f.input name: "product[secret]", type: :hidden, value: 'foobar'
   == f.input type: :submit
 
@@ -70,8 +77,8 @@ The form builder expects errors in in the following hash format.
 - errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
 
 == FormBuilder.form(theme: :bootstrap_4, errors: errors) do |f|
-  == f.input name: "name", type: :string
-  == f.input name: "sku", type: :string
+  == f.input name: "name", type: :string, label: "Name"
+  == f.input name: "sku", type: :string, label: "SKU"
 ```
 
 # Custom Themes
@@ -84,7 +91,7 @@ If you need to create a custom theme simply create an initializer with the follo
 module FormBuilder::Themes
 
   module Custom
-    # TODO: theme implementations, until then see the src for examples
+    # TODO: theme examples, until then see the src for examples
   end
 
   module OtherCustom
@@ -92,6 +99,9 @@ module FormBuilder::Themes
   end
   
 end
+
+FormBuilder.form(theme: :custom)
+FormBuilder.form(theme: :other_custom)
 ```
 
 # Contributing
