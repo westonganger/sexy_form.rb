@@ -9,7 +9,6 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 # TODO
 
 - Figure out how to convert `**options : Object` to `OptionHash`
-- Decide How to Implement Themes
 - Implement FormBuilder::Builder according to Theme design
 - Complete all missing specs
 
@@ -73,7 +72,7 @@ require "form_builder"
 
 The form builder expects errors in in the following hash format.
 
-```slim
+```slang
 - errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
 
 == FormBuilder.form(theme: :bootstrap_4, errors: errors) do |f|
@@ -88,20 +87,39 @@ If you need to create a custom theme simply create an initializer with the follo
 ```crystal
 # config/initializers/form_builder.cr
 
-module FormBuilder::Themes
+module FormBuilder
+  class Themes
+    class Custom < Themes
 
-  module Custom
-    # TODO: theme examples, until then see the src for examples
-  end
+      def wrap_input(type : String, label_proc : Proc, input_proc : Proc, errors : Array(String)?)
+        "Foo to the Bar"
+      end
 
-  module OtherCustom
-    # ...
+      def input_attributes(type : String)
+        attrs = {} of String => String
+        attrs["class"] = "form-label other-class"
+        attrs["style"] = ""
+        attrs["data-foo"] = "bar"
+        attrs
+      end
+
+      def label_attributes(type : String)
+        attrs = {} of String => String
+        attrs["class"] = "form-label other-class"
+        attrs["style"] = ""
+        attrs["data-foo"] = "bar"
+        attrs
+      end
+
+    end
   end
-  
 end
+```
 
+Now you can use the theme just like any other built-in theme.
+
+```crystal
 FormBuilder.form(theme: :custom)
-FormBuilder.form(theme: :other_custom)
 ```
 
 # Contributing

@@ -1,29 +1,40 @@
 module FormBuilder
   class Builder
-    def initialize(@theme : (String | Symbol)? = nil, @errors : Hash(String, Array(String))? = nil)
 
-    end
+    def initialize(theme : (String | Symbol)? = nil, @errors : Hash(String, Array(String))? = nil)
+      if theme
+        @theme = Themes.subclasses.find do |klass|
+          name = klass.name.to_s.split("::").last.underscore
 
-    def content(element_name : Symbol, content : String, options : OptionHash)
-      content(element_name: element_name, options: options) do
-        content
-      end
-    end
+          i = name.index(/\d/)
 
-    def content(element_name : Symbol, options : OptionHash, &block)
-      String.build do |str|
-        str << "<#{element_name}"
-        options.each do |k, v|
-          next if v.nil?
-          str << %( #{k}="#{v}")
-        end
-        str << ">#{yield}</#{element_name}>"
+          if i
+            name = name.insert(i, "_")
+          end
+
+          if name == theme.to_s
+            klass
+          end
+        end || raise("FormBuilder theme '#{theme}' was not found")
       end
     end
 
     def input(type : (String | Symbol), name : (String | Symbol), value : (String | Symbol)? = nil)
       case type
-      when "string"
+      when "text", "string"
+
+      when "textarea"
+
+      when "select"
+
+      when "checkbox"
+
+      when "radio"
+
+      when "hidden"
+
+      when "submit"
+
       end
     end
 
@@ -74,7 +85,7 @@ module FormBuilder
 
     # def label(name : String | Symbol, content : String? = nil, **options : Object)
     #   options_hash = Kit.safe_hash({for: name, id: "#{Kit.css_safe(name)}_label"}, options)
-    #   content(element_name: :label, content: (content ? content : name.to_s.capitalize), options: options_hash)
+    #   FormBuilder.content(element_name: :label, content: (content ? content : name.to_s.capitalize), options: options_hash)
     # end
 
     # def label(name : String | Symbol, content : String? = nil)
@@ -104,7 +115,7 @@ module FormBuilder
     # def select_field(name : String | Symbol, collection : Array(Array), **options : Object)
     #   options_hash = Kit.safe_hash(options, {:name => name})
     #   selected = [options_hash.delete(:selected)].flatten.map(&.to_s)
-    #   content(element_name: :select, options: options_hash) do
+    #   FormBuilder.content(element_name: :select, options: options_hash) do
     #     String.build do |str|
     #       collection.map do |item|
     #         str << %(<option value="#{item[0]}"#{selected.includes?(item[0].to_s) ? %( selected="selected") : nil}>#{item[1]}</option>)
@@ -156,7 +167,7 @@ module FormBuilder
     # def text_area(name : String | Symbol, content : String?, **options : Object)
     #   options_hash = Kit.safe_hash({:name => name, :id => name}, options)
     #   options_hash[:cols], options_hash[:rows] = options_hash.delete(:size).to_s.split("x") if options.has_key?(:size)
-    #   content(element_name: :textarea, options: options_hash) do
+    #   FormBuilder.content(element_name: :textarea, options: options_hash) do
     #     content
     #   end
     # end
