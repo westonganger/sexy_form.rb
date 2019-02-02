@@ -80,6 +80,15 @@ The form builder expects errors in in the following hash format.
   == f.input name: "sku", type: :string, label: "SKU"
 ```
 
+# Using FormBuilder without a Form
+
+```slang
+- f = FormBuilder::Builder.new(theme: :bootstrap_4)
+
+== f.input name: "name", type: :string, label: "Name"
+== f.input name: "sku", type: :string, label: "SKU"
+```
+
 # Custom Themes
 
 If you need to create a custom theme simply create an initializer with the following:
