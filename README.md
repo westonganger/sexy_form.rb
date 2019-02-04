@@ -22,15 +22,15 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 
 Out of the box Form Builder can generate HTML markup for the following UI libraries:
 
-- Bootstrap 4 - `theme: :bootstrap_4` - Available form types:
-  * `form_type: :inline_form` (Default)
-  * `form_type: :horizontal_form`
+- Bootstrap 4 - Available form types:
+  * `theme: :bootstrap_4_inline` (Default)
+  * `theme: :bootstrap_4_horizontal`
 - Bootstrap 3 - `theme: :bootstrap_3` - Available form types:
-  * `form_type: :inline_form` (Default)
-  * `form_type: :horizontal_form`
+  * `theme: :bootstrap_3_inline` (Default)
+  * `theme: :bootstrap_3_horizontal`
 - Bootstrap 2 - `theme: :bootstrap_2` - Available form types:
-  * `form_type: :inline_form` (Default)
-  * `form_type: :horizontal_form`
+  * `theme: :bootstrap_2_inline` (Default)
+  * `theme: :bootstrap_2_horizontal`
 - Bulma - `theme: :bulma`
 - Foundation - `theme: :foundation`
 - Materialize - `theme: :materialize`
@@ -81,7 +81,7 @@ require "form_builder"
 
 The form builder expects errors in in the following hash format.
 
-```slang
+```crystal
 - errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
 
 == FormBuilder.form(theme: :bootstrap_4, errors: errors) do |f|
@@ -91,7 +91,7 @@ The form builder expects errors in in the following hash format.
 
 # Using FormBuilder without a Form
 
-```slang
+```crystal
 - f = FormBuilder::Builder.new(theme: :bootstrap_4)
 
 == f.field name: "name", type: :text, label: "Name"

@@ -52,4 +52,9 @@ describe FormBuilder do
       result.should eq(expected)
     end
   end
+
+  it "exposes a VERSION" do
+    FormBuilder::VERSION.should be_a(String)
+  end
+
 end
