@@ -2,7 +2,7 @@ module FormBuilder
   class Themes
     class Milligram < Themes
 
-      def wrap_field(field_type : String, label_proc : Proc?, field_proc : Proc, errors : Array(String)?, wrapper_html : OptionHash)
+      def wrap_field(field_type : String, label_proc : Proc(String)?, field_proc : Proc(String), field_errors : Array(String)?, wrapper_html : OptionHash)
         "Foo to the Bar"
       end
 

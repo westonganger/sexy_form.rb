@@ -2,6 +2,14 @@ require "../../spec_helper"
 
 theme = FormBuilder::Themes::Bootstrap4Inline
 
+field_proc : Proc(String) = -> {
+  %(<input name="generic" />)
+}
+
+label_proc : Proc(String) = -> {
+  %(<label for="generic">Generic</label>)
+}
+
 describe FormBuilder::Themes do
 
   describe ".subclasses" do
@@ -22,7 +30,7 @@ describe FormBuilder::Themes do
     end
 
     it "fails correctly" do
-      expect_raises(MyError) do
+      expect_raises(ArgumentError) do
         FormBuilder::Themes.from_name(:invalid_theme).should fail
       end
     end

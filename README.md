@@ -9,6 +9,7 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 # TODO
 
 - Figure out how to convert `**options : Object` to `OptionHash` correctly
+- Implement Radio input
 - Complete FormBuilder::Themes class for each UI Library
 - Complete all missing specs
 
@@ -71,11 +72,22 @@ require "form_builder"
   - collection = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"]]
   
   ### Additional Options for type: :select
-  ### collection : Array(Array) | Array | Range
-  ### selected : String | Array
-  ### disabled : String | Array
+  ### collection : (Array(Array) | Array | Range)
+  ### selected : (String | Array)
+  ### disabled : (String | Array)
   == f.field name: "product[type]", label: "Type", type: :select, collection: collection, selected: product_type, disabled: disabled_product_types
 ```
+
+# Supported Field Types
+
+- `:checkbox`
+- `:file`
+- `:hidden`
+- `:password`
+- `:radio`
+- `:select`
+- `:text`
+- `:textarea`
 
 # Error Handling
 
@@ -109,7 +121,7 @@ module FormBuilder
   class Themes
     class Custom < Themes
 
-      def wrap_field(field_type : String, form_type : String, label_proc : Proc?, input_proc : Proc, errors : Array(String)?, wrapper_html : OptionHash)
+      def wrap_field(field_type : String, form_type : String, label_proc : Proc(String)?, field_proc : Proc(String), field_errors : Array(String)?, wrapper_html : OptionHash)
         "Foo to the Bar"
       end
 

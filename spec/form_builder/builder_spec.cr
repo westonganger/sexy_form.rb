@@ -288,7 +288,7 @@ describe FormBuilder::Builder do
     end
 
     it "does not allow :submit" do
-      expect_raises(MainError) do
+      expect_raises(ArgumentError) do
         builder.field(type: :submit, name: :foobar)
       end
       # TODO

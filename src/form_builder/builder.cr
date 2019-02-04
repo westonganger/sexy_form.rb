@@ -13,23 +13,27 @@ module FormBuilder
 
     def field(type : (String | Symbol), name : (String | Symbol), value : (String | Symbol)? = nil, label : (Bool | String | Symbol)? = nil, input_html : OptionHash = OptionHash.new, label_html : OptionHash = OptionHash.new, wrapper_html : OptionHash = OptionHash.new, collection : (Array(Array) | Array | Range)? = nil, selected : Array(String)? = nil, disabled : Array(String)? = nil)
       unless FIELD_TYPES.includes?(type.to_s)
-        raise "Invalid field :type, valid field types are `#{FIELD_TYPES.join(", ")}`"
+        raise ArgumentError.new("Invalid :type argument, valid field types are: #{FIELD_TYPES.join(", ")}`")
       end
 
       if type.to_s != "select"
         if collection
-          raise "Invalid option :collection passed for field type: #{type}, :collection is only allowed with field type: :select"
+          raise ArgumentError.new("Invalid :collection argument passed for field type: #{type}, :collection is only allowed with field type: :select")
         elsif selected
-          raise "Invalid option :selected passed for field type: #{type}, :selected is only allowed with field type: :select"
+          raise ArgumentError.new("Invalid :selected argument passed for field type: #{type}, :selected is only allowed with field type: :select")
         elsif disabled
-          raise "Invalid option :disabled passed for field type: #{type}, :disabled is only allowed with field type: :select"
+          raise ArgumentError.new("Invalid :disabled argument passed for field type: #{type}, :disabled is only allowed with field type: :select")
         end
+      end
+
+      if INPUT_TYPES.includes?(type.to_s)
+        input_html[:value] ||= value
       end
 
       if label != false
         label_str = "#{label == true ? name.to_s.capitalize : label}"
 
-        if label_str && !label_str.empty?
+        if !label_str && !label_str.empty?
           label_proc = -> {
             FormBuilder.content(element_name: :label, content: label_str, options: label_html)
           }
@@ -70,35 +74,43 @@ module FormBuilder
         field_html = input(name: name, type: type, options: input_html)
 
       when "select"
-        unless collection
-          raise "Must provide the `:collection` when using `type: :select`"
-        end
+        if collection.nil?
+          raise ArgumentError.new("Required argument `:collection` not provided while using `type: :select`")
+        else
+          if value && selected
+            raise ArgumentError.new("Cannot provide `:value` and `:selected` arguments together. The `:selected` argument is recommended for field `type: :select.`")
+          end
 
-        field_html = select_field(name: name, collection: collection, selected: selected, disabled: disabled, options: input_html)
+          field_html = select_field(name: name, collection: collection, selected: (selected || value), disabled: disabled, options: input_html)
+        end
       when "text"
         field_html = input(name: name, type: type, options: input_html)
       when "textarea"
-        if options.has_key?(:size)
+        if input_html.has_key?(:size)
           input_html[:cols], input_html[:rows] = input_html.delete(:size).to_s.split("x")
         end
 
-        if options.has_key?(:value)
-          val = input_html.delete(:value)
-        end
-
-        field_html = FormBuilder.content(element_name: type, content: content, options: input_html)
+        field_html = FormBuilder.content(element_name: type, content: (input_html[:value]? ? input_html[:value].to_s : value.to_s), options: input_html)
       end
 
-      field_proc = -> {
-        field_html
+      field_proc : Proc(String) = -> {
+        field_html.to_s
       }
 
-      @theme.wrap_field(field_type: type, label_proc: label_proc, field_proc: field_proc, errors: @errors[name]?, wrapper_html: wrapper_html)
+      if (errors = @errors)
+        field_errors = errors[name]?
+      end
+
+      if (theme = @theme)
+        theme.wrap_field(field_type: type.to_s, label_proc: label_proc, field_proc: field_proc, field_errors: field_errors, wrapper_html: wrapper_html)
+      else
+        "#{label_proc.call if label_proc}#{field_proc.call}"
+      end
     end
 
     private def input(name : (String | Symbol), type : (String | Symbol), options : OptionHash? = OptionHash.new)
       unless INPUT_TYPES.includes?(type.to_s)
-        raise "Invalid input :type, valid input types are `#{INPUT_TYPES.join(", ")}`"
+        raise ArgumentError.new("Invalid input :type, valid input types are `#{INPUT_TYPES.join(", ")}`")
       end
 
       options.delete(:type)

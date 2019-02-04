@@ -25,7 +25,7 @@ module FormBuilder
 
   ### Overloads Start
   def self.form(action : String? = nil, method : (String | Symbol)? = :post, theme : (String | Symbol)? = nil, errors : Hash(String, Array(String))? = nil, **options : Object, &block)
-    options_hash : OptionHash = options.to_h.as(OptionHash) ### TODO: is this working?
+    options_hash : OptionHash = options.to_h.as(OptionHash) ### TODO: not working
     form(action: action, method: method, theme: theme, errors: errors, options: options, &block)
   end
 
@@ -39,12 +39,12 @@ module FormBuilder
   end
 
   def self.form(action : String? = nil, method : (String | Symbol)? = :post, theme : (String | Symbol)? = nil, errors : Hash(String, Array(String))? = nil, **options : Object)
-    options_hash : OptionHash = options.to_h.as(OptionHash) ### TODO: is this working?
+    options_hash : OptionHash = options.to_h.as(OptionHash) ### TODO: not working
     form(action: action, method: method, theme: theme, errors: errors, options: options) do; end
   end
   ### END Overloads
 
-  protected def self.content(element_name : Symbol, content : String, options : OptionHash)
+  protected def self.content(element_name : Symbol, content : String?, options : OptionHash)
     content(element_name: element_name, options: options) do
       content
     end
