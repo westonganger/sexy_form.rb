@@ -6,15 +6,15 @@ module FormBuilder
   alias OptionHash = Hash((Symbol | String), (Nil | String | Symbol | Bool | Int8 | Int16 | Int32 | Int64 | Float32 | Float64 | Time | Bytes | Array(String) | Array(Int32) | Array(String | Int32)))
 
   def self.form(action : String? = nil, method : (String | Symbol)? = :post, theme : (String | Symbol)? = nil, errors : Hash(String, Array(String))? = nil, options : OptionHash = OptionHash.new, &block)
-    options_hash[:method] = method == :get ? :get : :post
+    options[:method] = method == :get ? :get : :post
 
-    if options_hash[:multipart]? == true
-      options_hash[:enctype] = "multipart/form-data"
+    if options[:multipart]? == true
+      options[:enctype] = "multipart/form-data"
     end
 
     builder = FormBuilder::Builder.new(theme: theme, errors: errors)
 
-    content(element_name: :form, options: options_hash) do
+    content(element_name: :form, options: options) do
       String.build do |str|
         str << builder.input(type: :hidden, name: "_method", value: method) unless [:get, :post].includes?(method)
 
@@ -40,7 +40,7 @@ module FormBuilder
 
   def self.form(action : String? = nil, method : (String | Symbol)? = :post, theme : (String | Symbol)? = nil, errors : Hash(String, Array(String))? = nil, **options : Object)
     options_hash : OptionHash = options.to_h.as(OptionHash) ### TODO: is this working?
-    form(action: action, method: method, theme: theme, errors: errors, options: options_hash) do; end
+    form(action: action, method: method, theme: theme, errors: errors, options: options) do; end
   end
   ### END Overloads
 

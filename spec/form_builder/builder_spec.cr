@@ -2,10 +2,35 @@ require "../../spec_helper"
 
 builder = FormBuilder::Builder.new(theme: :bootstrap_4_inline)
 
+### For Testing Private/Protected Methods
+class FormBuilder::Builder
+  def _input(name : (String | Symbol), type : (String | Symbol), options : OptionHash? = OptionHash.new)
+    input(name: name, type: type, options: options)
+  end
+
+  def _select_field(name : (String | Symbol), collection : (Array(Array) | Array | Range), selected : Array(String)? = [] of String, disabled : Array(String)? = [] of String, options : OptionHash? = OptionHash.new)
+    select_field(name: name, collection: collection, selected: selected, disabled: disabled, options: options)
+  end
+
+  def _css_safe(value)
+    css_safe(value)
+  end
+end
+
 describe FormBuilder::Builder do
 
   describe "#initialize" do
 
+  end
+
+  describe "#css_safe" do
+    it "creates safe id from bracketed name" do
+      builder._css_safe("test[name]").should eq("test_name")
+    end
+
+    it "shouldn't put more than underscores in a row or have ending or leading underscores" do
+      builder._css_safe(" david[bowie!]{rules}").should eq("david_bowie_rules")
+    end
   end
 
   describe "#input" do
@@ -15,7 +40,7 @@ describe FormBuilder::Builder do
       opts = OptionHash.new
       opts[:foo] = :bar
 
-      builder.input(type: :text, name: "my-great-text-input", options: opts).should eq(expected)
+      builder._input(type: :text, name: "my-great-text-input", options: opts).should eq(expected)
     end
 
     it "options[:name] takes precedence over :name argument" do
@@ -24,7 +49,7 @@ describe FormBuilder::Builder do
       opts = OptionHash.new
       opts[:name] = "bar"
 
-      builder.input(type: :text, name: "foo", options: opts).should eq(expected)
+      builder._input(type: :text, name: "foo", options: opts).should eq(expected)
     end
 
     it "options[:id] takes precedence over default id" do
@@ -33,7 +58,7 @@ describe FormBuilder::Builder do
       opts = OptionHash.new
       opts[:id] = "bar"
 
-      builder.input(type: :text, name: "foo", options: opts).should eq(expected)
+      builder._input(type: :text, name: "foo", options: opts).should eq(expected)
     end
   end
 
@@ -46,7 +71,7 @@ describe FormBuilder::Builder do
 
       collection = [] of String
 
-      builder.select_field(name: "my-great-text-input", collection: collection, options: opts).should eq(expected)
+      builder._select_field(name: "my-great-text-input", collection: collection, options: opts).should eq(expected)
     end
 
     it "options[:name] takes precedence over :name argument" do
@@ -57,7 +82,7 @@ describe FormBuilder::Builder do
 
       collection = [] of String
 
-      builder.select_field(name: "foo", collection: collection, options: opts).should eq(expected)
+      builder._select_field(name: "foo", collection: collection, options: opts).should eq(expected)
     end
 
     it "options[:id] takes precedence over default id" do
@@ -68,7 +93,7 @@ describe FormBuilder::Builder do
 
       collection = [] of String
 
-      builder.select_field(name: "foo", collection: collection, options: opts).should eq(expected)
+      builder._select_field(name: "foo", collection: collection, options: opts).should eq(expected)
     end
 
     it "allows :selected option" do

@@ -4,17 +4,19 @@ theme = FormBuilder::Themes::Bootstrap4Inline
 
 describe FormBuilder::Themes do
 
-  it "Comes with default themes" do
-    subclasses = [FormBuilder::Themes::Bootstrap2Horizontal, FormBuilder::Themes::Bootstrap2Inline, FormBuilder::Themes::Bootstrap3Horizontal, FormBuilder::Themes::Bootstrap3Inline, FormBuilder::Themes::Bootstrap4Horizontal, FormBuilder::Themes::Bootstrap4Inline, FormBuilder::Themes::Bulma, FormBuilder::Themes::Foundation, FormBuilder::Themes::Materialize, FormBuilder::Themes::Milligram, FormBuilder::Themes::SemanticUI]
+  describe ".subclasses" do
+    it "Comes with default themes" do
+      subclasses = [FormBuilder::Themes::Bootstrap2Horizontal, FormBuilder::Themes::Bootstrap2Inline, FormBuilder::Themes::Bootstrap3Horizontal, FormBuilder::Themes::Bootstrap3Inline, FormBuilder::Themes::Bootstrap4Horizontal, FormBuilder::Themes::Bootstrap4Inline, FormBuilder::Themes::Bulma, FormBuilder::Themes::Foundation, FormBuilder::Themes::Materialize, FormBuilder::Themes::Milligram, FormBuilder::Themes::SemanticUI]
 
-    FormBuilder::Themes.subclasses.should eq(sublasses)
+      FormBuilder::Themes.subclasses.should eq(sublasses)
 
-    expected = ["bootstrap_2_horizontal", "bootstrap_2_inline", "bootstrap_3_horizontal", "bootstrap_3_inline", "bootstrap_4_horizontal", "bootstrap_4_inline", "bulma", "foundation", "materialize", "milligram", "semantic_ui"]
+      expected = ["bootstrap_2_horizontal", "bootstrap_2_inline", "bootstrap_3_horizontal", "bootstrap_3_inline", "bootstrap_4_horizontal", "bootstrap_4_inline", "bulma", "foundation", "materialize", "milligram", "semantic_ui"]
 
-    subclasses.map{|x| x.new.theme_name}.should eq(expected)
+      subclasses.map{|x| x.new.theme_name}.should eq(expected)
+    end
   end
 
-  describe "#self.from_name" do
+  describe ".from_name" do
     it "works correctly" do
       FormBuilder::Themes.from_name(:bootstrap_4_inline).should eq(theme)
     end
