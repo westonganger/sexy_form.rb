@@ -4,12 +4,12 @@ builder = FormBuilder::Builder.new(theme: :bootstrap_4_inline)
 
 ### For Testing Private/Protected Methods
 class FormBuilder::Builder
-  def _input(name : (String | Symbol), type : (String | Symbol), options : OptionHash? = OptionHash.new)
-    input(name: name, type: type, options: options)
+  def _input_field(type : (String | Symbol), options : OptionHash? = OptionHash.new)
+    input_field(type: type, options: options)
   end
 
-  def _select_field(name : (String | Symbol), collection : (Array(Array) | Array | Range), selected : Array(String)? = [] of String, disabled : Array(String)? = [] of String, options : OptionHash? = OptionHash.new)
-    select_field(name: name, collection: collection, selected: selected, disabled: disabled, options: options)
+  def _select_field(collection : (Array(Array) | Array | Range), selected : Array(String)? = [] of String, disabled : Array(String)? = [] of String, options : OptionHash? = OptionHash.new)
+    select_field(collection: collection, selected: selected, disabled: disabled, options: options)
   end
 
   def _css_safe(value)
@@ -39,26 +39,9 @@ describe FormBuilder::Builder do
 
       opts = OptionHash.new
       opts[:foo] = :bar
+      opts[:name] = "my-great-text-input"
 
-      builder._input(type: :text, name: "my-great-text-input", options: opts).should eq(expected)
-    end
-
-    it "options[:name] takes precedence over :name argument" do
-      expected = %(<input type="text" name="bar" id="foo" foo="bar">)
-
-      opts = OptionHash.new
-      opts[:name] = "bar"
-
-      builder._input(type: :text, name: "foo", options: opts).should eq(expected)
-    end
-
-    it "options[:id] takes precedence over default id" do
-      expected = %(<input type="text" name="foo" id="bar">)
-
-      opts = OptionHash.new
-      opts[:id] = "bar"
-
-      builder._input(type: :text, name: "foo", options: opts).should eq(expected)
+      builder._input_field(type: :text, options: opts).should eq(expected)
     end
   end
 
@@ -68,32 +51,11 @@ describe FormBuilder::Builder do
 
       opts = OptionHash.new
       opts[:foo] = :bar
+      opts[:name] = "my-great-text-input"
 
       collection = [] of String
 
-      builder._select_field(name: "my-great-text-input", collection: collection, options: opts).should eq(expected)
-    end
-
-    it "options[:name] takes precedence over :name argument" do
-      expected = %(<input type="text" name="bar" id="foo" foo="bar">)
-
-      opts = OptionHash.new
-      opts[:name] = "bar"
-
-      collection = [] of String
-
-      builder._select_field(name: "foo", collection: collection, options: opts).should eq(expected)
-    end
-
-    it "options[:id] takes precedence over default id" do
-      expected = %(<input type="text" name="foo" id="bar">)
-
-      opts = OptionHash.new
-      opts[:id] = "bar"
-
-      collection = [] of String
-
-      builder._select_field(name: "foo", collection: collection, options: opts).should eq(expected)
+      builder._select_field(collection: collection, options: opts).should eq(expected)
     end
 
     it "allows :selected option" do

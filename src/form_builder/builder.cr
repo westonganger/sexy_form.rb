@@ -16,6 +16,16 @@ module FormBuilder
         raise ArgumentError.new("Invalid :type argument, valid field types are: #{FIELD_TYPES.join(", ")}`")
       end
 
+      if ["checkbox", "radio"].includes?(type.to_s)
+        ### Allow passing checked=true/false
+
+        if input_html[:checked]? == true
+          input_html[:checked] = "checked"
+        elsif input_html[:checked]? == false
+          input_html.delete(:checked)
+        end
+      end
+
       if type.to_s != "select"
         if collection
           raise ArgumentError.new("Invalid :collection argument passed for field type: #{type}, :collection is only allowed with field type: :select")
@@ -40,39 +50,27 @@ module FormBuilder
         end
       end
 
+      css_safe_name = css_safe(name)
+
       unless input_html[:id]?
-        input_html[:id] = css_safe(name)
+        input_html[:id] = css_safe_name
+      end
+
+      unless input_html[:name]?
+        input_html[:name] = css_safe_name
       end
 
       case type.to_s
       when "checkbox"
-        ### Allow passing checked=true/false
-        if input_html[:checked]?
-          input_html[:checked] = "checked"
-        else
-          input_html.delete(:checked)
-        end
-
-        field_html = input(name: name, type: type, options: input_html)
-
+        field_html = input_field(type: type, options: input_html)
       when "file"
-        field_html = input(name: name, type: type, options: input_html.reject(:type))
+        field_html = input_field(type: type, options: input_html.reject(:type))
       when "hidden"
-        field_html = input(name: name, type: type, options: input_html)
+        field_html = input_field(type: type, options: input_html)
       when "password"
-        field_html = input(name: name, type: type, options: input_html.reject(:type))
+        field_html = input_field(type: type, options: input_html.reject(:type))
       when "radio"
-        # TODO
-
-        ### Allow passing checked=true/false
-        if input_html[:checked]?
-          input_html[:checked] = "checked"
-        else
-          input_html.delete(:checked)
-        end
-
-        field_html = input(name: name, type: type, options: input_html)
-
+        field_html = input_field(type: type, options: input_html)
       when "select"
         if collection.nil?
           raise ArgumentError.new("Required argument `:collection` not provided while using `type: :select`")
@@ -81,10 +79,10 @@ module FormBuilder
             raise ArgumentError.new("Cannot provide `:value` and `:selected` arguments together. The `:selected` argument is recommended for field `type: :select.`")
           end
 
-          field_html = select_field(name: name, collection: collection, selected: (selected || value), disabled: disabled, options: input_html)
+          field_html = select_field(collection: collection, selected: (selected || value), disabled: disabled, options: input_html)
         end
       when "text"
-        field_html = input(name: name, type: type, options: input_html)
+        field_html = input_field(type: type, options: input_html)
       when "textarea"
         if input_html.has_key?(:size)
           input_html[:cols], input_html[:rows] = input_html.delete(:size).to_s.split("x")
@@ -108,7 +106,7 @@ module FormBuilder
       end
     end
 
-    private def input(name : (String | Symbol), type : (String | Symbol), options : OptionHash? = OptionHash.new)
+    private def input_field(type : (String | Symbol), options : OptionHash? = OptionHash.new)
       unless INPUT_TYPES.includes?(type.to_s)
         raise ArgumentError.new("Invalid input :type, valid input types are `#{INPUT_TYPES.join(", ")}`")
       end
@@ -121,16 +119,12 @@ module FormBuilder
       tag_options = options.reject!(boolean_attributes).map{ |k, v| "#{k}=\"#{v}\"" }
       tag_options = tag_options << boolean_options.keys.join(" ") if !boolean_options.empty?
 
-      "<input name=\"#{options[:name]? ? options.delete(:name) : name}\" type=\"#{type}\" #{tag_options.join(" ")}/>"
+      "<input type=\"#{type}\" #{tag_options.join(" ")}/>"
     end
 
-    private def select_field(name : (String | Symbol), collection : (Array(Array) | Array | Range), selected : Array(String)? = [] of String, disabled : Array(String)? = [] of String, options : OptionHash? = OptionHash.new)
+    private def select_field(collection : (Array(Array) | Array | Range), selected : Array(String)? = [] of String, disabled : Array(String)? = [] of String, options : OptionHash? = OptionHash.new)
       unless collection.first.is_a?(Array) 
         collection.map{|x| [x.to_s, x.to_s.capitalize] }
-      end
-
-      unless options[:name]?
-        options[:name] = name
       end
 
       FormBuilder.content(element_name: :select, options: options) do

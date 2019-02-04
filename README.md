@@ -9,7 +9,6 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 # TODO
 
 - Figure out how to convert `**options : Object` to `OptionHash` correctly
-- Implement Radio input
 - Complete FormBuilder::Themes class for each UI Library
 - Complete all missing specs
 
