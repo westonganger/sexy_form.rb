@@ -1,3 +1,4 @@
+require "./form_builder/version"
 require "./form_builder/themes"
 require "./form_builder/themes/*"
 require "./form_builder/builder"
@@ -5,52 +6,47 @@ require "./form_builder/builder"
 module FormBuilder
   alias OptionHash = Hash((Symbol | String), (Nil | String | Symbol | Bool | Int8 | Int16 | Int32 | Int64 | Float32 | Float64 | Time | Bytes | Array(String) | Array(Int32) | Array(String | Int32)))
 
-  def self.form(action : String? = nil, method : (String | Symbol)? = :post, theme : (String | Symbol)? = nil, errors : Hash(String, Array(String))? = nil, options : OptionHash = OptionHash.new, &block)
-    options[:method] = method == :get ? :get : :post
+  def self.form(
+    action : String? = nil,
+    method : (String | Symbol)? = :post,
+    theme : (String | Symbol)? = nil, 
+    errors : Hash(String, Array(String))? = nil, 
+    form_html : (NamedTuple | Hash)? = OptionHash.new, 
+    &block
+  ) : String
+    html = form_html.is_a?(NamedTuple) ? form_html.to_h : form_html
 
-    if options[:multipart]? == true
-      options[:enctype] = "multipart/form-data"
+    html[:method] = method.to_s == "get" ? "get" : "post"
+
+    if html[:multipart]? == true
+      html[:enctype] = "multipart/form-data"
     end
 
     builder = FormBuilder::Builder.new(theme: theme, errors: errors)
 
-    content(element_name: :form, options: options) do
+    content(element_name: :form, options: html) do
       String.build do |str|
-        str << builder.input(type: :hidden, name: "_method", value: method) unless [:get, :post].includes?(method)
+        unless ["get", "post"].includes?(method.to_s)
+          str << %(<input type="hidden" name="_method" value="#{method}")
+        end
 
         str << yield builder
       end
     end
   end
 
-  ### Overloads Start
-  def self.form(action : String? = nil, method : (String | Symbol)? = :post, theme : (String | Symbol)? = nil, errors : Hash(String, Array(String))? = nil, **options : Object, &block)
-    options_hash : OptionHash = options.to_h.as(OptionHash) ### TODO: not working
-    form(action: action, method: method, theme: theme, errors: errors, options: options, &block)
+  ### Overload for optional &block
+  def self.form(
+    action : String? = nil, 
+    method : (String | Symbol)? = :post, 
+    theme : (String | Symbol)? = nil, 
+    errors : Hash(String, Array(String))? = nil, 
+    form_html : (NamedTuple | Hash)? = OptionHash.new
+  ) : String
+    form(action: action, method: method, theme: theme, errors: errors, form_html: form_html) do; end
   end
 
-  ### Overloads for optional **options and block
-  def self.form(action : String? = nil, method : (String | Symbol)? = :post, theme : (String | Symbol)? = nil, errors : Hash(String, Array(String))? = nil, &block)
-    form(action: action, method: method, theme: theme, errors: errors, options: OptionHash.new) do; end
-  end
-
-  def self.form(action : String? = nil, method : (String | Symbol)? = :post, theme : (String | Symbol)? = nil, errors : Hash(String, Array(String))? = nil)
-    form(action: action, method: method, theme: theme, errors: errors, options: OptionHash.new) do; end
-  end
-
-  def self.form(action : String? = nil, method : (String | Symbol)? = :post, theme : (String | Symbol)? = nil, errors : Hash(String, Array(String))? = nil, **options : Object)
-    options_hash : OptionHash = options.to_h.as(OptionHash) ### TODO: not working
-    form(action: action, method: method, theme: theme, errors: errors, options: options) do; end
-  end
-  ### END Overloads
-
-  protected def self.content(element_name : Symbol, content : String?, options : OptionHash)
-    content(element_name: element_name, options: options) do
-      content
-    end
-  end
-
-  protected def self.content(element_name : Symbol, options : OptionHash, &block)
+  protected def self.content(element_name : Symbol, options : OptionHash, &block) : String
     String.build do |str|
       str << "<#{element_name}"
       options.each do |k, v|

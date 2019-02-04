@@ -8,7 +8,8 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 
 # TODO
 
-- Figure out how to convert `**options : Object` to `OptionHash` correctly
+- Ensure `with_indifferent_access` for html attributes
+- Ensure `(OptionHash | Hash | NamedTuple)` usage iscorrect
 - Complete FormBuilder::Themes class for each UI Library
 - Complete all missing specs
 
@@ -23,13 +24,13 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 Out of the box Form Builder can generate HTML markup for the following UI libraries:
 
 - Bootstrap 4 - Available form types:
-  * `theme: :bootstrap_4_inline` (Default)
+  * `theme: :bootstrap_4_inline`
   * `theme: :bootstrap_4_horizontal`
 - Bootstrap 3 - `theme: :bootstrap_3` - Available form types:
-  * `theme: :bootstrap_3_inline` (Default)
+  * `theme: :bootstrap_3_inline`
   * `theme: :bootstrap_3_horizontal`
 - Bootstrap 2 - `theme: :bootstrap_2` - Available form types:
-  * `theme: :bootstrap_2_inline` (Default)
+  * `theme: :bootstrap_2_inline`
   * `theme: :bootstrap_2_horizontal`
 - Bulma - `theme: :bulma`
 - Foundation - `theme: :foundation`
@@ -55,7 +56,7 @@ dependencies:
 ```crystal
 require "form_builder"
 
-== FormBuilder.form(theme: :bootstrap_4, action: "/products", method: :post, style: "margin-top: 20px;", "data-foo" => "bar") do |f|
+== FormBuilder.form(theme: :bootstrap_4, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
   == f.field name: "product[name]", label: "Name", type: :text
 
   == f.field name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"} 
@@ -88,18 +89,6 @@ require "form_builder"
 - `:text`
 - `:textarea`
 
-# Error Handling
-
-The form builder expects errors in in the following hash format.
-
-```crystal
-- errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
-
-== FormBuilder.form(theme: :bootstrap_4, errors: errors) do |f|
-  == f.field name: "name", type: :text, label: "Name"
-  == f.field name: "sku", type: :text, label: "SKU"
-```
-
 # Using FormBuilder without a Form
 
 ```crystal
@@ -107,6 +96,18 @@ The form builder expects errors in in the following hash format.
 
 == f.field name: "name", type: :text, label: "Name"
 == f.field name: "sku", type: :text, label: "SKU"
+```
+
+# Error Handling
+
+The form builder is capable of handling error messages too. It expects errors in the format of `Hash(String, Array(String))`
+
+```crystal
+- errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
+
+== FormBuilder.form(theme: :bootstrap_4, errors: errors) do |f|
+  == f.field name: "name", type: :text, label: "Name"
+  == f.field name: "sku", type: :text, label: "SKU"
 ```
 
 # Custom Themes
@@ -167,6 +168,11 @@ We use Ameba, Crystal Format, and Crystal Spec. To run all of these execute the 
 # Credits
 
 Created & Maintained by [Weston Ganger](https://westonganger.com) - [@westonganger](https://github.com/westonganger)
+
+Project Inspired By:
+ 
+- [SimpleForm](https://github.com/plataformatec/simple_form)
+- [JasperHelpers](https://github.com/amberframework/jasper_helpers)
 
 For any consulting or contract work please contact me via my company website: [Solid Foundation Web Development](https://solidfoundationwebdev.com)
 

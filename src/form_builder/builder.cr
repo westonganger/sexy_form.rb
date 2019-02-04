@@ -11,19 +11,20 @@ module FormBuilder
       end
     end
 
-    def field(type : (String | Symbol), name : (String | Symbol), value : (String | Symbol)? = nil, label : (Bool | String | Symbol)? = nil, input_html : OptionHash = OptionHash.new, label_html : OptionHash = OptionHash.new, wrapper_html : OptionHash = OptionHash.new, collection : (Array(Array) | Array | Range)? = nil, selected : Array(String)? = nil, disabled : Array(String)? = nil)
+    def field(
+      type : (String | Symbol), 
+      name : (String | Symbol), 
+      value : (String | Symbol)? = nil, 
+      label : (Bool | String | Symbol)? = nil, 
+      input_html : (NamedTuple | OptionHash) = OptionHash.new, 
+      label_html : (NamedTuple | OptionHash) = OptionHash.new, 
+      wrapper_html : (NamedTuple | OptionHash) = OptionHash.new, 
+      collection : (Array(Array) | Array | Range)? = nil, 
+      selected : Array(String)? = nil, 
+      disabled : Array(String)? = nil
+    )
       unless FIELD_TYPES.includes?(type.to_s)
         raise ArgumentError.new("Invalid :type argument, valid field types are: #{FIELD_TYPES.join(", ")}`")
-      end
-
-      if ["checkbox", "radio"].includes?(type.to_s)
-        ### Allow passing checked=true/false
-
-        if input_html[:checked]? == true
-          input_html[:checked] = "checked"
-        elsif input_html[:checked]? == false
-          input_html.delete(:checked)
-        end
       end
 
       if type.to_s != "select"
@@ -36,6 +37,16 @@ module FormBuilder
         end
       end
 
+      if ["checkbox", "radio"].includes?(type.to_s)
+        ### Allow passing checked=true/false
+
+        if input_html[:checked]? == true
+          input_html[:checked] = "checked"
+        elsif input_html[:checked]? == false
+          input_html.delete(:checked)
+        end
+      end
+
       if INPUT_TYPES.includes?(type.to_s)
         input_html[:value] ||= value
       end
@@ -45,7 +56,9 @@ module FormBuilder
 
         if !label_str && !label_str.empty?
           label_proc = -> {
-            FormBuilder.content(element_name: :label, content: label_str, options: label_html)
+            FormBuilder.content(element_name: :label, options: label_html) do
+              label_str
+            end
           }
         end
       end
@@ -88,7 +101,9 @@ module FormBuilder
           input_html[:cols], input_html[:rows] = input_html.delete(:size).to_s.split("x")
         end
 
-        field_html = FormBuilder.content(element_name: type, content: (input_html[:value]? ? input_html[:value].to_s : value.to_s), options: input_html)
+        field_html = FormBuilder.content(element_name: type, options: input_html) do
+          input_html[:value]? ? input_html[:value].to_s : value.to_s
+        end
       end
 
       field_proc : Proc(String) = -> {
@@ -122,7 +137,7 @@ module FormBuilder
       "<input type=\"#{type}\" #{tag_options.join(" ")}/>"
     end
 
-    private def select_field(collection : (Array(Array) | Array | Range), selected : Array(String)? = [] of String, disabled : Array(String)? = [] of String, options : OptionHash? = OptionHash.new)
+    private def select_field(collection : (Array(Array) | Array | Range), selected : Array(String)? = nil, disabled : Array(String)? = nil, options : OptionHash? = OptionHash.new)
       unless collection.first.is_a?(Array) 
         collection.map{|x| [x.to_s, x.to_s.capitalize] }
       end
@@ -131,8 +146,8 @@ module FormBuilder
         String.build do |str|
           collection.map do |x|
             str << "<option value=\"#{x[0]}\""
-            str << "#{" selected=\"selected\"" if selected.includes?(x[0].to_s)}"
-            str << "#{" disabled=\"disabled\"" if disabled.includes?(x[0].to_s)}"
+            str << "#{" selected=\"selected\"" if selected && selected.includes?(x[0].to_s)}"
+            str << "#{" disabled=\"disabled\"" if disabled && disabled.includes?(x[0].to_s)}"
             str << ">#{x[1]}</option>"
           end
         end
