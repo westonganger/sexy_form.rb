@@ -9,6 +9,7 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 # TODO
 
 - Figure out how to convert `**options : Object` to `OptionHash` correctly
+- Complete FormBuilder::Themes class for each UI Library
 - Complete all missing specs
 
 # Features
@@ -30,19 +31,14 @@ Out of the box Form Builder can generate HTML markup for the following UI librar
 - Bootstrap 2 - `theme: :bootstrap_2` - Available form types:
   * `form_type: :inline_form` (Default)
   * `form_type: :horizontal_form`
+- Bulma - `theme: :bulma`
+- Foundation - `theme: :foundation`
+- Materialize - `theme: :materialize`
+- Milligram - `theme: :milligram`
+- Semantic UI - `theme: :semantic_ui`
 - None (do not provide a `:theme` argument or pass `nil`) - Will simply provide a label and input
 
 If you dont see your favourite UI library here feel free to create a PR to add it. I recommend creating an issue to discuss it first.
-
-# Other UI Libraries
-
-I would like to see PR's for the following UI libraries:
-
-- Bulma
-- Foundation
-- Materialize
-- Milligram
-- Semantic UI
 
 # Installation
 
