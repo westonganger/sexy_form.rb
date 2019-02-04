@@ -8,24 +8,29 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 
 # TODO
 
-- Figure out how to convert `**options : Object` to `OptionHash`
-- Implement FormBuilder::Builder according to Theme design
+- Figure out how to convert `**options : Object` to `OptionHash` correctly
 - Complete all missing specs
 
 # Features
 
-- Generate styled HTML markup for forms, labels, and inputs
-- Integrates with many UI libraries
+- Easily generate styled HTML markup for forms, labels, and inputs
+- Integrates with many UI libraries such as Bootstrap
 - Custom theme support
 
 # Supported UI Libraries
 
 Out of the box Form Builder can generate HTML markup for the following UI libraries:
 
-- Bootstrap 4
-- Bootstrap 3
-- Bootstrap 2
-- None (do not set :theme or `nil`, output per field is simply "label + input")
+- Bootstrap 4 - `theme: :bootstrap_4` - Available form types:
+  * `form_type: :inline_form` (Default)
+  * `form_type: :horizontal_form`
+- Bootstrap 3 - `theme: :bootstrap_3` - Available form types:
+  * `form_type: :inline_form` (Default)
+  * `form_type: :horizontal_form`
+- Bootstrap 2 - `theme: :bootstrap_2` - Available form types:
+  * `form_type: :inline_form` (Default)
+  * `form_type: :horizontal_form`
+- None (do not provide a `:theme` argument or pass `nil`) - Will simply provide a label and input
 
 If you dont see your favourite UI library here feel free to create a PR to add it. I recommend creating an issue to discuss it first.
 
@@ -53,19 +58,27 @@ dependencies:
 
 ```crystal
 require "form_builder"
-```
 
-```slim
 == FormBuilder.form(theme: :bootstrap_4, action: "/products", method: :post, style: "margin-top: 20px;", "data-foo" => "bar") do |f|
-  == f.input name: "product[name]", label: "Name", type: :text, ### type :text is also aliased as :string
-  == f.input name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"} 
-  == f.input name: "product[type]", label: "Type", type: :select, collection: product_types, selected: product_type, disabled: disabled_product_types
-  == f.input name: "product[available]", type: :checkbox, label: "In Stock?"
-  == f.input name: "product[class]", type: :radio, label: false
-  == f.input name: "product[secret]", type: :hidden, value: 'foobar'
-  == f.input type: :submit
+  == f.field name: "product[name]", label: "Name", type: :text
 
-  == f.label "Just a label"
+  == f.field name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"} 
+
+  == f.field name: "product[available]", type: :checkbox, label: "In Stock?"
+
+  == f.field name: "product[class]", type: :radio, label: false
+
+  == f.field name: "product[secret]", type: :hidden, value: 'foobar'
+
+  == f.field name: "product[file]", type: :file
+
+  - collection = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"]]
+  
+  ### Additional Options for type: :select
+  ### collection : Array(Array) | Array | Range
+  ### selected : String | Array
+  ### disabled : String | Array
+  == f.field name: "product[type]", label: "Type", type: :select, collection: collection, selected: product_type, disabled: disabled_product_types
 ```
 
 # Error Handling
@@ -76,8 +89,8 @@ The form builder expects errors in in the following hash format.
 - errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
 
 == FormBuilder.form(theme: :bootstrap_4, errors: errors) do |f|
-  == f.input name: "name", type: :string, label: "Name"
-  == f.input name: "sku", type: :string, label: "SKU"
+  == f.field name: "name", type: :text, label: "Name"
+  == f.field name: "sku", type: :text, label: "SKU"
 ```
 
 # Using FormBuilder without a Form
@@ -85,8 +98,8 @@ The form builder expects errors in in the following hash format.
 ```slang
 - f = FormBuilder::Builder.new(theme: :bootstrap_4)
 
-== f.input name: "name", type: :string, label: "Name"
-== f.input name: "sku", type: :string, label: "SKU"
+== f.field name: "name", type: :text, label: "Name"
+== f.field name: "sku", type: :text, label: "SKU"
 ```
 
 # Custom Themes
@@ -100,11 +113,11 @@ module FormBuilder
   class Themes
     class Custom < Themes
 
-      def wrap_input(type : String, label_proc : Proc, input_proc : Proc, errors : Array(String)?)
+      def wrap_field(field_type : String, form_type : String, label_proc : Proc?, input_proc : Proc, errors : Array(String)?, wrapper_html : OptionHash)
         "Foo to the Bar"
       end
 
-      def input_attributes(type : String)
+      def field_attributes(field_type : String)
         attrs = {} of String => String
         attrs["class"] = "form-label other-class"
         attrs["style"] = ""
@@ -112,7 +125,7 @@ module FormBuilder
         attrs
       end
 
-      def label_attributes(type : String)
+      def label_attributes(field_type : String)
         attrs = {} of String => String
         attrs["class"] = "form-label other-class"
         attrs["style"] = ""

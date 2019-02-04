@@ -2,11 +2,11 @@ module FormBuilder
   class Themes
     class Bootstrap3 < Themes
 
-      def wrap_input(type : String, label_proc : Proc, input_proc : Proc, errors : Array(String)?)
+      def wrap_field(field_type : String, form_type : String, label_proc : Proc?, field_proc : Proc, errors : Array(String)?, wrapper_html : OptionHash)
         "Foo to the Bar"
       end
 
-      def input_attributes(type : String)
+      def field_attributes(field_type : String)
         attrs = {} of String => String
         attrs["class"] = "form-label other-class"
         attrs["style"] = ""
@@ -14,7 +14,7 @@ module FormBuilder
         attrs
       end
 
-      def label_attributes(type : String)
+      def label_attributes(field_type : String)
         attrs = {} of String => String
         attrs["class"] = "form-label other-class"
         attrs["style"] = ""
