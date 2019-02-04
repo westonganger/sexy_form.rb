@@ -50,7 +50,6 @@ module FormBuilder
     end
   end
 
-  ### Currently Unused
   protected def self.content(element_name : Symbol, options : OptionHash, &block)
     String.build do |str|
       str << "<#{element_name}"
