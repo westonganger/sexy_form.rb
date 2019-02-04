@@ -1,8 +1,12 @@
 module FormBuilder
   class Themes
-    class Bootstrap4 < Themes
+    class Bootstrap4Inline < Themes
 
-      def wrap_field(field_type : String, form_type : String, label_proc : Proc?, field_proc : Proc, errors : Array(String)?, wrapper_html : OptionHash)
+      def self.theme_name
+        "bootstrap_4_inline"
+      end
+
+      def wrap_field(field_type : String, label_proc : Proc?, field_proc : Proc, errors : Array(String)?, wrapper_html : OptionHash)
         "Foo to the Bar"
       end
 

@@ -1,6 +1,10 @@
 module FormBuilder
   class Themes
-    class Milligram < Themes
+    class Bootstrap4Horizontal < Themes
+
+      def self.theme_name
+        "bootstrap_4_horizontal"
+      end
 
       def wrap_field(field_type : String, label_proc : Proc?, field_proc : Proc, errors : Array(String)?, wrapper_html : OptionHash)
         "Foo to the Bar"

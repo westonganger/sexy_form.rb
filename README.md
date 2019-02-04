@@ -129,6 +129,11 @@ module FormBuilder
         attrs
       end
 
+      ### This method only required if your theme name doesnt perfectly match the `.underscore` of the theme class name
+      def self.theme_name
+        "custom"
+      end
+
     end
   end
 end

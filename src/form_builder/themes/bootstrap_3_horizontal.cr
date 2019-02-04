@@ -1,8 +1,12 @@
 module FormBuilder
   class Themes
-    class Bootstrap2 < Themes
+    class Bootstrap3Horizontal < Themes
 
-      def wrap_field(field_type : String, form_type : String, label_proc : Proc?, field_proc : Proc, errors : Array(String)?, wrapper_html : OptionHash)
+      def self.theme_name
+        "bootstrap_3_horizontal"
+      end
+
+      def wrap_field(field_type : String, label_proc : Proc?, field_proc : Proc, errors : Array(String)?, wrapper_html : OptionHash)
         "Foo to the Bar"
       end
 
