@@ -38,18 +38,19 @@ describe FormBuilder do
       errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
 
       result = FormBuilder.form(theme: :bootstrap_4_inline, errors: errors) do |f|
-        f.field name: "name", type: :text
-        f.field name: "sku", type: :text
+        f << f.field name: "name", type: :text
+        f << "~~~"
+        f << f.field name: "sku", type: :text
       end
 
-      expected = "<form method=\"post\">Foo to the Bar</form>"
+      expected = "<form method=\"post\">Foo to the Bar~~~Foo to the Bar</form>"
 
       result.should eq(expected)
     end
 
     it "allows for nested input fields" do
       result = FormBuilder.form(form_html: {:id => "myForm"}) do |f|
-        f.field name: :name, type: :text
+        f << f.field name: :name, type: :text
       end
 
       expected = "<form id=\"myForm\" method=\"post\"><input type=\"text\" value=\"\" id=\"name\" name=\"name\"></form>"

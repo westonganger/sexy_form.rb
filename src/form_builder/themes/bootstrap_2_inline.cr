@@ -10,20 +10,16 @@ module FormBuilder
         "Foo to the Bar"
       end
 
-      def field_attributes(field_type : String)
+      def field_attributes(field_type : String, name : String? = nil, label_text : String? = nil)
         attrs = {} of String => String
-        attrs["class"] = "form-label other-class"
-        attrs["style"] = ""
-        attrs["data-foo"] = "bar"
+        if label_text
+          attrs["placeholder"] = "#{label_text}"
+        end
         attrs
       end
 
-      def label_attributes(field_type : String)
-        attrs = {} of String => String
-        attrs["class"] = "form-label other-class"
-        attrs["style"] = ""
-        attrs["data-foo"] = "bar"
-        attrs
+      def label_attributes(field_type : String, name : String? = nil, label_text : String? = nil)
+        {} of String => String
       end
 
     end
