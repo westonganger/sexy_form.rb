@@ -4,11 +4,20 @@ module FormBuilder
     INPUT_TYPES = FIELD_TYPES.to_a - ["select", "textarea"]
     
     @theme : FormBuilder::Themes?
+    @html : Array(String) = [] of String
 
     def initialize(theme : (String | Symbol)? = nil, @errors : Hash(String, Array(String))? = nil)
       if theme
         @theme = Themes.from_name(theme.to_s).new
       end
+    end
+
+    def <<(value)
+      @html.push(value.to_s)
+    end
+
+    def html_string
+      @html.join("")
     end
 
     def field(

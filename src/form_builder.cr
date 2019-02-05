@@ -31,7 +31,11 @@ module FormBuilder
           str << %(<input type="hidden" name="_method" value="#{method}")
         end
 
-        str << yield builder
+        yield builder
+
+        unless builder.html_string.empty?
+          str << builder.html_string
+        end
       end
     end
   end

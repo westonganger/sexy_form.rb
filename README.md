@@ -49,34 +49,13 @@ dependencies:
     github: westonganger/form_builder.cr
 ```
 
-# Usage 
-
 ```crystal
 require "form_builder"
-
-== FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
-  == f.field name: "product[name]", label: "Name", type: :text
-
-  == f.field name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"} 
-
-  == f.field name: "product[available]", type: :checkbox, label: "In Stock?"
-
-  == f.field name: "product[class]", type: :radio, label: false
-
-  == f.field name: "product[secret]", type: :hidden, value: 'foobar'
-
-  == f.field name: "product[file]", type: :file
-
-  - collection = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"]]
-  
-  ### Additional Options for type: :select
-  ### collection : (Array(Array) | Array | Range)
-  ### selected : (String | Array)
-  ### disabled : (String | Array)
-  == f.field name: "product[type]", label: "Type", type: :select, collection: collection, selected: product_type, disabled: disabled_product_types
 ```
 
-# Supported Field Types
+# Usage
+
+The following field types are supported:
 
 - `:checkbox`
 - `:file`
@@ -87,7 +66,73 @@ require "form_builder"
 - `:text`
 - `:textarea`
 
-# Using FormBuilder without a Form
+## FormBuilder in View Templates (Kilt, Slang, ECR, etc.)
+
+```crystal
+== FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
+  .row
+    .col-sm-6
+      ### -- Field Options
+      ### type : (String | Symbol) 
+      ### name : (String | Symbol)?
+      ### label : (String | Bool)? = true
+
+      ### -- The `input_html[:value]` option will take precedence over the :value option (except for `type: :textarea/:select`)
+      ### value : (String | Symbol)? 
+
+      ### -- For the following Hash options, String keys will take precedence over any Symbol keys
+      ### input_html : (Hash | NamedTuple)? ### contains attributes to be added to the input/field
+      ### input_html : (Hash | NamedTuple)? ### contains attributes to be added to the label
+      ### wrapper_html : (Hash | NamedTuple)? ### contains attributes to be added to the outer wrapper for the label and input
+
+      ### -- Additional Options for `type: :select`
+      ### collection : (Array(Array) | Array | Range)
+      ### selected : (String | Array)?
+      ### disabled : (String | Array)?
+
+      == f.field name: "product[name]", label: "Name", type: :text
+
+      == f.field name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"} 
+
+      == f.field name: "product[file]", type: :file
+
+    .col-sm-6
+      == f.field name: "product[available]", type: :checkbox, label: "In Stock?"
+
+      == f.field name: "product[class]", type: :radio, label: false
+
+      == f.field name: "product[secret]", type: :hidden, value: 'foobar'
+
+  .row
+    - collection = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"]]
+    == f.field name: "product[type]", label: "Type", type: :select, collection: collection, selected: ["B"], disabled: ["C"]
+```
+
+## FormBuilder in Plain Crystal Code
+
+When using the `FormBuilder.form` method in plain Crystal code, the `<<` syntax is required to add the generated field HTML to the form HTML string, `form_html_str`
+
+```crystal
+form_html_str = FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
+  f << f.field name: "name", type: :text, label: "Name"
+  f << f.field name: "sku", type: :text, label: "SKU"
+  f << "<strong>Hello World</strong>"
+end
+```
+
+OR you can use the lower level `String.build` instead:
+
+```crystal
+form_html_str = String.build do |str|
+  str << FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
+    str << f.field name: "name", type: :text, label: "Name"
+    str << f.field name: "sku", type: :text, label: "SKU"
+    str << "<strong>Hello World</strong>"
+  end
+end
+```
+
+## FormBuilder without a Form
 
 ```crystal
 - f = FormBuilder::Builder.new(theme: :bootstrap_4_inline)
@@ -96,7 +141,7 @@ require "form_builder"
 == f.field name: "sku", type: :text, label: "SKU"
 ```
 
-# Error Handling
+## Error Handling
 
 The form builder is capable of handling error messages too. It expects errors in the format of `Hash(String, Array(String))`
 
@@ -108,7 +153,7 @@ The form builder is capable of handling error messages too. It expects errors in
   == f.field name: "sku", type: :text, label: "SKU"
 ```
 
-# Custom Themes
+## Custom Themes
 
 If you need to create a custom theme simply create an initializer with the following:
 
@@ -155,14 +200,6 @@ Now you can use the theme just like any other built-in theme.
 FormBuilder.form(theme: :custom)
 ```
 
-# Notes
-
-- String keys will take precedence over any Symbol keys within any of the following argument options:
-  * `form_html`
-  * `input_html`
-  * `label_html`
-  * `wrapper_html`
-
 # Contributing
 
 We use Ameba, Crystal Format, and Crystal Spec. To run all of these execute the following script:
@@ -177,8 +214,8 @@ Created & Maintained by [Weston Ganger](https://westonganger.com) - [@westongang
 
 Project Inspired By:
  
+- [Jasper Helpers](https://github.com/amberframework/jasper-helpers) for use in the [Amber framework](https://github.com/amberframework/amber)
 - [SimpleForm](https://github.com/plataformatec/simple_form)
-- [JasperHelpers](https://github.com/amberframework/jasper_helpers)
 
 For any consulting or contract work please contact me via my company website: [Solid Foundation Web Development](https://solidfoundationwebdev.com)
 
