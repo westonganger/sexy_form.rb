@@ -8,8 +8,6 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 
 # TODO
 
-- Ensure `with_indifferent_access` for html attributes
-- Ensure `(OptionHash | Hash | NamedTuple)` usage is correct
 - Complete FormBuilder::Themes class for each UI Library
 - Complete all missing specs
 
@@ -26,10 +24,10 @@ Out of the box Form Builder can generate HTML markup for the following UI librar
 - Bootstrap 4 - Available form types:
   * `theme: :bootstrap_4_inline`
   * `theme: :bootstrap_4_horizontal`
-- Bootstrap 3 - `theme: :bootstrap_3` - Available form types:
+- Bootstrap 3 - Available form types:
   * `theme: :bootstrap_3_inline`
   * `theme: :bootstrap_3_horizontal`
-- Bootstrap 2 - `theme: :bootstrap_2` - Available form types:
+- Bootstrap 2 - Available form types:
   * `theme: :bootstrap_2_inline`
   * `theme: :bootstrap_2_horizontal`
 - Bulma - `theme: :bulma`
@@ -156,6 +154,14 @@ Now you can use the theme just like any other built-in theme.
 ```crystal
 FormBuilder.form(theme: :custom)
 ```
+
+# Notes
+
+- String keys will take precedence over any Symbol keys within any of the following argument options:
+  * `form_html`
+  * `input_html`
+  * `label_html`
+  * `wrapper_html`
 
 # Contributing
 

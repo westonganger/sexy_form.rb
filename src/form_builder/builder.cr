@@ -37,18 +37,22 @@ module FormBuilder
         end
       end
 
+      input_attrs = input_html.reject{|k,v| k.is_a?(Symbol) && input_html.keys.includes?(k.to_s)}
+      label_attrs = label_html.reject{|k,v| k.is_a?(Symbol) && label_html.keys.includes?(k.to_s)}
+      wrapper_attrs = wrapper_html.reject{|k,v| k.is_a?(Symbol) && wrapper_html.keys.includes?(k.to_s)}
+
       if ["checkbox", "radio"].includes?(type.to_s)
         ### Allow passing checked=true/false
 
-        if input_html[:checked]? == true
-          input_html[:checked] = "checked"
-        elsif input_html[:checked]? == false
-          input_html.delete(:checked)
+        if input_attrs[:checked]? == true
+          input_attrs[:checked] = "checked"
+        elsif input_attrs[:checked]? == false
+          input_attrs.delete(:checked)
         end
       end
 
       if INPUT_TYPES.includes?(type.to_s)
-        input_html[:value] ||= value
+        input_attrs[:value] ||= value
       end
 
       if label != false
@@ -56,7 +60,7 @@ module FormBuilder
 
         if !label_str && !label_str.empty?
           label_proc = -> {
-            FormBuilder.content(element_name: :label, options: label_html) do
+            FormBuilder.content(element_name: :label, options: label_attrs) do
               label_str
             end
           }
@@ -65,25 +69,25 @@ module FormBuilder
 
       css_safe_name = css_safe(name)
 
-      unless input_html[:id]?
-        input_html[:id] = css_safe_name
+      unless input_attrs[:id]?
+        input_attrs[:id] = css_safe_name
       end
 
-      unless input_html[:name]?
-        input_html[:name] = css_safe_name
+      unless input_attrs[:name]?
+        input_attrs[:name] = css_safe_name
       end
 
       case type.to_s
       when "checkbox"
-        field_html = input_field(type: type, options: input_html)
+        field_html = input_field(type: type, options: input_attrs)
       when "file"
-        field_html = input_field(type: type, options: input_html.reject(:type))
+        field_html = input_field(type: type, options: input_attrs.reject(:type))
       when "hidden"
-        field_html = input_field(type: type, options: input_html)
+        field_html = input_field(type: type, options: input_attrs)
       when "password"
-        field_html = input_field(type: type, options: input_html.reject(:type))
+        field_html = input_field(type: type, options: input_attrs.reject(:type))
       when "radio"
-        field_html = input_field(type: type, options: input_html)
+        field_html = input_field(type: type, options: input_attrs)
       when "select"
         if collection.nil?
           raise ArgumentError.new("Required argument `:collection` not provided while using `type: :select`")
@@ -92,17 +96,17 @@ module FormBuilder
             raise ArgumentError.new("Cannot provide `:value` and `:selected` arguments together. The `:selected` argument is recommended for field `type: :select.`")
           end
 
-          field_html = select_field(collection: collection, selected: (selected || value), disabled: disabled, options: input_html)
+          field_html = select_field(collection: collection, selected: (selected || value), disabled: disabled, options: input_attrs)
         end
       when "text"
-        field_html = input_field(type: type, options: input_html)
+        field_html = input_field(type: type, options: input_attrs)
       when "textarea"
-        if input_html.has_key?(:size)
-          input_html[:cols], input_html[:rows] = input_html.delete(:size).to_s.split("x")
+        if input_attrs.has_key?(:size)
+          input_attrs[:cols], input_attrs[:rows] = input_attrs.delete(:size).to_s.split("x")
         end
 
-        field_html = FormBuilder.content(element_name: type, options: input_html) do
-          input_html[:value]? ? input_html[:value].to_s : value.to_s
+        field_html = FormBuilder.content(element_name: type, options: input_attrs) do
+          input_attrs[:value]? ? input_attrs[:value].to_s : value.to_s
         end
       end
 
@@ -115,7 +119,7 @@ module FormBuilder
       end
 
       if (theme = @theme)
-        theme.wrap_field(field_type: type.to_s, label_proc: label_proc, field_proc: field_proc, field_errors: field_errors, wrapper_html: wrapper_html)
+        theme.wrap_field(field_type: type.to_s, label_proc: label_proc, field_proc: field_proc, field_errors: field_errors, wrapper_html: wrapper_attrs)
       else
         "#{label_proc.call if label_proc}#{field_proc.call}"
       end

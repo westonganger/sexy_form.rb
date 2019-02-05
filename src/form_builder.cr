@@ -11,21 +11,21 @@ module FormBuilder
     method : (String | Symbol)? = :post,
     theme : (String | Symbol)? = nil, 
     errors : Hash(String, Array(String))? = nil, 
-    form_html : (NamedTuple | Hash)? = OptionHash.new, 
+    form_html : (NamedTuple | OptionHash)? = OptionHash.new, 
     &block
   ) : String
-    html = form_html.is_a?(NamedTuple) ? form_html.to_h : form_html
+    form_attrs = (form_html.is_a?(NamedTuple) ? form_html.to_h : form_html).reject{|k,v| k.is_a?(Symbol) && form_html.keys.includes?(k.to_s)}
 
-    html[:method] = method.to_s == "get" ? "get" : "post"
+    form_attrs[:method] = method.to_s == "get" ? "get" : "post"
 
-    if html[:multipart]? == true
-      html.delete(:multipart)
-      html[:enctype] = "multipart/form-data"
+    if form_attrs[:multipart]? == true
+      form_attrs.delete(:multipart)
+      form_attrs[:enctype] = "multipart/form-data"
     end
 
     builder = FormBuilder::Builder.new(theme: theme, errors: errors)
 
-    content(element_name: :form, options: html) do
+    content(element_name: :form, options: form_attrs) do
       String.build do |str|
         unless ["get", "post"].includes?(method.to_s)
           str << %(<input type="hidden" name="_method" value="#{method}")
@@ -42,7 +42,7 @@ module FormBuilder
     method : (String | Symbol)? = :post, 
     theme : (String | Symbol)? = nil, 
     errors : Hash(String, Array(String))? = nil, 
-    form_html : (NamedTuple | Hash)? = OptionHash.new
+    form_html : (NamedTuple | OptionHash)? = OptionHash.new
   ) : String
     form(action: action, method: method, theme: theme, errors: errors, form_html: form_html) do; end
   end

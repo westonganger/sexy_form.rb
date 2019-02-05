@@ -64,6 +64,10 @@ describe FormBuilder do
 
       result.should eq(expected)
     end
+
+    it "String keys take precedence over Symbol keys on :form_html argument" do
+      # TODO
+    end
   end
 
   describe ".content" do

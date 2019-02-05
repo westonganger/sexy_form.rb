@@ -67,6 +67,10 @@ describe FormBuilder::Builder do
   end
 
   describe "#field" do
+    it "String keys take precedence over Symbol keys on :*_html arguments" do
+      # TODO
+    end
+
     describe "type: :checkbox" do
       it "works" do
         # TODO
