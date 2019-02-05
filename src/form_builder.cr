@@ -19,6 +19,7 @@ module FormBuilder
     html[:method] = method.to_s == "get" ? "get" : "post"
 
     if html[:multipart]? == true
+      html.delete(:multipart)
       html[:enctype] = "multipart/form-data"
     end
 
@@ -46,7 +47,7 @@ module FormBuilder
     form(action: action, method: method, theme: theme, errors: errors, form_html: form_html) do; end
   end
 
-  protected def self.content(element_name : Symbol, options : OptionHash, &block) : String
+  protected def self.content(element_name : Symbol, options : OptionHash, &block)
     String.build do |str|
       str << "<#{element_name}"
       options.each do |k, v|

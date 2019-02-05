@@ -1,13 +1,13 @@
 module FormBuilder
   class Builder
     FIELD_TYPES = {"checkbox", "file", "hidden", "password", "radio", "select", "text", "textarea"}
-    INPUT_TYPES = Tuple(String).from(FIELD_TYPES.to_a - ["select", "textarea"])
+    INPUT_TYPES = FIELD_TYPES.to_a - ["select", "textarea"]
     
     @theme : FormBuilder::Themes?
 
     def initialize(theme : (String | Symbol)? = nil, @errors : Hash(String, Array(String))? = nil)
       if theme
-        @theme = Themes.from_name(theme).new
+        @theme = Themes.from_name(theme.to_s).new
       end
     end
 
@@ -134,17 +134,19 @@ module FormBuilder
       tag_options = options.reject!(boolean_attributes).map{ |k, v| "#{k}=\"#{v}\"" }
       tag_options = tag_options << boolean_options.keys.join(" ") if !boolean_options.empty?
 
-      "<input type=\"#{type}\" #{tag_options.join(" ")}/>"
+      "<input type=\"#{type}\" #{tag_options.join(" ")}>"
     end
 
     private def select_field(collection : (Array(Array) | Array | Range), selected : Array(String)? = nil, disabled : Array(String)? = nil, options : OptionHash? = OptionHash.new)
-      unless collection.first.is_a?(Array) 
-        collection.map{|x| [x.to_s, x.to_s.capitalize] }
+      if collection.first?.is_a?(Array) 
+        c = collection
+      else
+        c = collection.map{|x| [x.to_s, x.to_s] }
       end
 
       FormBuilder.content(element_name: :select, options: options) do
         String.build do |str|
-          collection.map do |x|
+          c.map do |x|
             str << "<option value=\"#{x[0]}\""
             str << "#{" selected=\"selected\"" if selected && selected.includes?(x[0].to_s)}"
             str << "#{" disabled=\"disabled\"" if disabled && disabled.includes?(x[0].to_s)}"

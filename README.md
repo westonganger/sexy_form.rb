@@ -1,15 +1,15 @@
 # Form Builder.cr
 
-<a href='https://github.com/westonganger/form_builder.cr/releases/latest' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://img.shields.io/github/tag/westonganger/form_builder.cr.svg?maxAge=360&label=version' border='0' alt='Version' /></a>
-<a href='https://travis-ci.org/westonganger/form_builder.cr' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://travis-ci.org/westonganger/form_builder.cr.svg?branch=master' border='0' alt='Build Status' /></a>
-<a href='https://ko-fi.com/A5071NK' target='_blank'><img height='22' style='border:0px;height:22px;' src='https://az743702.vo.msecnd.net/cdn/kofi1.png?v=a' border='0' alt='Buy Me a Coffee' /></a> 
+<a href='https://github.com/westonganger/form_builder.cr/releases/latest' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://img.shields.io/github/tag/westonganger/form_builder.cr.svg?maxAge=360&label=version' border='0' alt='Version'></a>
+<a href='https://travis-ci.org/westonganger/form_builder.cr' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://travis-ci.org/westonganger/form_builder.cr.svg?branch=master' border='0' alt='Build Status'></a>
+<a href='https://ko-fi.com/A5071NK' target='_blank'><img height='22' style='border:0px;height:22px;' src='https://az743702.vo.msecnd.net/cdn/kofi1.png?v=a' border='0' alt='Buy Me a Coffee'></a> 
 
 Dead simple HTML form builder for Crystal with built-in support for many popular UI libraries such as Bootstrap. Works well with your favourite Crystal web framework such as Kemal, Amber, or Lucky.
 
 # TODO
 
 - Ensure `with_indifferent_access` for html attributes
-- Ensure `(OptionHash | Hash | NamedTuple)` usage iscorrect
+- Ensure `(OptionHash | Hash | NamedTuple)` usage is correct
 - Complete FormBuilder::Themes class for each UI Library
 - Complete all missing specs
 
@@ -56,7 +56,7 @@ dependencies:
 ```crystal
 require "form_builder"
 
-== FormBuilder.form(theme: :bootstrap_4, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
+== FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
   == f.field name: "product[name]", label: "Name", type: :text
 
   == f.field name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"} 
@@ -92,7 +92,7 @@ require "form_builder"
 # Using FormBuilder without a Form
 
 ```crystal
-- f = FormBuilder::Builder.new(theme: :bootstrap_4)
+- f = FormBuilder::Builder.new(theme: :bootstrap_4_inline)
 
 == f.field name: "name", type: :text, label: "Name"
 == f.field name: "sku", type: :text, label: "SKU"
@@ -105,7 +105,7 @@ The form builder is capable of handling error messages too. It expects errors in
 ```crystal
 - errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
 
-== FormBuilder.form(theme: :bootstrap_4, errors: errors) do |f|
+== FormBuilder.form(theme: :bootstrap_4_inline, errors: errors) do |f|
   == f.field name: "name", type: :text, label: "Name"
   == f.field name: "sku", type: :text, label: "SKU"
 ```

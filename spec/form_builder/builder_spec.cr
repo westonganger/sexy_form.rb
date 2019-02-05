@@ -33,9 +33,9 @@ describe FormBuilder::Builder do
     end
   end
 
-  describe "#input" do
+  describe "#input_field" do
     it "works" do
-      expected = %(<input type="text" name="my-great-text-input" id="my-great-text-input" foo="bar">)
+      expected = %(<input type="text" foo="bar" name="my-great-text-input">)
 
       opts = OptionHash.new
       opts[:foo] = :bar
@@ -47,13 +47,13 @@ describe FormBuilder::Builder do
 
   describe "#select_field" do
     it "works" do
-      expected = %(<input type="text" name="my-great-text-input" id="my-great-text-input" foo="bar">)
+      expected = %(<select foo="bar" name="my-great-text-input"><option value="foo">foo</option><option value="bar">bar</option></select>)
 
       opts = OptionHash.new
       opts[:foo] = :bar
       opts[:name] = "my-great-text-input"
 
-      collection = [] of String
+      collection = ["foo", "bar"]
 
       builder._select_field(collection: collection, options: opts).should eq(expected)
     end
@@ -74,22 +74,22 @@ describe FormBuilder::Builder do
       end
 
     #   it "creates a check_box with yes/no" do
-    #     expected = "<input type=\"checkbox\" name=\"allowed\" id=\"allowed\" value=\"yes\"/><input type=\"hidden\" name=\"allowed\" id=\"allowed_default\" value=\"no\"/>"
+    #     expected = "<input type=\"checkbox\" name=\"allowed\" id=\"allowed\" value=\"yes\"><input type=\"hidden\" name=\"allowed\" id=\"allowed_default\" value=\"no\">"
     #     check_box(:allowed, checked_value: "yes", unchecked_value: "no").should eq(expected)
     #   end
 
     #   it "creates a check_box with only value" do
-    #     expected = "<input type=\"checkbox\" name=\"allowed\" id=\"allowed\" value=\"1\"/><input type=\"hidden\" name=\"allowed\" id=\"allowed_default\" value=\"0\"/>"
+    #     expected = "<input type=\"checkbox\" name=\"allowed\" id=\"allowed\" value=\"1\"><input type=\"hidden\" name=\"allowed\" id=\"allowed_default\" value=\"0\">"
     #     check_box(:allowed).should eq(expected)
     #   end
 
     #   it "marks box as checked" do
-    #     expected = "<input type=\"checkbox\" name=\"allowed\" id=\"allowed\" value=\"1\" checked=\"checked\"/><input type=\"hidden\" name=\"allowed\" id=\"allowed_default\" value=\"0\"/>"
+    #     expected = "<input type=\"checkbox\" name=\"allowed\" id=\"allowed\" value=\"1\" checked=\"checked\"><input type=\"hidden\" name=\"allowed\" id=\"allowed_default\" value=\"0\">"
     #     check_box(:allowed, checked: true).should eq(expected)
     #   end
 
     #   it "marks box as not checked" do
-    #     expected = "<input type=\"checkbox\" name=\"allowed\" id=\"allowed\" value=\"1\"/><input type=\"hidden\" name=\"allowed\" id=\"allowed_default\" value=\"0\"/>"
+    #     expected = "<input type=\"checkbox\" name=\"allowed\" id=\"allowed\" value=\"1\"><input type=\"hidden\" name=\"allowed\" id=\"allowed_default\" value=\"0\">"
     #     check_box(:allowed, checked: false).should eq(expected)
     #   end
     end
@@ -101,16 +101,16 @@ describe FormBuilder::Builder do
       end
 
     #   it "main param works with string" do
-    #     expected = "<input type=\"file\" name=\"my-great-file-input\" id=\"my-great-file-input\"/>"
+    #     expected = "<input type=\"file\" name=\"my-great-file-input\" id=\"my-great-file-input\">"
     #     file_field("my-great-file-input").should eq(expected)
     #   end
 
     #   it "main param works with symbol" do
-    #     file_field(:name).should eq("<input type=\"file\" name=\"name\" id=\"name\"/>")
+    #     file_field(:name).should eq("<input type=\"file\" name=\"name\" id=\"name\">")
     #   end
 
     #   it "style value works" do
-    #     file_field(:name, style: "color: white;").should eq("<input type=\"file\" name=\"name\" id=\"name\" style=\"color: white;\"/>")
+    #     file_field(:name, style: "color: white;").should eq("<input type=\"file\" name=\"name\" id=\"name\" style=\"color: white;\">")
     #   end
     end
 
@@ -121,7 +121,7 @@ describe FormBuilder::Builder do
       end
 
     #   it "creates a hidden field" do
-    #     hidden_field(:token).should eq("<input type=\"hidden\" name=\"token\" id=\"token\"/>")
+    #     hidden_field(:token).should eq("<input type=\"hidden\" name=\"token\" id=\"token\">")
     #   end
     end
 
@@ -142,7 +142,7 @@ describe FormBuilder::Builder do
     describe "type: :select" do
       it "works" do
         # TODO
-        builder.field(type: :select, name: :foobar)
+        builder.field(type: :select, name: :foobar, collection: ["foo", "bar"])
       end
 
     #   it "creates a select_field with two dimension arrays" do
@@ -212,20 +212,20 @@ describe FormBuilder::Builder do
       end
 
       # it "main param works with string" do
-      #   expected = "<input type=\"text\" name=\"my-great-text-input\" id=\"my-great-text-input\"/>"
+      #   expected = "<input type=\"text\" name=\"my-great-text-input\" id=\"my-great-text-input\">"
       #   text_field("my-great-text-input").should eq(expected)
       # end
 
       # it "main param works with symbol" do
-      #   text_field(:name).should eq("<input type=\"text\" name=\"name\" id=\"name\"/>")
+      #   text_field(:name).should eq("<input type=\"text\" name=\"name\" id=\"name\">")
       # end
 
       # it "input type with symbol works" do
-      #   text_field(:name, type: :password).should eq("<input type=\"password\" name=\"name\" id=\"name\"/>")
+      #   text_field(:name, type: :password).should eq("<input type=\"password\" name=\"name\" id=\"name\">")
       # end
 
       # it "style value works" do
-      #   text_field(:name, style: "color: white;").should eq("<input type=\"text\" name=\"name\" id=\"name\" style=\"color: white;\"/>")
+      #   text_field(:name, style: "color: white;").should eq("<input type=\"text\" name=\"name\" id=\"name\" style=\"color: white;\">")
       # end
     end
 
@@ -271,7 +271,7 @@ describe FormBuilder::Builder do
   #   end
 
   #   it "creates with content" do
-  #     expected = "<label for=\"name\" id=\"name_label\"><input type=\"checkbox\" name=\"allowed\" id=\"allowed\" value=\"1\"/><input type=\"hidden\" name=\"allowed\" id=\"allowed_default\" value=\"0\"/></label>"
+  #     expected = "<label for=\"name\" id=\"name_label\"><input type=\"checkbox\" name=\"allowed\" id=\"allowed\" value=\"1\"><input type=\"hidden\" name=\"allowed\" id=\"allowed_default\" value=\"0\"></label>"
   #     label(:name) do
   #       check_box(:allowed)
   #     end.should eq(expected)
