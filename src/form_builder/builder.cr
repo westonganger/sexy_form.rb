@@ -46,22 +46,22 @@ module FormBuilder
         end
       end
 
-      input_attrs = input_html.reject{|k,v| k.is_a?(Symbol) && input_html.keys.includes?(k.to_s)}
-      label_attrs = label_html.reject{|k,v| k.is_a?(Symbol) && label_html.keys.includes?(k.to_s)}
-      wrapper_attrs = wrapper_html.reject{|k,v| k.is_a?(Symbol) && wrapper_html.keys.includes?(k.to_s)}
+      safe_input_html = FormBuilder.safe_string_hash(input_html.is_a?(NamedTuple) ? input_html.to_h : input_html)
+      safe_label_html = FormBuilder.safe_string_hash(label_html.is_a?(NamedTuple) ? label_html.to_h : label_html)
+      safe_wrapper_html = FormBuilder.safe_string_hash(wrapper_html.is_a?(NamedTuple) ? wrapper_html.to_h : wrapper_html)
 
       if ["checkbox", "radio"].includes?(type.to_s)
         ### Allow passing checked=true/false
 
-        if input_attrs[:checked]? == true
-          input_attrs[:checked] = "checked"
-        elsif input_attrs[:checked]? == false
-          input_attrs.delete(:checked)
+        if safe_input_html["checked"]? == "true"
+          safe_input_html["checked"] = "checked"
+        elsif safe_input_html["checked"]? == "false"
+          safe_input_html.delete("checked")
         end
       end
 
       if INPUT_TYPES.includes?(type.to_s)
-        input_attrs[:value] ||= value
+        safe_input_html["value"] ||= value.to_s
       end
 
       if label != false
@@ -69,7 +69,7 @@ module FormBuilder
 
         if !label_str && !label_str.empty?
           label_proc = -> {
-            FormBuilder.content(element_name: :label, options: label_attrs) do
+            FormBuilder.content(element_name: "label", options: safe_label_html) do
               label_str
             end
           }
@@ -78,25 +78,25 @@ module FormBuilder
 
       css_safe_name = css_safe(name)
 
-      unless input_attrs[:id]?
-        input_attrs[:id] = css_safe_name
+      unless safe_input_html["id"]?
+        safe_input_html["id"] = css_safe_name
       end
 
-      unless input_attrs[:name]?
-        input_attrs[:name] = css_safe_name
+      unless safe_input_html["name"]?
+        safe_input_html["name"] = css_safe_name
       end
 
       case type.to_s
       when "checkbox"
-        field_html = input_field(type: type, options: input_attrs)
+        field_html = input_field(type: type.to_s, options: safe_input_html)
       when "file"
-        field_html = input_field(type: type, options: input_attrs.reject(:type))
+        field_html = input_field(type: type.to_s, options: safe_input_html)
       when "hidden"
-        field_html = input_field(type: type, options: input_attrs)
+        field_html = input_field(type: type.to_s, options: safe_input_html)
       when "password"
-        field_html = input_field(type: type, options: input_attrs.reject(:type))
+        field_html = input_field(type: type.to_s, options: safe_input_html)
       when "radio"
-        field_html = input_field(type: type, options: input_attrs)
+        field_html = input_field(type: type.to_s, options: safe_input_html)
       when "select"
         if collection.nil?
           raise ArgumentError.new("Required argument `:collection` not provided while using `type: :select`")
@@ -105,17 +105,17 @@ module FormBuilder
             raise ArgumentError.new("Cannot provide `:value` and `:selected` arguments together. The `:selected` argument is recommended for field `type: :select.`")
           end
 
-          field_html = select_field(collection: collection, selected: (selected || value), disabled: disabled, options: input_attrs)
+          field_html = select_field(collection: collection, selected: (selected || value), disabled: disabled, options: safe_input_html)
         end
       when "text"
-        field_html = input_field(type: type, options: input_attrs)
+        field_html = input_field(type: type.to_s, options: safe_input_html)
       when "textarea"
-        if input_attrs.has_key?(:size)
-          input_attrs[:cols], input_attrs[:rows] = input_attrs.delete(:size).to_s.split("x")
+        if safe_input_html.has_key?("size")
+          safe_input_html["cols"], safe_input_html["rows"] = safe_input_html.delete("size").to_s.split("x")
         end
 
-        field_html = FormBuilder.content(element_name: type, options: input_attrs) do
-          input_attrs[:value]? ? input_attrs[:value].to_s : value.to_s
+        field_html = FormBuilder.content(element_name: type.to_s, options: safe_input_html) do
+          safe_input_html["value"]? ? safe_input_html["value"].to_s : value.to_s
         end
       end
 
@@ -128,36 +128,36 @@ module FormBuilder
       end
 
       if (theme = @theme)
-        theme.wrap_field(field_type: type.to_s, label_proc: label_proc, field_proc: field_proc, field_errors: field_errors, wrapper_html: wrapper_attrs)
+        theme.wrap_field(field_type: type.to_s, label_proc: label_proc, field_proc: field_proc, field_errors: field_errors, wrapper_html: safe_wrapper_html)
       else
         "#{label_proc.call if label_proc}#{field_proc.call}"
       end
     end
 
-    private def input_field(type : (String | Symbol), options : OptionHash? = OptionHash.new)
+    private def input_field(type : String, options : StringHash? = StringHash.new)
       unless INPUT_TYPES.includes?(type.to_s)
         raise ArgumentError.new("Invalid input :type, valid input types are `#{INPUT_TYPES.join(", ")}`")
       end
 
-      options.delete(:type)
+      options.delete("type")
 
-      boolean_attributes = {:disabled}
+      boolean_attributes = {"disabled"}
 
       boolean_options = options.select(boolean_attributes)
-      tag_options = options.reject!(boolean_attributes).map{ |k, v| "#{k}=\"#{v}\"" }
+      tag_options = options.reject!(boolean_attributes).map{|k, v| "#{k}=\"#{v}\""}
       tag_options = tag_options << boolean_options.keys.join(" ") if !boolean_options.empty?
 
       "<input type=\"#{type}\" #{tag_options.join(" ")}>"
     end
 
-    private def select_field(collection : (Array(Array) | Array | Range), selected : Array(String)? = nil, disabled : Array(String)? = nil, options : OptionHash? = OptionHash.new)
+    private def select_field(collection : (Array(Array) | Array | Range), selected : Array(String)? = nil, disabled : Array(String)? = nil, options : StringHash? = StringHash.new)
       if collection.first?.is_a?(Array) 
         c = collection
       else
         c = collection.map{|x| [x.to_s, x.to_s] }
       end
 
-      FormBuilder.content(element_name: :select, options: options) do
+      FormBuilder.content(element_name: "select", options: options) do
         String.build do |str|
           c.map do |x|
             str << "<option value=\"#{x[0]}\""
@@ -171,7 +171,7 @@ module FormBuilder
 
     private def css_safe(value)
       values = value.to_s.strip.split(' ')
-      values.map{|v| v.gsub(/[^\w-]+/, " ").strip.gsub(/\s+/, "_") }.join(' ')
+      values.map{|v| v.gsub(/[^\w-]+/, " ").strip.gsub(/\s+/, "_")}.join(' ')
     end
 
   end

@@ -7,7 +7,7 @@ module FormBuilder
       end
 
       def field_attributes(field_type : String, name : String? = nil, label_text : String? = nil)
-        attrs = {} of String => String
+        attrs = StringHash.new
         attrs["class"] = "form-label other-class"
         attrs["style"] = ""
         attrs["data-foo"] = "bar"
@@ -15,7 +15,7 @@ module FormBuilder
       end
 
       def label_attributes(field_type : String, name : String? = nil, label_text : String? = nil)
-        attrs = {} of String => String
+        attrs = StringHash.new
         attrs["class"] = "form-label other-class"
         attrs["style"] = ""
         attrs["data-foo"] = "bar"

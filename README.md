@@ -69,7 +69,7 @@ The following field types are supported:
 ## FormBuilder in View Templates (Kilt, Slang, ECR, etc.)
 
 ```crystal
-== FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
+== FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar") do |f|
   .row
     .col-sm-6
       ### -- Field Options
@@ -77,7 +77,7 @@ The following field types are supported:
       ### name : (String | Symbol)?
       ### label : (String | Bool)? = true
 
-      ### -- The `input_html[:value]` option will take precedence over the :value option (except for `type: :textarea/:select`)
+      ### -- The `input_html["value"]` option will take precedence over the :value option (except for `type: :textarea/:select`)
       ### value : (String | Symbol)? 
 
       ### -- For the following Hash options, String keys will take precedence over any Symbol keys
@@ -92,7 +92,7 @@ The following field types are supported:
 
       == f.field name: "product[name]", label: "Name", type: :text
 
-      == f.field name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"} 
+      == f.field name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar", wrapper_html: {style: "margin-top: 10px", label_html: {style: "color: red;"
 
       == f.field name: "product[file]", type: :file
 
@@ -101,7 +101,7 @@ The following field types are supported:
 
       == f.field name: "product[class]", type: :radio, label: false
 
-      == f.field name: "product[secret]", type: :hidden, value: 'foobar'
+      == f.fieldname: "product[secret]", type: :hidden, value: "foobar"
 
   .row
     - collection = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"]]
@@ -113,9 +113,9 @@ The following field types are supported:
 When using the `FormBuilder.form` method in plain Crystal code, the `<<` syntax is required to add the generated field HTML to the form HTML string, `form_html_str`
 
 ```crystal
-form_html_str = FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
-  f << f.field name: "name", type: :text, label: "Name"
-  f << f.field name: "sku", type: :text, label: "SKU"
+form_html_str = FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar") do |f|
+  f << f.field(name: "name", type: :text, label: "Name")
+  f << f.field(name: "sku", type: :text, label: "SKU")
   f << "<strong>Hello World</strong>"
 end
 ```
@@ -124,9 +124,9 @@ OR you can use the lower level `String.build` instead:
 
 ```crystal
 form_html_str = String.build do |str|
-  str << FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
-    str << f.field name: "name", type: :text, label: "Name"
-    str << f.field name: "sku", type: :text, label: "SKU"
+  str << FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar") do |f|
+    str << f.field(name: "name", type: :text, label: "Name")
+    str << f.field(name: "sku", type: :text, label: "SKU")
     str << "<strong>Hello World</strong>"
   end
 end
@@ -146,7 +146,7 @@ end
 The form builder is capable of handling error messages too. It expects errors in the format of `Hash(String, Array(String))`
 
 ```crystal
-- errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
+- errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]
 
 == FormBuilder.form(theme: :bootstrap_4_inline, errors: errors) do |f|
   == f.field name: "name", type: :text, label: "Name"
@@ -169,7 +169,7 @@ module FormBuilder
       end
 
       def field_attributes(field_type : String, name : String? = nil, label_text : String? = nil)
-        attrs = {} of String => String
+        attrs = StringHash.new
         attrs["class"] = "form-label other-class"
         attrs["style"] = "color: blue;"
         attrs["data-foo"] = "bar"
@@ -177,7 +177,7 @@ module FormBuilder
       end
 
       def label_attributes(field_type : String, name : String? = nil, label_text : String? = nil)
-        attrs = {} of String => String
+        attrs = StringHash.new
         attrs["class"] = "form-label other-class"
         attrs["style"] = "color: red;"
         attrs["data-foo"] = "bar"

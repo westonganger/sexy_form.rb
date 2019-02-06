@@ -5,6 +5,7 @@ require "./form_builder/builder"
 
 module FormBuilder
   alias OptionHash = Hash((Symbol | String), (Nil | String | Symbol | Bool | Int8 | Int16 | Int32 | Int64 | Float32 | Float64 | Time | Bytes | Array(String) | Array(Int32) | Array(String | Int32)))
+  alias StringHash = Hash(String, String)
 
   def self.form(
     action : String? = nil,
@@ -14,18 +15,18 @@ module FormBuilder
     form_html : (NamedTuple | OptionHash)? = OptionHash.new, 
     &block
   ) : String
-    form_attrs = (form_html.is_a?(NamedTuple) ? form_html.to_h : form_html).reject{|k,v| k.is_a?(Symbol) && form_html.keys.includes?(k.to_s)}
+    safe_form_html = self.safe_string_hash(form_html.is_a?(NamedTuple) ? form_html.to_h : form_html)
 
-    form_attrs[:method] = method.to_s == "get" ? "get" : "post"
+    safe_form_html["method"] = method.to_s == "get" ? "get" : "post"
 
-    if form_attrs[:multipart]? == true
-      form_attrs.delete(:multipart)
-      form_attrs[:enctype] = "multipart/form-data"
+    if safe_form_html["multipart"]? == "true"
+      safe_form_html.delete("multipart")
+      safe_form_html["enctype"] = "multipart/form-data"
     end
 
     builder = FormBuilder::Builder.new(theme: theme, errors: errors)
 
-    content(element_name: :form, options: form_attrs) do
+    content(element_name: "form", options: safe_form_html) do
       String.build do |str|
         unless ["get", "post"].includes?(method.to_s)
           str << %(<input type="hidden" name="_method" value="#{method}")
@@ -51,7 +52,7 @@ module FormBuilder
     form(action: action, method: method, theme: theme, errors: errors, form_html: form_html) do; end
   end
 
-  protected def self.content(element_name : Symbol, options : OptionHash, &block)
+  protected def self.content(element_name : String, options : StringHash, &block)
     String.build do |str|
       str << "<#{element_name}"
       options.each do |k, v|
@@ -59,6 +60,16 @@ module FormBuilder
         str << %( #{k}="#{v}")
       end
       str << ">#{yield}</#{element_name}>"
+    end
+  end
+
+  protected def self.safe_string_hash(h : Hash)
+    h.each_with_object(StringHash.new) do |(k, v), new_h|
+      if k.is_a?(String)
+        new_h[k] = v.is_a?(String) ? v : v.to_s
+      elsif !new_h.has_key?(k.to_s)
+        new_h[k.to_s] = v.to_s
+      end
     end
   end
 

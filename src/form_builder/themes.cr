@@ -27,9 +27,9 @@ module FormBuilder
       wrapper_html : OptionHash
     ) : String
 
-    abstract def field_attributes(field_type : String, name : String? = nil, label_text : String? = nil) : Hash(String, String)
+    abstract def field_attributes(field_type : String, name : String? = nil, label_text : String? = nil) : StringHash
 
-    abstract def label_attributes(field_type : String, name : String? = nil, label_text : String? = nil) : Hash(String, String)
+    abstract def label_attributes(field_type : String, name : String? = nil, label_text : String? = nil) : StringHash
 
   end
 end

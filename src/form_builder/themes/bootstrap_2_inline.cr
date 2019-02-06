@@ -11,15 +11,23 @@ module FormBuilder
       end
 
       def field_attributes(field_type : String, name : String? = nil, label_text : String? = nil)
-        attrs = {} of String => String
+        attrs = StringHash.new
+
         if label_text
           attrs["placeholder"] = "#{label_text}"
         end
+
         attrs
       end
 
       def label_attributes(field_type : String, name : String? = nil, label_text : String? = nil)
-        {} of String => String
+        attrs = StringHash.new
+
+        if field_type == "checkbox"
+          atrs["class"] = "checkbox"
+        end
+
+        attrs
       end
 
     end

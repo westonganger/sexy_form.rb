@@ -2,7 +2,7 @@ require "../../spec_helper"
 
 ### For Testing Private/Protected Methods
 module FormBuilder
-  def self._content(element_name : Symbol, options : OptionHash, &block)
+  def self._content(element_name : String, options : StringHash = StringHash.new, &block)
     content(element_name: element_name, options: options) do
       yield
     end
@@ -49,7 +49,7 @@ describe FormBuilder do
     end
 
     it "allows for nested input fields" do
-      result = FormBuilder.form(form_html: {:id => "myForm"}) do |f|
+      result = FormBuilder.form(form_html: {"id" => "myForm"}) do |f|
         f << f.field name: :name, type: :text
       end
 
@@ -73,7 +73,7 @@ describe FormBuilder do
 
   describe ".content" do
     it "accepts a block as input" do
-      result = FormBuilder._content(element_name: :div, options: {:id => "foo"}) do
+      result = FormBuilder._content(element_name: "div", options: {"id" => "foo"}) do
         String.build do |str|
           str << "Hello"
         end
@@ -83,8 +83,8 @@ describe FormBuilder do
     end
 
     it "allows nested blocks" do
-      result = FormBuilder._content(element_name: :div, options: {:id => "foo"}) do
-        FormBuilder._content(element_name: :span, options: {:id => "bar"}) do
+      result = FormBuilder._content(element_name: "div", options: {"id" => "foo"}) do
+        FormBuilder._content(element_name: "span", options: {"id" => "bar"}) do
           "Hello"
         end
       end

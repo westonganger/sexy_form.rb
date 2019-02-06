@@ -4,11 +4,11 @@ builder = FormBuilder::Builder.new(theme: :bootstrap_4_inline)
 
 ### For Testing Private/Protected Methods
 class FormBuilder::Builder
-  def _input_field(type : (String | Symbol), options : OptionHash? = OptionHash.new)
+  def _input_field(type : String, options : StringHash? = StringHash.new)
     input_field(type: type, options: options)
   end
 
-  def _select_field(collection : (Array(Array) | Array | Range), selected : Array(String)? = [] of String, disabled : Array(String)? = [] of String, options : OptionHash? = OptionHash.new)
+  def _select_field(collection : (Array(Array) | Array | Range), selected : Array(String)? = [] of String, disabled : Array(String)? = [] of String, options : StringHash? = StringHash.new)
     select_field(collection: collection, selected: selected, disabled: disabled, options: options)
   end
 
@@ -29,7 +29,7 @@ describe FormBuilder::Builder do
     end
 
     it "shouldn't put more than underscores in a row or have ending or leading underscores" do
-      builder._css_safe(" david[bowie!]{rules}").should eq("david_bowie_rules")
+      builder._css_safe(" david[bowie!]{rules").should eq("david_bowie_rules")
     end
   end
 
@@ -37,11 +37,11 @@ describe FormBuilder::Builder do
     it "works" do
       expected = %(<input type="text" foo="bar" name="my-great-text-input">)
 
-      opts = OptionHash.new
-      opts[:foo] = :bar
-      opts[:name] = "my-great-text-input"
+      opts = StringHash.new
+      opts["foo"] = "bar"
+      opts["name"] = "my-great-text-input"
 
-      builder._input_field(type: :text, options: opts).should eq(expected)
+      builder._input_field(type: "text", options: opts).should eq(expected)
     end
   end
 
@@ -49,9 +49,9 @@ describe FormBuilder::Builder do
     it "works" do
       expected = %(<select foo="bar" name="my-great-text-input"><option value="foo">foo</option><option value="bar">bar</option></select>)
 
-      opts = OptionHash.new
-      opts[:foo] = :bar
-      opts[:name] = "my-great-text-input"
+      opts = StringHash.new
+      opts["foo"] = "bar"
+      opts["name"] = "my-great-text-input"
 
       collection = ["foo", "bar"]
 
@@ -74,7 +74,7 @@ describe FormBuilder::Builder do
     describe "type: :checkbox" do
       it "works" do
         # TODO
-        builder.field(type: :checkbox, name: :foobar)
+        builder.field(type: "checkbox", name: :foobar)
       end
 
     #   it "creates a check_box with yes/no" do
@@ -101,7 +101,7 @@ describe FormBuilder::Builder do
     describe "type: :file" do
       it "works" do
         # TODO
-        builder.field(type: :file, name: :foobar)
+        builder.field(type: "file", name: :foobar)
       end
 
     #   it "main param works with string" do
@@ -121,7 +121,7 @@ describe FormBuilder::Builder do
     describe "type: :hidden" do
       it "works" do
         # TODO
-        builder.field(type: :hidden, name: :foobar)
+        builder.field(type: "hidden", name: :foobar)
       end
 
     #   it "creates a hidden field" do
@@ -132,21 +132,21 @@ describe FormBuilder::Builder do
     describe "type: :password" do
       it "works" do
         # TODO
-        builder.field(type: :password, name: :foobar)
+        builder.field(type: "password", name: :foobar)
       end
     end
 
     describe "type: :radio" do
       it "works" do
         # TODO
-        builder.field(type: :radio, name: :foobar)
+        builder.field(type: "radio", name: :foobar)
       end
     end
 
     describe "type: :select" do
       it "works" do
         # TODO
-        builder.field(type: :select, name: :foobar, collection: ["foo", "bar"])
+        builder.field(type: "select", name: :foobar, collection: ["foo", "bar"])
       end
 
     #   it "creates a select_field with two dimension arrays" do
@@ -154,50 +154,50 @@ describe FormBuilder::Builder do
     #   end
 
     #   it "creates a select_field with array of hashes" do
-    #     select_field(:age, [{:"1" => "A"}, {:"2" => "B"}]).should eq("<select class=\"age\" id=\"age\" name=\"age\"><option value=\"1\">A</option><option value=\"2\">B</option></select>")
+    #     select_field(:age, [{:"1" => "A", {:"2" => "B"]).should eq("<select class=\"age\" id=\"age\" name=\"age\"><option value=\"1\">A</option><option value=\"2\">B</option></select>")
     #   end
 
     #   it "creates a select_field with a hash" do
-    #     select_field(:age, {:"1" => "A", :"2" => "B"}).should eq("<select class=\"age\" id=\"age\" name=\"age\"><option value=\"1\">A</option><option value=\"2\">B</option></select>")
+    #     select_field(:age, {:"1" => "A", :"2" => "B").should eq("<select class=\"age\" id=\"age\" name=\"age\"><option value=\"1\">A</option><option value=\"2\">B</option></select>")
     #   end
 
     #   it "creates a select_field with a hash and id" do
     #     expected = "<select id=\"age_of_thing\" name=\"age\"><option value=\"1\">A</option><option value=\"2\">B</option></select>"
-    #     select_field(:age, {:"1" => "A", :"2" => "B"}, id: "age_of_thing").should eq(expected)
+    #     select_field(:age, {:"1" => "A", :"2" => "B", id: "age_of_thing").should eq(expected)
     #   end
 
     #   it "creates a select_field with a named tuple" do
-    #     select_field(:age, {"1": "A", "2": "B"}).should eq("<select class=\"age\" id=\"age\" name=\"age\"><option value=\"1\">A</option><option value=\"2\">B</option></select>")
+    #     select_field(:age, {"1": "A", "2": "B").should eq("<select class=\"age\" id=\"age\" name=\"age\"><option value=\"1\">A</option><option value=\"2\">B</option></select>")
     #   end
 
     #   it "creates a select_field with a namedtuple and id" do
     #     expected = "<select id=\"age_of_thing\" name=\"age\"><option value=\"1\">A</option><option value=\"2\">B</option></select>"
-    #     select_field(:age, {"1": "A", "2": "B"}, id: "age_of_thing").should eq(expected)
+    #     select_field(:age, {"1": "A", "2": "B", id: "age_of_thing").should eq(expected)
     #   end
 
     #   it "creates a select_field with B selected (String scalar)" do
     #     expected = "<select name=\"age\"><option value=\"1\">A</option><option value=\"2\" selected=\"selected\">B</option></select>"
-    #     select_field(:age, {"1": "A", "2": "B"}, selected: "2").should eq(expected)
+    #     select_field(:age, {"1": "A", "2": "B", selected: "2").should eq(expected)
     #   end
 
     #   it "creates a select_field with B selected (Int32 scalar)" do
     #     expected = "<select name=\"age\"><option value=\"1\">A</option><option value=\"2\" selected=\"selected\">B</option></select>"
-    #     select_field(:age, {"1": "A", "2": "B"}, selected: 2).should eq(expected)
+    #     select_field(:age, {"1": "A", "2": "B", selected: 2).should eq(expected)
     #   end
 
     #   it "creates a select_field with B and C selected (String array)" do
     #     expected = "<select name=\"age\"><option value=\"1\">A</option><option value=\"2\" selected=\"selected\">B</option><option value=\"3\" selected=\"selected\">C</option></select>"
-    #     select_field(:age, {"1": "A", "2": "B", "3": "C"}, selected: ["2", "3"]).should eq(expected)
+    #     select_field(:age, {"1": "A", "2": "B", "3": "C", selected: ["2", "3"]).should eq(expected)
     #   end
 
     #   it "creates a select_field with B and C selected (Int32 array)" do
     #     expected = "<select name=\"age\"><option value=\"1\">A</option><option value=\"2\" selected=\"selected\">B</option><option value=\"3\" selected=\"selected\">C</option></select>"
-    #     select_field(:age, {"1": "A", "2": "B", "3": "C"}, selected: [2, 3]).should eq(expected)
+    #     select_field(:age, {"1": "A", "2": "B", "3": "C", selected: [2, 3]).should eq(expected)
     #   end
 
     #   it "creates a select_field with B and C selected (Int32 | String array)" do
     #     expected = "<select name=\"age\"><option value=\"1\">A</option><option value=\"2\" selected=\"selected\">B</option><option value=\"3\" selected=\"selected\">C</option></select>"
-    #     select_field(:age, {"1": "A", "2": "B", "3": "C"}, selected: [2, "3"]).should eq(expected)
+    #     select_field(:age, {"1": "A", "2": "B", "3": "C", selected: [2, "3"]).should eq(expected)
     #   end
 
     #   it "creates a select_field with single dimension array" do
@@ -212,7 +212,7 @@ describe FormBuilder::Builder do
     describe "type: :text" do
       it "allows type: :text" do
         # TODO
-        builder.field(type: :text, name: :foobar)
+        builder.field(type: "text", name: :foobar)
       end
 
       # it "main param works with string" do
@@ -225,7 +225,7 @@ describe FormBuilder::Builder do
       # end
 
       # it "input type with symbol works" do
-      #   text_field(:name, type: :password).should eq("<input type=\"password\" name=\"name\" id=\"name\">")
+      #   text_field(:name, type: "password).should eq("<input type=\"password\" name=\"name\" id=\"name\">")
       # end
 
       # it "style value works" do
@@ -237,7 +237,7 @@ describe FormBuilder::Builder do
     describe "type: :textarea" do
       it "works" do
         # TODO
-        builder.field(type: :textarea, name: :foobar)
+        builder.field(type: "textarea", name: :foobar)
       end
 
     #   it "creates a text_area" do
@@ -255,7 +255,7 @@ describe FormBuilder::Builder do
 
     it "does not allow :submit" do
       expect_raises(ArgumentError) do
-        builder.field(type: :submit, name: :foobar)
+        builder.field(type: "submit", name: :foobar)
       end
       # TODO
     end
