@@ -20,16 +20,18 @@ module FormBuilder
     end
 
     abstract def wrap_field(
-      field_type : String, 
-      label_proc : Proc(String)?, 
-      field_proc : Proc(String), 
-      field_errors : Array(String)?, 
-      wrapper_html : OptionHash
+      field_type : String,
+      html_label : String?,
+      html_field : String,
+      field_errors : Array(String)?,
+      wrapper_html_attributes : StringHash
     ) : String
 
-    abstract def field_attributes(field_type : String, name : String? = nil, label_text : String? = nil) : StringHash
+    abstract def input_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil) : StringHash
 
-    abstract def label_attributes(field_type : String, name : String? = nil, label_text : String? = nil) : StringHash
+    abstract def label_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil) : StringHash
+
+    abstract def form_html_attributes(html_attrs : StringHash)  : StringHash
 
   end
 end

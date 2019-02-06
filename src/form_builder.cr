@@ -10,23 +10,23 @@ module FormBuilder
   def self.form(
     action : String? = nil,
     method : (String | Symbol)? = :post,
-    theme : (String | Symbol)? = nil, 
-    errors : Hash(String, Array(String))? = nil, 
-    form_html : (NamedTuple | OptionHash)? = OptionHash.new, 
+    theme : (String | Symbol)? = nil,
+    errors : Hash(String, Array(String))? = nil,
+    form_html : (NamedTuple | OptionHash)? = OptionHash.new,
     &block
   ) : String
-    safe_form_html = self.safe_string_hash(form_html.is_a?(NamedTuple) ? form_html.to_h : form_html)
-
-    safe_form_html["method"] = method.to_s == "get" ? "get" : "post"
-
-    if safe_form_html["multipart"]? == "true"
-      safe_form_html.delete("multipart")
-      safe_form_html["enctype"] = "multipart/form-data"
-    end
-
     builder = FormBuilder::Builder.new(theme: theme, errors: errors)
 
-    content(element_name: "form", options: safe_form_html) do
+    themed_form_html = builder.theme.form_html_attributes(html_attrs: self.safe_string_hash(form_html.is_a?(NamedTuple) ? form_html.to_h : form_html))
+
+    themed_form_html["method"] = method.to_s == "get" ? "get" : "post"
+
+    if themed_form_html["multipart"]? == "true"
+      themed_form_html.delete("multipart")
+      themed_form_html["enctype"] = "multipart/form-data"
+    end
+
+    content(element_name: "form", options: themed_form_html) do
       String.build do |str|
         unless ["get", "post"].includes?(method.to_s)
           str << %(<input type="hidden" name="_method" value="#{method}")
@@ -43,10 +43,10 @@ module FormBuilder
 
   ### Overload for optional &block
   def self.form(
-    action : String? = nil, 
-    method : (String | Symbol)? = :post, 
-    theme : (String | Symbol)? = nil, 
-    errors : Hash(String, Array(String))? = nil, 
+    action : String? = nil,
+    method : (String | Symbol)? = :post,
+    theme : (String | Symbol)? = nil,
+    errors : Hash(String, Array(String))? = nil,
     form_html : (NamedTuple | OptionHash)? = OptionHash.new
   ) : String
     form(action: action, method: method, theme: theme, errors: errors, form_html: form_html) do; end

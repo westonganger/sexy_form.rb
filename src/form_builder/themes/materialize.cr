@@ -2,24 +2,23 @@ module FormBuilder
   class Themes
     class Materialize < Themes
 
-      def wrap_field(field_type : String, label_proc : Proc(String)?, field_proc : Proc(String), field_errors : Array(String)?, wrapper_html : OptionHash)
+      def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
         "Foo to the Bar"
       end
 
-      def field_attributes(field_type : String, name : String? = nil, label_text : String? = nil)
-        attrs = StringHash.new
-        attrs["class"] = "form-label other-class"
-        attrs["style"] = ""
-        attrs["data-foo"] = "bar"
-        attrs
+      def input_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
+        html_attrs["class"] = "form-control"
+        html_attrs
       end
 
-      def label_attributes(field_type : String, name : String? = nil, label_text : String? = nil)
-        attrs = StringHash.new
-        attrs["class"] = "form-label other-class"
-        attrs["style"] = ""
-        attrs["data-foo"] = "bar"
-        attrs
+      def label_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
+        html_attrs["class"] = "control"
+        html_attrs
+      end
+
+      def form_html_attributes(html_attrs : StringHash)
+        html_attrs["class"] = "form-horizontal"
+        html_attrs
       end
 
     end
