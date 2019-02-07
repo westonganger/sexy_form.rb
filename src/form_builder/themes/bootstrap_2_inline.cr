@@ -10,39 +10,34 @@ module FormBuilder
         String.build do |s|
           if {"checkbox", "radio"}.includes?(field_type)
             if html_label && (i = html_label.index(">"))
-              s << "#{html_label.insert(i, html_field)}"
+              s << "#{html_label.insert(i+1, "#{html_field} ")}"
             else
               s << html_field
             end
           else
-            s << html_label
             s << html_field
           end
         end
       end
 
       def input_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
-        attrs = StringHash.new
-
         if {"password", "text", "textarea"}.includes?(field_type) && label_text
-          attrs["placeholder"] = "#{label_text}"
+          html_attrs["placeholder"] = "#{label_text}"
         end
 
-        attrs
+        html_attrs
       end
 
       def label_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
-        attrs = StringHash.new
-
         if field_type == "checkbox"
-          attrs["class"] = "checkbox"
+          html_attrs["class"] = "checkbox"
         end
 
-        attrs
+        html_attrs
       end
 
       def form_html_attributes(html_attrs : StringHash)
-        html_attrs["class"] = "form-horizontal"
+        html_attrs["class"] = "form-inline"
         html_attrs
       end
 

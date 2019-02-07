@@ -76,8 +76,8 @@ module FormBuilder
         end
       end
 
-      if INPUT_TYPES.includes?(type_str)
-        themed_input_html["value"] ||= value.to_s
+      if !themed_input_html["value"]? && !value.to_s.empty? && INPUT_TYPES.includes?(type_str)
+        themed_input_html["value"] = value.to_s
       end
 
       if name
@@ -121,7 +121,7 @@ module FormBuilder
         end
 
         html_field = FormBuilder.content(element_name: type_str, options: themed_input_html) do
-          themed_input_html["value"]? ? themed_input_html["value"].to_s : value.to_s
+          themed_input_html["value"]?
         end
       end
 
@@ -151,7 +151,7 @@ module FormBuilder
       tag_options = options.reject!(boolean_attributes).map{|k, v| "#{k}=\"#{v}\""}
       tag_options = tag_options << boolean_options.keys.join(" ") if !boolean_options.empty?
 
-      "<input type=\"#{type}\" #{tag_options.join(" ")}>"
+      "<input type=\"#{type}\"#{" " unless tag_options.empty?}#{tag_options.join(" ")}>"
     end
 
     private def select_field(collection : (Array(Array) | Array | Range), selected : Array(String)? = nil, disabled : Array(String)? = nil, options : StringHash? = StringHash.new)

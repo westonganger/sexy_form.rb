@@ -19,7 +19,7 @@ describe FormBuilder do
     it "allows no block" do
       result = FormBuilder.form(action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo": "bar"})
 
-      expected = "<form style=\"margin-top: 20px;\" data-foo=\"bar\" method=\"post\"></form>"
+      expected = "<form style=\"margin-top: 20px;\" data-foo=\"bar\" class=\"form-horizontal\" method=\"post\"></form>"
 
       result.should eq(expected)
     end
@@ -29,7 +29,7 @@ describe FormBuilder do
 
       end
 
-      expected = "<form style=\"margin-top: 20px;\" data-foo=\"bar\" method=\"post\"></form>"
+      expected = "<form style=\"margin-top: 20px;\" data-foo=\"bar\" class=\"form-horizontal\" method=\"post\"></form>"
 
       result.should eq(expected)
     end
@@ -43,7 +43,7 @@ describe FormBuilder do
         f << f.field name: "sku", type: :text
       end
 
-      expected = "<form method=\"post\">Foo to the Bar~~~Foo to the Bar</form>"
+      expected = "<form class=\"form-horizontal\" method=\"post\">Foo to the Bar~~~Foo to the Bar</form>"
 
       result.should eq(expected)
     end
@@ -53,7 +53,7 @@ describe FormBuilder do
         f << f.field name: :name, type: :text
       end
 
-      expected = "<form id=\"myForm\" method=\"post\"><input type=\"text\" value=\"\" id=\"name\" name=\"name\"></form>"
+      expected = "<form id=\"myForm\" class=\"form-horizontal\" method=\"post\"><label class=\"control\"></label><input type=\"text\" class=\"form-control\" id=\"name\" name=\"name\"></form>"
 
       result.should eq(expected)
     end
@@ -61,7 +61,7 @@ describe FormBuilder do
     it "sets up form for multipart" do
       result = FormBuilder.form(action: "/test/1", form_html: {id: "myForm", multipart: true})
 
-      expected = "<form id=\"myForm\" method=\"post\" enctype=\"multipart/form-data\"></form>"
+      expected = "<form id=\"myForm\" class=\"form-horizontal\" method=\"post\" enctype=\"multipart/form-data\"></form>"
 
       result.should eq(expected)
     end

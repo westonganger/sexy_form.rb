@@ -110,7 +110,7 @@ The following field types are supported:
 
 ## FormBuilder in Plain Crystal Code
 
-When using the `FormBuilder.form` method in plain Crystal code, the `<<` syntax is required to add the generated field HTML to the form HTML string, `form_html_str`
+When using the `FormBuilder.form` method in plain Crystal code, the `<<` syntax is required to add the generated field HTML to the form HTML string
 
 ```crystal
 form_html_str = FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|

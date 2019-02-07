@@ -65,10 +65,12 @@ module FormBuilder
 
   protected def self.safe_string_hash(h : Hash)
     h.each_with_object(StringHash.new) do |(k, v), new_h|
-      if k.is_a?(String)
-        new_h[k] = v.is_a?(String) ? v : v.to_s
-      elsif !new_h.has_key?(k.to_s)
-        new_h[k.to_s] = v.to_s
+      unless new_h.has_key?(k.to_s)
+        if k.is_a?(String)
+          new_h[k] = v.to_s
+        elsif !h.has_key?(k.to_s)
+          new_h[k.to_s] = v.to_s
+        end
       end
     end
   end
