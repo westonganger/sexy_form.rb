@@ -2,5 +2,4 @@ language: crystal
 
 script:
   - bin/ameba
-  - crystal tool format --check
   - crystal spec
