@@ -10,7 +10,7 @@ module FormBuilder
   def self.form(
     action : String? = nil,
     method : (String | Symbol)? = :post,
-    theme : (String | Symbol)? = nil,
+    theme : (String | Symbol | FormBuilder::Themes)? = nil,
     errors : Hash(String, Array(String))? = nil,
     form_html : (NamedTuple | OptionHash)? = OptionHash.new,
     &block

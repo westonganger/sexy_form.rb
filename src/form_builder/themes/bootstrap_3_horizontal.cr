@@ -6,19 +6,30 @@ module FormBuilder
         "bootstrap_3_horizontal"
       end
 
+      def initialize(@column_classes : Array(String) = ["col-sm-3", "col-sm-9"])
+        @column_classes = @column_classes.first(2)
+        @offset_class = (i = @column_classes[0].index(/-\d/)) ? @column_classes[0].insert(i+1, "offset-") : ""
+      end
+
       def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
           s << %(<div class="form-group">)
 
           if {"checkbox", "radio"}.includes?(field_type)
-            if html_label && (i = html_label.index(">"))
-              s << "#{html_label.insert(i+1, "#{html_field} ")}"
+            s << %(<div class="#{@offset_class} #{@column_classes[1]}">)
+            s << %(<div class="#{field_type}">)
+
+            if html_label && (i = html_label.index("\">"))
+              s << "#{html_label.insert(i+2, "#{html_field} ")}"
             else
               s << html_field
             end
+
+            s << "</div>"
+            s << "</div>"
           else
             s << html_label
-            s << html_field
+            s << %(<div class="#{"#{@offset_class} " unless html_label}#{@column_classes[1]}">#{html_field}</div>)
           end
 
           s << "</div>"
@@ -34,6 +45,10 @@ module FormBuilder
       end
 
       def label_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
+        unless {"checkbox", "radio"}.includes?(field_type)
+          html_attrs["class"] = "#{html_attrs["class"]?} #{@column_classes[0]} control-label".strip
+        end
+
         html_attrs
       end
 

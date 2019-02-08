@@ -27,7 +27,7 @@ Out of the box Form Builder can generate HTML markup for the following UI librar
   * `theme: :bootstrap_4_vertical`
 - Bootstrap 3 - Available form types:
   * `theme: :bootstrap_3_inline`
-  * `theme: :bootstrap_3_horizontal`
+  * `theme: :bootstrap_3_horizontal` or `theme: FormBuilder::Themes::Bootstrap3Horizontal.new(column_classes: ["col-sm-3","col-sm-9"])`
   * `theme: :bootstrap_3_vertical`
 - Bootstrap 2 - Available form types:
   * `theme: :bootstrap_2_inline`

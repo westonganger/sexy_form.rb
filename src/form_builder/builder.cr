@@ -6,9 +6,13 @@ module FormBuilder
     @theme : FormBuilder::Themes
     @html : Array(String) = [] of String
 
-    def initialize(theme : (String | Symbol)? = nil, @errors : Hash(String, Array(String))? = nil)
+    def initialize(theme : (String | Symbol | FormBuilder::Themes)? = nil, @errors : Hash(String, Array(String))? = nil)
       if theme
-        @theme = Themes.from_name(theme.to_s).new
+        if theme.is_a?(FormBuilder::Themes)
+          @theme = theme
+        else
+          @theme = Themes.from_name(theme.to_s).new
+        end
       else
         @theme = FormBuilder::Themes::Default.new
       end
