@@ -19,7 +19,7 @@ describe theme_klass do
   end
 
   describe "FormBuilder.form" do
-    it "matches bootstrap 2 docs example with labels" do
+    it "matches docs example with labels" do
       expected = String.build do |str|
         str << %(<form class="form-inline" method="post">)
           str << %(<label for="email">Email</label>)
@@ -35,7 +35,7 @@ describe theme_klass do
         str <<%(</form>)
       end
 
-      actual = FormBuilder.form(theme: :bootstrap_2_inline) do |f|
+      actual = FormBuilder.form(theme: theme_klass.theme_name) do |f|
         f << f.field(type: :text, name: :email, input_html: {class: "input-small", placeholder: "Email"})
         f << f.field(type: :password, name: :password, input_html: {class: "input-small", placeholder: "Password"})
         f << f.field(type: :checkbox, name: :remember_me)

@@ -9,6 +9,7 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 # TODO
 
 - Complete FormBuilder::Themes class for each UI Library
+- Implement Wrapper HTML attributes for each theme
 - Implement HTML for Field Errors in each Theme
 - Complete all missing specs
 
@@ -22,20 +23,24 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 
 Out of the box Form Builder can generate HTML markup for the following UI libraries:
 
-- Bootstrap 4 - Available form types:
-  * `theme: :bootstrap_4_inline`
-  * `theme: :bootstrap_4_horizontal`
+- Bootstrap 4 
   * `theme: :bootstrap_4_vertical`
-- Bootstrap 3 - Available form types:
+  * `theme: :bootstrap_4_inline`
+  * `theme: :bootstrap_4_horizontal` or `theme: FormBuilder::Themes::Bootstrap4Horizontal.new(column_classes: ["col-sm-3","col-sm-9"])`
+- Bootstrap 3
+  * `theme: :bootstrap_3_vertical`
   * `theme: :bootstrap_3_inline`
   * `theme: :bootstrap_3_horizontal` or `theme: FormBuilder::Themes::Bootstrap3Horizontal.new(column_classes: ["col-sm-3","col-sm-9"])`
-  * `theme: :bootstrap_3_vertical`
-- Bootstrap 2 - Available form types:
+- Bootstrap 2
+  * `theme: :bootstrap_2_vertical`
   * `theme: :bootstrap_2_inline`
   * `theme: :bootstrap_2_horizontal`
-  * `theme: :bootstrap_2_vertical`
-- Bulma - `theme: :bulma`
-- Foundation - `theme: :foundation`
+- Bulma
+  * `theme: :bulma_vertical`
+  * `theme: :bulma_horizontal`
+- Foundation
+  * `theme: :foundation_vertical`
+  * `theme: :foundation_horizontal`
 - Materialize - `theme: :materialize`
 - Milligram - `theme: :milligram`
 - Semantic UI - `theme: :semantic_ui`
@@ -73,7 +78,7 @@ The following field types are supported:
 ## FormBuilder in View Templates (Kilt, Slang, ECR, etc.)
 
 ```crystal
-== FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
+== FormBuilder.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
   .row
     .col-sm-6
       ### -- Field Options
@@ -117,7 +122,7 @@ The following field types are supported:
 When using the `FormBuilder.form` method in plain Crystal code, the `<<` syntax is required to add the generated field HTML to the form HTML string
 
 ```crystal
-form_html_str = FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
+form_html_str = FormBuilder.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
   f << f.field(name: "name", type: :text, label: "Name")
   f << f.field(name: "sku", type: :text, label: "SKU")
   f << "<strong>Hello World</strong>"
@@ -128,7 +133,7 @@ OR you can use the lower level `String.build` instead:
 
 ```crystal
 form_html_str = String.build do |str|
-  str << FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
+  str << FormBuilder.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
     str << f.field(name: "name", type: :text, label: "Name")
     str << f.field(name: "sku", type: :text, label: "SKU")
     str << "<strong>Hello World</strong>"
@@ -139,7 +144,7 @@ end
 ## FormBuilder without a Form
 
 ```crystal
-- f = FormBuilder::Builder.new(theme: :bootstrap_4_inline)
+- f = FormBuilder::Builder.new(theme: :bootstrap_4_vertical)
 
 == f.field name: "name", type: :text, label: "Name"
 == f.field name: "sku", type: :text, label: "SKU"
@@ -152,7 +157,7 @@ The form builder is capable of handling error messages too. It expects errors in
 ```crystal
 - errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
 
-== FormBuilder.form(theme: :bootstrap_4_inline, errors: errors) do |f|
+== FormBuilder.form(theme: :bootstrap_4_vertical, errors: errors) do |f|
   == f.field name: "name", type: :text, label: "Name"
   == f.field name: "sku", type: :text, label: "SKU"
 ```
@@ -179,14 +184,14 @@ module FormBuilder
         end
       end
 
-      def input_html_attributes(html_attrs : Hash(String, String), field_type : String, name : String? = nil, label_text : String? = nil)
+      def input_html_attributes(html_attrs : Hash(String, String), field_type : String)
         html_attrs["class"] = "form-label other-class"
         html_attrs["style"] = "color: blue;"
         html_attrs["data-foo"] = "bar"
         html_attrs
       end
 
-      def label_html_attributes(html_attrs : Hash(String, String), field_type : String, name : String? = nil, label_text : String? = nil)
+      def label_html_attributes(html_attrs : Hash(String, String), field_type : String)
         html_attrs["class"] = "form-label other-class"
         html_attrs["style"] = "color: red;"
         html_attrs["data-foo"] = "bar"

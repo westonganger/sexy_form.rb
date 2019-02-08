@@ -27,9 +27,9 @@ module FormBuilder
       wrapper_html_attributes : StringHash
     ) : String
 
-    abstract def input_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil) : StringHash
+    abstract def input_html_attributes(html_attrs : StringHash, field_type : String) : StringHash
 
-    abstract def label_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil) : StringHash
+    abstract def label_html_attributes(html_attrs : StringHash, field_type : String) : StringHash
 
     abstract def form_html_attributes(html_attrs : StringHash)  : StringHash
 

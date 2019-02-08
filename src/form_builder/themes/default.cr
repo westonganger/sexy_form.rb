@@ -9,18 +9,15 @@ module FormBuilder
         end
       end
 
-      def input_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
-        html_attrs["class"] = "form-control"
+      def input_html_attributes(html_attrs : StringHash, field_type : String)
         html_attrs
       end
 
-      def label_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
-        html_attrs["class"] = "control"
+      def label_html_attributes(html_attrs : StringHash, field_type : String)
         html_attrs
       end
 
       def form_html_attributes(html_attrs : StringHash)
-        html_attrs["class"] = "form-horizontal"
         html_attrs
       end
 

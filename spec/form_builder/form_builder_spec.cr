@@ -19,17 +19,17 @@ describe FormBuilder do
     it "allows no block" do
       result = FormBuilder.form(action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo": "bar"})
 
-      expected = "<form style=\"margin-top: 20px;\" data-foo=\"bar\" class=\"form-horizontal\" method=\"post\"></form>"
+      expected = "<form style=\"margin-top: 20px;\" data-foo=\"bar\" method=\"post\"></form>"
 
       result.should eq(expected)
     end
 
     it "allows basic usage" do
-      result = FormBuilder.form(theme: :bootstrap_4_horizontal, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo": "bar"}) do
+      result = FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo": "bar"}) do
 
       end
 
-      expected = "<form style=\"margin-top: 20px;\" data-foo=\"bar\" class=\"form-horizontal\" method=\"post\"></form>"
+      expected = "<form style=\"margin-top: 20px;\" data-foo=\"bar\" class=\"form-inline\" method=\"post\"></form>"
 
       result.should eq(expected)
     end
@@ -37,13 +37,13 @@ describe FormBuilder do
     it "work with errors" do
       errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
 
-      result = FormBuilder.form(theme: :bootstrap_4_horizontal, errors: errors) do |f|
+      result = FormBuilder.form(errors: errors) do |f|
         f << f.field name: "name", type: :text
         f << "~~~"
         f << f.field name: "sku", type: :text
       end
 
-      expected = "<form class=\"form-horizontal\" method=\"post\">Foo to the Bar~~~Foo to the Bar</form>"
+      expected = "<form method=\"post\"><label for=\"name\">Name</label><input type=\"text\" id=\"name\" name=\"name\">~~~<label for=\"sku\">Sku</label><input type=\"text\" id=\"sku\" name=\"sku\"></form>"
 
       result.should eq(expected)
     end
@@ -53,7 +53,7 @@ describe FormBuilder do
         f << f.field name: :name, type: :text
       end
 
-      expected = "<form id=\"myForm\" class=\"form-horizontal\" method=\"post\"><label class=\"control\" for=\"name\">Name</label><input type=\"text\" class=\"form-control\" id=\"name\" name=\"name\"></form>"
+      expected = "<form id=\"myForm\" method=\"post\"><label for=\"name\">Name</label><input type=\"text\" id=\"name\" name=\"name\"></form>"
 
       result.should eq(expected)
     end
@@ -61,7 +61,7 @@ describe FormBuilder do
     it "sets up form for multipart" do
       result = FormBuilder.form(action: "/test/1", form_html: {id: "myForm", multipart: true})
 
-      expected = "<form id=\"myForm\" class=\"form-horizontal\" method=\"post\" enctype=\"multipart/form-data\"></form>"
+      expected = "<form id=\"myForm\" method=\"post\" enctype=\"multipart/form-data\"></form>"
 
       result.should eq(expected)
     end

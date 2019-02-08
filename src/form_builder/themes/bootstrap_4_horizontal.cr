@@ -6,22 +6,56 @@ module FormBuilder
         "bootstrap_4_horizontal"
       end
 
-      def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
-        "Foo to the Bar"
+      def initialize(@column_classes : Array(String) = ["col-sm-3", "col-sm-9"])
+        @column_classes = @column_classes.first(2)
+        @offset_class = (i = @column_classes[0].index(/-\d/)) ? @column_classes[0].insert(i+1, "offset-") : ""
       end
 
-      def input_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
-        html_attrs["class"] = "form-control"
+      def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
+        String.build do |s|
+          s << %(<div class="form-group row">)
+
+          if {"checkbox", "radio"}.includes?(field_type)
+            s << %(<div class="#{@offset_class} #{@column_classes[1]}">)
+            s << %(<div class="form-check">)
+            s << html_field
+            s << html_label
+            s << "</div>"
+            s << "</div>"
+          else
+            s << html_label
+            s << %(<div class="#{"#{@offset_class} " unless html_label}#{@column_classes[1]}">#{html_field}</div>)
+
+          end
+
+          s << "</div>"
+        end
+      end
+
+      def input_html_attributes(html_attrs : StringHash, field_type : String)
+        case field_type
+        when "checkbox", "radio"
+          html_attrs["class"] = "#{html_attrs["class"]?} form-check-input".strip
+        when "file"
+          html_attrs["class"] = "#{html_attrs["class"]?} form-control-file".strip
+        else
+          html_attrs["class"] = "#{html_attrs["class"]?} form-control".strip
+        end
+
         html_attrs
       end
 
-      def label_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
-        html_attrs["class"] = "control"
+      def label_html_attributes(html_attrs : StringHash, field_type : String)
+        if {"checkbox", "radio"}.includes?(field_type)
+          html_attrs["class"] = "#{html_attrs["class"]?} form-check-label".strip
+        else
+          html_attrs["class"] = "#{html_attrs["class"]?} #{@column_classes[0]} col-form-label".strip
+        end
+
         html_attrs
       end
 
       def form_html_attributes(html_attrs : StringHash)
-        html_attrs["class"] = "#{html_attrs["class"]?} form-horizontal".strip
         html_attrs
       end
 

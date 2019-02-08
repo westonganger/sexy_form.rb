@@ -1,14 +1,14 @@
 require "../../spec_helper"
 require "./theme_spec_helper"
 
-theme_klass = FormBuilder::Themes::Bootstrap3Horizontal
+theme_klass = FormBuilder::Themes::Bootstrap4Horizontal
 theme = theme_klass.new
 
 describe theme_klass do
 
   describe ".theme_name" do
     it "is correct" do
-      theme_klass.theme_name.should eq("bootstrap_3_horizontal")
+      theme_klass.theme_name.should eq("bootstrap_4_horizontal")
     end
   end
 
@@ -21,27 +21,26 @@ describe theme_klass do
   describe "FormBuilder.form" do
     it "matches docs example" do
       expected = String.build do |str|
-        str << %(<form class="form-horizontal" method="post">)
-          str << %(<div class="form-group">)
-            str << %(<label class="col-sm-3 control-label" for="email">Email</label>)
+        str << %(<form method="post">)
+          str << %(<div class="form-group row">)
+            str << %(<label class="col-sm-3 col-form-label" for="email">Email</label>)
             str << %(<div class="col-sm-9">)
               str << %(<input type="text" class="form-control" id="email" name="email">)
             str << %(</div>)
           str << %(</div>)
 
-          str << %(<div class="form-group">)
-            str << %(<label class="col-sm-3 control-label" for="password">Password</label>)
+          str << %(<div class="form-group row">)
+            str << %(<label class="col-sm-3 col-form-label" for="password">Password</label>)
             str << %(<div class="col-sm-9">)
               str << %(<input type="password" class="form-control" id="password" name="password">)
             str << %(</div>)
           str << %(</div>)
 
-          str << %(<div class="form-group">)
+          str << %(<div class="form-group row">)
             str << %(<div class="col-sm-offset-3 col-sm-9">)
-              str << %(<div class="checkbox">)
-                str << %(<label for="remember_me">)
-                  str << %(<input type="checkbox" id="remember_me" name="remember_me"> Remember Me)
-                str << %(</label>)
+              str << %(<div class="form-check">)
+                str << %(<input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">)
+                str << %(<label class="form-check-label" for="remember_me">Remember Me</label>)
               str << %(</div>)
             str << %(</div>)
           str << %(</div>)
@@ -66,7 +65,12 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         attrs = StringHash.new
 
-        unless {"checkbox", "radio"}.includes?(field_type)
+        case field_type
+        when "checkbox", "radio"
+          attrs["class"] = "form-check-input"
+        when "file"
+          attrs["class"] = "form-control-file"
+        else
           attrs["class"] = "form-control"
         end
 
@@ -80,8 +84,10 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         attrs = StringHash.new
 
-        unless {"checkbox", "radio"}.includes?(field_type)
-          attrs["class"] = "col-sm-3 control-label"
+        if {"checkbox", "radio"}.includes?(field_type)
+          attrs["class"] = "form-check-label"
+        else
+          attrs["class"] = "col-sm-3 col-form-label"
         end
 
         theme.label_html_attributes(html_attrs: StringHash.new, field_type: field_type).should eq(attrs)
@@ -92,8 +98,6 @@ describe theme_klass do
   describe ".form_html_attributes" do
     it "returns correct attributes" do
       attrs = StringHash.new
-
-      attrs["class"] = "form-horizontal"
 
       theme.form_html_attributes(html_attrs: StringHash.new).should eq(attrs)
     end

@@ -30,11 +30,11 @@ module FormBuilder
         end
       end
 
-      def input_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
+      def input_html_attributes(html_attrs : StringHash, field_type : String)
         html_attrs
       end
 
-      def label_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
+      def label_html_attributes(html_attrs : StringHash, field_type : String)
         html_attrs["class"] ||= ""
 
         if {"checkbox", "radio"}.includes?(field_type)
@@ -49,7 +49,6 @@ module FormBuilder
       def form_html_attributes(html_attrs : StringHash)
         html_attrs
       end
-
 
     end
   end

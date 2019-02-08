@@ -6,12 +6,12 @@ module FormBuilder
         "Foo to the Bar"
       end
 
-      def input_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
+      def input_html_attributes(html_attrs : StringHash, field_type : String)
         html_attrs["class"] = "form-control"
         html_attrs
       end
 
-      def label_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
+      def label_html_attributes(html_attrs : StringHash, field_type : String)
         html_attrs["class"] = "control"
         html_attrs
       end

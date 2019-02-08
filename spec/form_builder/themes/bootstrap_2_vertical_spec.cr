@@ -1,14 +1,14 @@
 require "../../spec_helper"
 require "./theme_spec_helper"
 
-theme_klass = FormBuilder::Themes::Bootstrap2Horizontal
+theme_klass = FormBuilder::Themes::Bootstrap2Vertical
 theme = theme_klass.new
 
 describe theme_klass do
 
   describe ".theme_name" do
     it "is correct" do
-      theme_klass.theme_name.should eq("bootstrap_2_horizontal")
+      theme_klass.theme_name.should eq("bootstrap_2_vertical")
     end
   end
 
@@ -19,7 +19,7 @@ describe theme_klass do
   end
 
   describe "FormBuilder.form" do
-    it "matches bootstrap 2 docs example" do
+    it "matches docs example" do
       expected = String.build do |str|
         str << %(<form method="post">)
           str << %(<div class="control-group">)
@@ -45,7 +45,7 @@ describe theme_klass do
         str << %(</form>)
       end
 
-      actual = FormBuilder.form(theme: :bootstrap_2_vertical) do |f|
+      actual = FormBuilder.form(theme: theme_klass.theme_name) do |f|
         f << f.field(type: :text, label: "Email", input_html: {id: "inputEmail", placeholder: "Email"})
         f << f.field(type: :password, label: "Password", input_html: {id: "inputPassword", placeholder: "Password"})
         f << f.field(type: :checkbox, label: "Remember me")
@@ -61,7 +61,7 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         attrs = StringHash.new
 
-        theme.input_html_attributes(html_attrs: StringHash.new, field_type: field_type, label_text: "Foobar").should eq(attrs)
+        theme.input_html_attributes(html_attrs: StringHash.new, field_type: field_type).should eq(attrs)
       end
     end
   end
@@ -87,8 +87,6 @@ describe theme_klass do
   describe ".form_html_attributes" do
     it "returns correct attributes" do
       attrs = StringHash.new
-
-      attrs["class"] = "form-horizontal"
 
       theme.form_html_attributes(html_attrs: StringHash.new).should eq(attrs)
     end

@@ -36,7 +36,7 @@ module FormBuilder
         end
       end
 
-      def input_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
+      def input_html_attributes(html_attrs : StringHash, field_type : String)
         unless {"checkbox", "radio"}.includes?(field_type)
           html_attrs["class"] = "#{html_attrs["class"]?} form-control".strip
         end
@@ -44,7 +44,7 @@ module FormBuilder
         html_attrs
       end
 
-      def label_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
+      def label_html_attributes(html_attrs : StringHash, field_type : String)
         unless {"checkbox", "radio"}.includes?(field_type)
           html_attrs["class"] = "#{html_attrs["class"]?} #{@column_classes[0]} control-label".strip
         end
