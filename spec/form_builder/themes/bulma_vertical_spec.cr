@@ -1,14 +1,14 @@
 require "../../spec_helper"
 require "./theme_spec_helper"
 
-theme_klass = FormBuilder::Themes::Bootstrap2Inline
+theme_klass = FormBuilder::Themes::BulmaVertical
 theme = theme_klass.new
 
 describe theme_klass do
 
   describe ".theme_name" do
     it "is correct" do
-      theme_klass.theme_name.should eq("bootstrap_2_inline")
+      theme_klass.theme_name.should eq("bulma_vertical")
     end
   end
 

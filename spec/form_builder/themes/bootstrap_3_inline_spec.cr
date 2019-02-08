@@ -24,17 +24,17 @@ describe theme_klass do
         str << %(<form class="form-inline" method="post">)
           str << %(<div class="form-group">)
             str << %(<label for="email">Email</label>)
-            str << %(<input type="text" class="form-control" id="email" name="email">)
+            str << %(<input type="text" class="form-control" name="email" id="email">)
           str << "</div>"
 
           str << %(<div class="form-group">)
             str << %(<label for="password">Password</label>)
-            str << %(<input type="password" class="form-control" id="password" name="password">)
+            str << %(<input type="password" class="form-control" name="password" id="password">)
           str << "</div>"
 
           str << %(<div class="form-group">)
             str << %(<label for="remember_me">)
-              str << %(<input type="checkbox" id="remember_me" name="remember_me"> Remember Me)
+              str << %(<input type="checkbox" name="remember_me" id="remember_me"> Remember Me)
             str << %(</label>)
           str << "</div>"
 

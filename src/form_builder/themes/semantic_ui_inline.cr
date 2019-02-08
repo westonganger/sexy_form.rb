@@ -1,6 +1,10 @@
 module FormBuilder
   class Themes
-    class Foundation < Themes
+    class SemanticUIInline < Themes
+
+      def self.theme_name
+        "semantic_ui_inline"
+      end
 
       def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
         "Foo to the Bar"

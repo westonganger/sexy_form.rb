@@ -43,7 +43,7 @@ describe FormBuilder do
         f << f.field name: "sku", type: :text
       end
 
-      expected = "<form method=\"post\"><label for=\"name\">Name</label><input type=\"text\" id=\"name\" name=\"name\">~~~<label for=\"sku\">Sku</label><input type=\"text\" id=\"sku\" name=\"sku\"></form>"
+      expected = "<form method=\"post\"><label for=\"name\">Name</label><input type=\"text\" name=\"name\" id=\"name\">~~~<label for=\"sku\">Sku</label><input type=\"text\" name=\"sku\" id=\"sku\"></form>"
 
       result.should eq(expected)
     end
@@ -53,7 +53,7 @@ describe FormBuilder do
         f << f.field name: :name, type: :text
       end
 
-      expected = "<form id=\"myForm\" method=\"post\"><label for=\"name\">Name</label><input type=\"text\" id=\"name\" name=\"name\"></form>"
+      expected = "<form id=\"myForm\" method=\"post\"><label for=\"name\">Name</label><input type=\"text\" name=\"name\" id=\"name\"></form>"
 
       result.should eq(expected)
     end

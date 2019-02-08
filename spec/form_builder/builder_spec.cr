@@ -35,11 +35,11 @@ describe FormBuilder::Builder do
 
   describe "#input_field" do
     it "works" do
-      expected = %(<input type="text" foo="bar" name="my-great-text-input">)
+      expected = %(<input type="text" name="my-great-text-input" foo="bar">)
 
       opts = StringHash.new
-      opts["foo"] = "bar"
       opts["name"] = "my-great-text-input"
+      opts["foo"] = "bar"
 
       builder._input_field(type: "text", options: opts).should eq(expected)
     end
@@ -47,11 +47,11 @@ describe FormBuilder::Builder do
 
   describe "#select_field" do
     it "works" do
-      expected = %(<select foo="bar" name="my-great-text-input"><option value="foo">foo</option><option value="bar">bar</option></select>)
+      expected = %(<select name="my-great-text-input" foo="bar"><option value="foo">foo</option><option value="bar">bar</option></select>)
 
       opts = StringHash.new
-      opts["foo"] = "bar"
       opts["name"] = "my-great-text-input"
+      opts["foo"] = "bar"
 
       collection = ["foo", "bar"]
 

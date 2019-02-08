@@ -83,11 +83,11 @@ module FormBuilder
       end
 
       if name
-        css_safe_name = css_safe(name)
+        themed_input_html["name"] ||= name.to_s
 
-        themed_input_html["id"] ||= css_safe_name
-
-        themed_input_html["name"] ||= css_safe_name
+        unless themed_input_html.has_key?("id")
+          themed_input_html["id"] = css_safe(name)
+        end
       end
 
       if !themed_input_html["value"]? && !value.to_s.empty? && INPUT_TYPES.includes?(type_str)

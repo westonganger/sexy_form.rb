@@ -41,10 +41,17 @@ Out of the box Form Builder can generate HTML markup for the following UI librar
 - Foundation
   * `theme: :foundation_vertical`
   * `theme: :foundation_horizontal`
-- Materialize - `theme: :materialize`
-- Milligram - `theme: :milligram`
-- Semantic UI - `theme: :semantic_ui`
-- None - (Default) - `theme: nil`, `theme: :default`, or simply do not provide a `:theme` argument
+- Materialize
+  * `theme: :materialize`
+- Milligram
+  * `theme: :milligram`
+- Semantic UI
+  * `theme: :semantic_ui_vertical`
+  * `theme: :semantic_ui_inline`
+- None (Default)
+  * `theme: :default`
+  * `theme: nil`
+  * or simply do not provide a `:theme` argument
 
 If you dont see your favourite UI library here feel free to create a PR to add it. I recommend creating an issue to discuss it first.
 
