@@ -9,6 +9,7 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 # TODO
 
 - Complete FormBuilder::Themes class for each UI Library
+- Implement HTML for Field Errors in each Theme
 - Complete all missing specs
 
 # Features
