@@ -21,7 +21,7 @@ module FormBuilder
       end
 
       def input_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
-        if {"password", "text", "textarea"}.includes?(field_type) && label_text
+        if !html_attrs.has_key?("placeholder") && {"password", "text", "textarea"}.includes?(field_type) && label_text
           html_attrs["placeholder"] = "#{label_text}"
         end
 
@@ -29,8 +29,8 @@ module FormBuilder
       end
 
       def label_html_attributes(html_attrs : StringHash, field_type : String, name : String? = nil, label_text : String? = nil)
-        if field_type == "checkbox"
-          html_attrs["class"] = "checkbox"
+        if {"checkbox", "radio"}.includes?(field_type)
+          html_attrs["class"] = "#{html_attrs["class"]?} #{field_type}".strip
         end
 
         html_attrs

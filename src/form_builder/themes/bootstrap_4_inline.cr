@@ -21,7 +21,7 @@ module FormBuilder
       end
 
       def form_html_attributes(html_attrs : StringHash)
-        html_attrs["class"] = "form-horizontal"
+        html_attrs["class"] = "form-inline"
         html_attrs
       end
 

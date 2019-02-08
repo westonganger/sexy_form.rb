@@ -25,7 +25,7 @@ describe FormBuilder do
     end
 
     it "allows basic usage" do
-      result = FormBuilder.form(theme: :bootstrap_4_inline, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo": "bar"}) do
+      result = FormBuilder.form(theme: :bootstrap_4_horizontal, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo": "bar"}) do
 
       end
 
@@ -37,7 +37,7 @@ describe FormBuilder do
     it "work with errors" do
       errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
 
-      result = FormBuilder.form(theme: :bootstrap_4_inline, errors: errors) do |f|
+      result = FormBuilder.form(theme: :bootstrap_4_horizontal, errors: errors) do |f|
         f << f.field name: "name", type: :text
         f << "~~~"
         f << f.field name: "sku", type: :text
@@ -53,7 +53,7 @@ describe FormBuilder do
         f << f.field name: :name, type: :text
       end
 
-      expected = "<form id=\"myForm\" class=\"form-horizontal\" method=\"post\"><label class=\"control\"></label><input type=\"text\" class=\"form-control\" id=\"name\" name=\"name\"></form>"
+      expected = "<form id=\"myForm\" class=\"form-horizontal\" method=\"post\"><label class=\"control\" for=\"name\"></label><input type=\"text\" class=\"form-control\" id=\"name\" name=\"name\"></form>"
 
       result.should eq(expected)
     end

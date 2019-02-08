@@ -61,8 +61,8 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         attrs = StringHash.new
 
-        if field_type == "checkbox"
-          attrs["class"] = "checkbox"
+        if {"checkbox", "radio"}.includes?(field_type)
+          attrs["class"] = field_type
         end
 
         theme.label_html_attributes(html_attrs: StringHash.new, field_type: field_type).should eq(attrs)
