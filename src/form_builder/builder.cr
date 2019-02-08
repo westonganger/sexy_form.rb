@@ -34,7 +34,7 @@ module FormBuilder
       input_html : (NamedTuple | OptionHash) = OptionHash.new,
       label_html : (NamedTuple | OptionHash) = OptionHash.new,
       wrapper_html : (NamedTuple | OptionHash) = OptionHash.new,
-      collection : (Array(Array) | Array | Range)? = nil,
+      collection : (Array(Array) | Array | Range | String)? = nil,
       selected : Array(String)? = nil,
       disabled : Array(String)? = nil
     )
@@ -154,14 +154,16 @@ module FormBuilder
       "<input type=\"#{type}\"#{" " unless tag_options.empty?}#{tag_options.join(" ")}>"
     end
 
-    private def select_field(collection : (Array(Array) | Array | Range), selected : Array(String)? = nil, disabled : Array(String)? = nil, options : StringHash? = StringHash.new)
-      if collection.first?.is_a?(Array)
-        c = collection
-      else
-        c = collection.map{|x| [x.to_s, x.to_s] }
-      end
-
+    private def select_field(collection : (Array(Array) | Array | Range | String), selected : Array(String)? = nil, disabled : Array(String)? = nil, options : StringHash? = StringHash.new)
       FormBuilder.content(element_name: "select", options: options) do
+        next(collection) if collection.is_a?(String)
+
+        if collection.first?.is_a?(Array)
+          c = collection
+        else
+          c = collection.map{|x| [x.to_s, x.to_s] }
+        end
+
         String.build do |str|
           c.map do |x|
             str << "<option value=\"#{x[0]}\""

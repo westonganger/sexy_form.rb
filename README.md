@@ -86,7 +86,7 @@ The following field types are supported:
       ### wrapper_html : (Hash | NamedTuple)? ### contains attributes to be added to the outer wrapper for the label and input
 
       ### -- Additional Options for `type: :select`
-      ### collection : (Array(Array) | Array | Range)
+      ### collection : (Array(Array) | Array | Range | String) ### String type is for passing in a pre-built html options string
       ### selected : (String | Array)?
       ### disabled : (String | Array)?
 
