@@ -20,14 +20,11 @@ module FormBuilder
 
     def <<(value)
       @html.push(value.to_s)
+      return value.to_s
     end
 
     def theme
       @theme
-    end
-
-    def html_string
-      @html.join("")
     end
 
     def field(
@@ -38,9 +35,7 @@ module FormBuilder
       input_html : (NamedTuple | OptionHash) = OptionHash.new,
       label_html : (NamedTuple | OptionHash) = OptionHash.new,
       wrapper_html : (NamedTuple | OptionHash) = OptionHash.new,
-      collection : (Array(Array) | Tuple(Array) | Array | Tuple | Range | String)? = nil,
-      selected : Array(String)? = nil,
-      disabled : Array(String)? = nil
+      collection : (NamedTuple | OptionHash)? = nil,
     )
       type_str = type.to_s
 
@@ -48,13 +43,19 @@ module FormBuilder
         raise ArgumentError.new("Invalid :type argument, valid field types are: #{FIELD_TYPES.join(", ")}`")
       end
 
-      if type_str != "select"
-        if collection
-          raise ArgumentError.new("Invalid :collection argument passed for field type: #{type_str}, :collection is only allowed with field type: :select")
-        elsif selected
-          raise ArgumentError.new("Invalid :selected argument passed for field type: #{type_str}, :selected is only allowed with field type: :select")
-        elsif disabled
-          raise ArgumentError.new("Invalid :disabled argument passed for field type: #{type_str}, :disabled is only allowed with field type: :select")
+      if collection
+        if type_str == "select"
+          safe_collection = FormBuilder.safe_stringify_hash_keys(collection.is_a?(NamedTuple) ? collection.to_h : collection)
+
+          if !collection["options"]?
+            raise ArgumentError.new("Required argument `collection[:options]` not provided while using field `type: :select`")
+          end
+
+          if value && safe_collection["selected"]?
+            raise ArgumentError.new("Cannot provide :value and :selected arguments together. The :selected argument is recommended for field `type: :select.`")
+          end
+        else
+          raise ArgumentError.new("Invalid :collection argument passed for field type: #{type_str}, :collection is only allowed with field `type: :select`")
         end
       end
 
@@ -72,7 +73,7 @@ module FormBuilder
 
       themed_label_html = @theme.label_html_attributes(html_attrs: FormBuilder.safe_string_hash(label_html.is_a?(NamedTuple) ? label_html.to_h : label_html), field_type: type_str)
 
-      if ["checkbox", "radio"].includes?(type_str)
+      if {"checkbox", "radio"}.includes?(type_str)
         ### Allow passing checked=true/false
 
         if themed_input_html["checked"]? == "true"
@@ -110,14 +111,8 @@ module FormBuilder
       when "radio"
         html_field = input_field(type: type_str, options: themed_input_html)
       when "select"
-        if collection.nil?
-          raise ArgumentError.new("Required argument `:collection` not provided while using `type: :select`")
-        else
-          if value && selected
-            raise ArgumentError.new("Cannot provide `:value` and `:selected` arguments together. The `:selected` argument is recommended for field `type: :select.`")
-          end
-
-          html_field = select_field(collection: collection, selected: (selected || value), disabled: disabled, options: themed_input_html)
+        if safe_collection
+          html_field = select_field(collection: safe_collection["options"], selected: (safe_collection["selected"]? || value), disabled: safe_collection["disabled"]?, options: themed_input_html)
         end
       when "text"
         html_field = input_field(type: type_str, options: themed_input_html)
@@ -160,25 +155,40 @@ module FormBuilder
       "<input type=\"#{type}\"#{" " unless tag_options.empty?}#{tag_options.join(" ")}>"
     end
 
-    private def select_field(collection : (Array(Array) | Tuple(Array) | Array | Tuple | Range | String), selected : Array(String)? = nil, disabled : Array(String)? = nil, options : StringHash? = StringHash.new)
+    private def select_field(*, collection = nil, selected = nil, disabled = nil, options : StringHash? = StringHash.new)
+      if selected
+        selected_array = (selected.responds_to?(:includes) ? selected : [selected])
+      end
+
+      if disabled
+        disabled_array = (disabled.responds_to?(:includes) ? disabled : [disabled])
+      end
+
       FormBuilder.content(element_name: "select", options: options) do
-        next(collection) if collection.is_a?(String)
-
-        if collection.first?.is_a?(Array)
-          c = collection
-        else
-          c = collection.map{|x| [x.to_s] }
-        end
-
         String.build do |str|
-          c.map do |x|
-            str << "<option value=\"#{x[0]}\""
-            str << "#{" selected=\"selected\"" if selected && selected.includes?(x[0].to_s)}"
-            str << "#{" disabled=\"disabled\"" if disabled && disabled.includes?(x[0].to_s)}"
-            str << ">#{x[1]? || x[0]}</option>"
+          if collection.is_a?(String)
+            collection
+          elsif collection.responds_to?(:map)
+            collection.map do |arr|
+              x = arr.is_a?(Enumerable) ? arr : [arr.to_s]
+
+              str << "<option value=\"#{x[0]?}\""
+              if selected
+                str << "#{" selected=\"selected\"" if (selected_array ? selected_array.includes?(x[0]?.to_s) : (selected == x[0]?))}"
+              end
+              if disabled
+                str << "#{" disabled=\"disabled\"" if (disabled_array ? disabled_array.includes?(x[0]?.to_s) : (disabled == x[0]?))}"
+              end
+              str << ">#{x[1]? || x[0]?}</option>"
+            end
           end
         end
       end
+    end
+
+    ### This method should be considered private
+    def html_string
+      @html.join("")
     end
 
     private def css_safe(value)

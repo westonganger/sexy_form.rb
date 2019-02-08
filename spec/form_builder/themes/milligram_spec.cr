@@ -47,7 +47,7 @@ describe theme_klass do
 
       actual = FormBuilder.form(theme: theme_klass.theme_name) do |f|
         f << f.field(type: :text, name: :nameField, label: "Name", input_html: {placeholder: "Name"})
-        f << f.field(type: :select, name: :ageRangeField, label: "Age Range", collection: {"0-13","14-17","18-23","24+"})
+        f << f.field(type: :select, name: :ageRangeField, label: "Age Range", collection: {options: ["0-13","14-17","18-23","24+"]})
         f << f.field(type: :textarea, name: :commentField, label: "Comment", input_html: {placeholder: "Hello World"})
         f << %(<div class="float-right">)
           f << f.field(type: :checkbox, name: :confirmField, label: "Confirm?")

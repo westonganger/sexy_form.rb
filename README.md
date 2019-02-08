@@ -11,6 +11,7 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 - Complete FormBuilder::Themes class for each UI Library
 - Implement Wrapper HTML attributes for each theme
 - Consider Consolidating `:collection, :select, :disabled` into collection: {options: opts, selected: sel, disabled: dis, include_blank: ("Select a value..." || nil)}
+- Add support for collection[:include_blank]
 - Implement HTML for Field Errors in each Theme
 - Consider Adding Checkbox/Radio Support for `collection: {options: opts, selected: sel, disabled: dis}`
 - Complete all missing specs
