@@ -38,7 +38,7 @@ module FormBuilder
       input_html : (NamedTuple | OptionHash) = OptionHash.new,
       label_html : (NamedTuple | OptionHash) = OptionHash.new,
       wrapper_html : (NamedTuple | OptionHash) = OptionHash.new,
-      collection : (Array(Array) | Array | Range | String)? = nil,
+      collection : (Array(Array) | Tuple(Array) | Array | Tuple | Range | String)? = nil,
       selected : Array(String)? = nil,
       disabled : Array(String)? = nil
     )
@@ -160,14 +160,14 @@ module FormBuilder
       "<input type=\"#{type}\"#{" " unless tag_options.empty?}#{tag_options.join(" ")}>"
     end
 
-    private def select_field(collection : (Array(Array) | Array | Range | String), selected : Array(String)? = nil, disabled : Array(String)? = nil, options : StringHash? = StringHash.new)
+    private def select_field(collection : (Array(Array) | Tuple(Array) | Array | Tuple | Range | String), selected : Array(String)? = nil, disabled : Array(String)? = nil, options : StringHash? = StringHash.new)
       FormBuilder.content(element_name: "select", options: options) do
         next(collection) if collection.is_a?(String)
 
         if collection.first?.is_a?(Array)
           c = collection
         else
-          c = collection.map{|x| [x.to_s, x.to_s] }
+          c = collection.map{|x| [x.to_s] }
         end
 
         String.build do |str|
@@ -175,7 +175,7 @@ module FormBuilder
             str << "<option value=\"#{x[0]}\""
             str << "#{" selected=\"selected\"" if selected && selected.includes?(x[0].to_s)}"
             str << "#{" disabled=\"disabled\"" if disabled && disabled.includes?(x[0].to_s)}"
-            str << ">#{x[1]}</option>"
+            str << ">#{x[1]? || x[0]}</option>"
           end
         end
       end
