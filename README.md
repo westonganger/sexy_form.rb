@@ -24,12 +24,15 @@ Out of the box Form Builder can generate HTML markup for the following UI librar
 - Bootstrap 4 - Available form types:
   * `theme: :bootstrap_4_inline`
   * `theme: :bootstrap_4_horizontal`
+  * `theme: :bootstrap_4_vertical`
 - Bootstrap 3 - Available form types:
   * `theme: :bootstrap_3_inline`
   * `theme: :bootstrap_3_horizontal`
+  * `theme: :bootstrap_3_vertical`
 - Bootstrap 2 - Available form types:
   * `theme: :bootstrap_2_inline`
   * `theme: :bootstrap_2_horizontal`
+  * `theme: :bootstrap_2_vertical`
 - Bulma - `theme: :bulma`
 - Foundation - `theme: :foundation`
 - Materialize - `theme: :materialize`

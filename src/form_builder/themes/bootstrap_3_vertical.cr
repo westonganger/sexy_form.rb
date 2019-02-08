@@ -1,9 +1,9 @@
 module FormBuilder
   class Themes
-    class Bootstrap3Inline < Themes
+    class Bootstrap3Vertical < Themes
 
       def self.theme_name
-        "bootstrap_3_inline"
+        "bootstrap_3_vertical"
       end
 
       def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
@@ -38,7 +38,7 @@ module FormBuilder
       end
 
       def form_html_attributes(html_attrs : StringHash)
-        html_attrs["class"] = "#{html_attrs["class"]?} form-inline".strip
+        html_attrs["class"] = "#{html_attrs["class"]?} form-vertical".strip
         html_attrs
       end
 

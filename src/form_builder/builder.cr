@@ -55,8 +55,10 @@ module FormBuilder
       end
 
       if label != false
-        if label == true
-          label_text = name.to_s.capitalize if name
+        if {nil, true}.includes?(label)
+          if name
+            label_text = titleize(name)
+          end
         else
           label_text = label.to_s
         end
@@ -176,8 +178,12 @@ module FormBuilder
     end
 
     private def css_safe(value)
-      values = value.to_s.strip.split(' ')
-      values.map{|v| v.gsub(/[^\w-]+/, " ").strip.gsub(/\s+/, "_")}.join(' ')
+      values = value.to_s.strip.split(" ")
+      values.map{|v| v.gsub(/[^\w-]+/, " ").strip.gsub(/\s+/, "_")}.join(" ")
+    end
+
+    private def titleize(value)
+      value.to_s.gsub(/\W|_/, " ").split(" ").join(" "){|x| x.capitalize}
     end
 
   end

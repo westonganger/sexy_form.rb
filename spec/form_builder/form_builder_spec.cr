@@ -53,7 +53,7 @@ describe FormBuilder do
         f << f.field name: :name, type: :text
       end
 
-      expected = "<form id=\"myForm\" class=\"form-horizontal\" method=\"post\"><label class=\"control\" for=\"name\"></label><input type=\"text\" class=\"form-control\" id=\"name\" name=\"name\"></form>"
+      expected = "<form id=\"myForm\" class=\"form-horizontal\" method=\"post\"><label class=\"control\" for=\"name\">Name</label><input type=\"text\" class=\"form-control\" id=\"name\" name=\"name\"></form>"
 
       result.should eq(expected)
     end
