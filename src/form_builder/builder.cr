@@ -49,10 +49,17 @@ module FormBuilder
 
           if !collection["options"]?
             raise ArgumentError.new("Required argument `collection[:options]` not provided while using field `type: :select`")
+          elsif !collection["options"].is_a?(Array)
+            raise ArgumentError.new("Invalid argument passed to `collection[:options]`, must be an Array`")
           end
 
           if value && safe_collection["selected"]?
             raise ArgumentError.new("Cannot provide :value and :selected arguments together. The :selected argument is recommended for field `type: :select.`")
+          else
+            v = safe_collection["selected"]? || value
+            if v
+              safe_collection["selected"] = v
+            end
           end
         else
           raise ArgumentError.new("Invalid :collection argument passed for field type: #{type_str}, :collection is only allowed with field `type: :select`")
@@ -112,7 +119,7 @@ module FormBuilder
         html_field = input_field(type: type_str, options: themed_input_html)
       when "select"
         if safe_collection
-          html_field = select_field(collection: safe_collection["options"], selected: (safe_collection["selected"]? || value), disabled: safe_collection["disabled"]?, options: themed_input_html)
+          html_field = select_field(safe_collection, options: themed_input_html)
         end
       when "text"
         html_field = input_field(type: type_str, options: themed_input_html)
@@ -155,32 +162,45 @@ module FormBuilder
       "<input type=\"#{type}\"#{" " unless tag_options.empty?}#{tag_options.join(" ")}>"
     end
 
-    private def select_field(*, collection = nil, selected = nil, disabled = nil, options : StringHash? = StringHash.new)
-      if selected
-        selected_array = (selected.responds_to?(:includes) ? selected : [selected])
+    private def select_field(collection : OptionHash, options : StringHash? = StringHash.new)
+      options_array =  collection["options"].as(Array).map{|x| x.is_a?(Enumerable) ? x : [x.to_s]}
+
+      if collection.has_key?("include_blank") && collection["include_blank"] != false
+        options_array.unshift(["#{collection["include_blank"]}"])
       end
 
-      if disabled
-        disabled_array = (disabled.responds_to?(:includes) ? disabled : [disabled])
+      if collection.has_key?("selected")
+        if collection["selected"].is_a?(Array)
+          selected_array = collection["selected"].as(Array).map{|x| x.to_s}
+        else
+          selected_array = [collection["selected"].to_s]
+        end
+      end
+
+      if collection.has_key?("disabled")
+        if collection["disabled"].is_a?(Array)
+          disabled_array = collection["disabled"].as(Array).map{|x| x.to_s}
+        else
+          disabled_array = [collection["disabled"].to_s]
+        end
       end
 
       FormBuilder.content(element_name: "select", options: options) do
         String.build do |str|
-          if collection.is_a?(String)
-            collection
-          elsif collection.responds_to?(:map)
-            collection.map do |arr|
-              x = arr.is_a?(Enumerable) ? arr : [arr.to_s]
+          options_array.map do |option|
+            v = option[0]?.to_s
 
-              str << "<option value=\"#{x[0]?}\""
-              if selected
-                str << "#{" selected=\"selected\"" if (selected_array ? selected_array.includes?(x[0]?.to_s) : (selected == x[0]?))}"
-              end
-              if disabled
-                str << "#{" disabled=\"disabled\"" if (disabled_array ? disabled_array.includes?(x[0]?.to_s) : (disabled == x[0]?))}"
-              end
-              str << ">#{x[1]? || x[0]?}</option>"
+            str << "<option value=\"#{v}\""
+
+            if selected_array
+              str << "#{" selected=\"selected\"" if selected_array.includes?(v)}"
             end
+
+            if disabled_array
+              str << "#{" disabled=\"disabled\"" if disabled_array.includes?(v)}"
+            end
+
+            str << ">#{option[1]? || v}</option>"
           end
         end
       end

@@ -41,6 +41,10 @@ describe FormBuilder::Builder do
       it "allows :disabled option" do
         # TODO
       end
+
+      it "allows :include_blank option" do
+        # TODO
+      end
     end
   end
 
