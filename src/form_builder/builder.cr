@@ -20,7 +20,7 @@ module FormBuilder
 
     def <<(value)
       @html.push(value.to_s)
-      return value.to_s
+      value.to_s
     end
 
     def theme
@@ -111,7 +111,7 @@ module FormBuilder
         if safe_collection["options"].is_a?(Array)
           collection_options = safe_collection["options"].as(Array).map do |x|
             if x.is_a?(Enumerable)
-              x.first(2).map{|x| x.responds_to?(:to_s) ? x.to_s : ""}
+              x.first(2).map{|y| y.responds_to?(:to_s) ? y.to_s : ""}
             else
               [(x.responds_to?(:to_s) ? x.to_s : "")]
             end
