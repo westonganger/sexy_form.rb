@@ -8,7 +8,6 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 
 # TODO
 
-- Complete FormBuilder::Themes class for each UI Library
 - Implement HTML for Field Errors in each Theme
 - Complete all missing specs
 
@@ -254,7 +253,7 @@ Created & Maintained by [Weston Ganger](https://westonganger.com) - [@westongang
 
 Project Inspired By:
 
-- [Jasper Helpers](https://github.com/amberframework/jasper-helpers) for use in the [Amber framework](https://github.com/amberframework/amber)
+- [Jasper Helpers](https://github.com/amberframework/jasper-helpers) used within the [Amber framework](https://github.com/amberframework/amber)
 - [SimpleForm](https://github.com/plataformatec/simple_form)
 
 For any consulting or contract work please contact me via my company website: [Solid Foundation Web Development](https://solidfoundationwebdev.com)
