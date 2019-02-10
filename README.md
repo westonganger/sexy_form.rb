@@ -8,7 +8,8 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 
 # TODO
 
-- Implement HTML for Field Errors in each Theme
+- Implement help text for each Theme
+- Implement field errors for each Theme
 - Complete all missing specs
 
 # Features
@@ -82,43 +83,54 @@ The following field types are supported:
 ## FormBuilder in View Templates (Kilt, Slang, ECR, etc.)
 
 ```crystal
+
+
 == FormBuilder.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
-  .row
+  .row.main-examples
     .col-sm-6
       ### -- Field Options
       ### type : (String | Symbol)
       ### name : (String | Symbol)?
       ### label : (String | Bool)? = true
+      ### help_text : String?
 
       ### -- The `input_html["value"]` option will take precedence over the :value option (except for `type: :textarea/:select`)
       ### value : (String | Symbol)?
+
+      ### errors : (Array(String) | String)? ### Note: Array(String) generates a list of help text elements. If you have an Array of errors and you only want a single help text element, then join your errors array to a String
 
       ### -- For the following Hash options, String keys will take precedence over any Symbol keys
       ### input_html : (Hash | NamedTuple)? ### contains attributes to be added to the input/field
       ### label_html : (Hash | NamedTuple)? ### contains attributes to be added to the label
       ### wrapper_html : (Hash | NamedTuple)? ### contains attributes to be added to the outer wrapper for the label and input
-
-      ### -- Additional Options for `type: :select`
-      ### collection : (Array(Array) | Array | Range | String) ### String type is for passing in a pre-built html options string
-      ### selected : (String | Array)?
-      ### disabled : (String | Array)?
-
-      == f.field name: "product[name]", label: "Name", type: :text
+      ### help_text_html : (Hash | NamedTuple)? ### contains attributes to be added to the outer wrapper for the label and input
+ 
+      == f.field name: "product[name]", label: "Name", type: :text, errors: product_errors["name"]
 
       == f.field name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"}
 
-      == f.field name: "product[file]", type: :file
+      == f.field name: "product[file]", type: :file, help_text: "Must be a PDF", help_text_html: {style: "color: blue;"}
 
     .col-sm-6
       == f.field name: "product[available]", type: :checkbox, label: "In Stock?"
 
       == f.field name: "product[class]", type: :radio, label: false
 
-      == f.fieldname: "product[secret]", type: :hidden, value: "foobar"
+      == f.field name: "product[secret]", type: :hidden, value: "foobar"
 
-  .row
-    - collection = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"]]
-    == f.field name: "product[type]", label: "Type", type: :select, collection: {options: collection, selected: ["B"], disabled: ["C"]}
+  .row.select-example
+    ### -- Additional Options for `type: :select`
+    ### collection : (Hash | NamedTuple) = {
+    ###   -- Note: String keys will take precedence over any Symbol keys
+    ###   options : (Array(Array) | Array | String) ### Required, Note: String type is for passing in a pre-built html options string
+    ###   selected : (String | Array)?
+    ###   disabled : (String | Array)?
+    ### }
+
+    ### When passing Array(Array) to collection[:options] the Option pairs are defined as: [required_value, optional_label]
+    - opts = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"]]
+
+    == f.field name: "product[type]", label: "Type", type: :select, collection: {options: opts, selected: ["B"], disabled: ["C"]}
 ```
 
 ## FormBuilder in Plain Crystal Code
@@ -156,14 +168,12 @@ end
 
 ## Error Handling
 
-The form builder is capable of handling error messages too. It expects errors in the format of `Hash(String, Array(String))`
+The form builder is capable of handling error messages too. If the `:errors` argument is provided it will generate the appropriate error help text element(s) next to the field.
 
 ```crystal
-- errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
-
 == FormBuilder.form(theme: :bootstrap_4_vertical, errors: errors) do |f|
-  == f.field name: "name", type: :text, label: "Name"
-  == f.field name: "sku", type: :text, label: "SKU"
+  == f.field name: "name", type: :text, label: "Name", errors: "cannot be blank"
+  == f.field name: "sku", type: :text, label: "SKU", errors: ["must be unique", "incorrect SKU format")
 ```
 
 ## Custom Themes
@@ -192,7 +202,7 @@ module FormBuilder
           wrapper_html_attributes["class"] = "form-group #{wrapper_html_attributes["class"]?}".strip
 
           ### `build_html_attr_string` is the one and only helper method available to Themes
-          ### It converts any Hash (ie. ) to an HTML Attributes String
+          ### It converts any Hash to an HTML Attributes String
           ### Example: {"class" => "foo", "data-role" => "ninja"} converts to "class=\"foo\" data-role=\"ninja\""
           attr_str = build_html_attr_string(wrapper_html_attributes)
 
@@ -226,6 +236,15 @@ module FormBuilder
       def form_html_attributes(html_attrs : Hash(String, String))
         html_attrs["class"] = "form-inline #{html_attrs["class"]}"
         html_attrs
+      end
+
+      def build_html_help_text(help_text : String, html_attrs : StringHash)
+        html_attrs["class"] = "help-text #{html_attrs["class"]?}".strip
+
+        String.build do |s|
+          s << html_attrs.empty? ? %(<div #{build_html_attr_string(html_attrs)}>) : "<div>"
+          s << "#{help_text}</div>"
+        end
       end
 
     end

@@ -12,11 +12,10 @@ module FormBuilder
     action : String? = nil,
     method : (String | Symbol)? = :post,
     theme : (String | Symbol | FormBuilder::Themes)? = nil,
-    errors : Hash(String, Array(String))? = nil,
     form_html : (NamedTuple | OptionHash)? = OptionHash.new,
     &block
   ) : String
-    builder = FormBuilder::Builder.new(theme: theme, errors: errors)
+    builder = FormBuilder::Builder.new(theme: theme)
 
     themed_form_html = builder.theme.form_html_attributes(html_attrs: self.safe_string_hash(form_html.is_a?(NamedTuple) ? form_html.to_h : form_html))
 
@@ -47,10 +46,9 @@ module FormBuilder
     action : String? = nil,
     method : (String | Symbol)? = :post,
     theme : (String | Symbol)? = nil,
-    errors : Hash(String, Array(String))? = nil,
     form_html : (NamedTuple | OptionHash)? = OptionHash.new
   ) : String
-    form(action: action, method: method, theme: theme, errors: errors, form_html: form_html) do; end
+    form(action: action, method: method, theme: theme, form_html: form_html) do; end
   end
 
   protected def self.content(element_name : String, attrs : StringHash, &block)

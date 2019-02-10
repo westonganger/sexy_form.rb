@@ -34,20 +34,6 @@ describe FormBuilder do
       result.should eq(expected)
     end
 
-    it "work with errors" do
-      errors : Hash(String, Array(String)) = {"name" => ["already taken"], "sku" => ["invalid format", "cannot be blank"]}
-
-      result = FormBuilder.form(errors: errors) do |f|
-        f << f.field name: "name", type: :text
-        f << "~~~"
-        f << f.field name: "sku", type: :text
-      end
-
-      expected = "<form method=\"post\"><div><label for=\"name\">Name</label><input type=\"text\" name=\"name\" id=\"name\"></div>~~~<div><label for=\"sku\">Sku</label><input type=\"text\" name=\"sku\" id=\"sku\"></div></form>"
-
-      result.should eq(expected)
-    end
-
     it "allows for nested input fields" do
       result = FormBuilder.form(form_html: {"id" => "myForm"}) do |f|
         f << f.field name: :name, type: :text

@@ -25,10 +25,11 @@ module FormBuilder
 
     abstract def wrap_field(
       field_type : String,
-      html_label : String?,
       html_field : String,
+      html_label : String?,
+      html_help_text : String?,
       field_errors : Array(String)?,
-      wrapper_html_attributes : StringHash
+      wrapper_html_attributes : StringHash,
     ) : String
 
     abstract def input_html_attributes(html_attrs : StringHash, field_type : String) : StringHash
@@ -36,6 +37,8 @@ module FormBuilder
     abstract def label_html_attributes(html_attrs : StringHash, field_type : String) : StringHash
 
     abstract def form_html_attributes(html_attrs : StringHash)  : StringHash
+
+    abstract def build_html_help_text(help_text : String, html_attrs : StringHash)  : String
 
   end
 end

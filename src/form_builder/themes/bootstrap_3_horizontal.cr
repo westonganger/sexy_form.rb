@@ -11,7 +11,7 @@ module FormBuilder
         @offset_class = (i = @column_classes[0].index(/-\d/)) ? @column_classes[0].insert(i+1, "offset-") : ""
       end
 
-      def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
+      def wrap_field(field_type : String, html_field : String, html_label : String?, html_help_text : String?, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
           wrapper_html_attributes["class"] = "form-group #{wrapper_html_attributes["class"]?}".strip
 
@@ -56,6 +56,14 @@ module FormBuilder
         html_attrs
       end
 
+      def build_html_help_text(help_text : String, html_attrs : StringHash)
+        html_attrs["class"] = "help-text #{html_attrs["class"]?}".strip
+
+        String.build do |s|
+          s << html_attrs.empty? ? %(<div #{build_html_attr_string(html_attrs)}>) : "<div>"
+          s << "#{help_text}</div>"
+        end
+      end
 
     end
   end

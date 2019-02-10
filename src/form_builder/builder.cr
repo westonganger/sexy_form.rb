@@ -6,7 +6,7 @@ module FormBuilder
     @theme : FormBuilder::Themes
     @html : Array(String) = [] of String
 
-    def initialize(theme : (String | Symbol | FormBuilder::Themes)? = nil, @errors : Hash(String, Array(String))? = nil)
+    def initialize(theme : (String | Symbol | FormBuilder::Themes)? = nil)
       if theme
         if theme.is_a?(FormBuilder::Themes)
           @theme = theme
@@ -30,10 +30,13 @@ module FormBuilder
     def field(
       type : (String | Symbol),
       name : (String | Symbol)? = nil,
-      value : (String | Symbol)? = nil,
-      label : (Bool | String | Symbol)? = nil,
+      value : String? = nil,
+      label : (Bool | String)? = nil,
+      help_text : String? = nil,
+      errors : (Array(String) | String)? = nil,
       input_html : (NamedTuple | OptionHash) = OptionHash.new,
       label_html : (NamedTuple | OptionHash) = OptionHash.new,
+      help_text_html : (NamedTuple | OptionHash) = OptionHash.new,
       wrapper_html : (NamedTuple | OptionHash) = OptionHash.new,
       collection : (NamedTuple | OptionHash)? = nil,
     )
@@ -45,16 +48,6 @@ module FormBuilder
 
       if collection && type_str != "select"
         raise ArgumentError.new("Argument :collection is not supported for type: :#{type_str}")
-      end
-
-      if label != false
-        if {nil, true}.includes?(label)
-          if name
-            label_text = titleize(name)
-          end
-        else
-          label_text = label.to_s
-        end
       end
 
       themed_input_html = @theme.input_html_attributes(html_attrs: FormBuilder.safe_string_hash(input_html.is_a?(NamedTuple) ? input_html.to_h : input_html), field_type: type_str)
@@ -69,8 +62,8 @@ module FormBuilder
         end
       end
 
-      if !themed_input_html["value"]? && !value.to_s.empty? && INPUT_TYPES.includes?(type_str)
-        themed_input_html["value"] = value.to_s
+      if !themed_input_html["value"]? && value && !value.to_s.empty? && INPUT_TYPES.includes?(type_str)
+        themed_input_html["value"] = value
       end
 
       if themed_input_html.has_key?("id")
@@ -172,17 +165,25 @@ module FormBuilder
         end
       end
 
-      if label_text
-        html_label = FormBuilder.content(element_name: "label", attrs: themed_label_html) do
-          label_text
+      if label != false
+        if label.is_a?(String)
+          label_text = label
+        elsif {nil, true}.includes?(label) && name
+          label_text = titleize(name)
+        end
+
+        if label_text
+          html_label = FormBuilder.content(element_name: "label", attrs: themed_label_html) do
+            label_text
+          end
         end
       end
 
-      if name && (errors = @errors)
-        field_errors = errors[name]?
+      if help_text
+        html_help_text = @theme.build_html_help_text(field_type: type_str, help_text: help_text, html_attrs: FormBuilder.safe_string_hash(help_text_html.is_a?(NamedTuple) ? help_text_html.to_h : help_text_html))
       end
 
-      @theme.wrap_field(field_type: type_str, html_label: html_label, html_field: html_field.to_s, field_errors: field_errors, wrapper_html_attributes: FormBuilder.safe_string_hash(wrapper_html.is_a?(NamedTuple) ? wrapper_html.to_h : wrapper_html))
+      @theme.wrap_field(field_type: type_str, html_field: html_field.to_s, html_label: html_label, html_help_text: html_help_text, field_errors: errors, wrapper_html_attributes: FormBuilder.safe_string_hash(wrapper_html.is_a?(NamedTuple) ? wrapper_html.to_h : wrapper_html))
     end
 
     private def input_field(type : String, attrs : StringHash? = StringHash.new)
