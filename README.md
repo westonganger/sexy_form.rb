@@ -38,8 +38,7 @@ Out of the box Form Builder can generate HTML markup for the following UI librar
   * `theme: :bulma_vertical`
   * `theme: :bulma_horizontal`
 - Foundation
-  * `theme: :foundation_vertical`
-  * `theme: :foundation_horizontal`
+  * `theme: :foundation`
 - Materialize
   * `theme: :materialize`
 - Milligram

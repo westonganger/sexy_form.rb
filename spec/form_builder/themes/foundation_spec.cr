@@ -1,14 +1,14 @@
 require "../../spec_helper"
 require "./theme_spec_helper"
 
-theme_klass = FormBuilder::Themes::FoundationVertical
+theme_klass = FormBuilder::Themes::Foundation
 theme = theme_klass.new
 
 describe theme_klass do
 
   describe ".theme_name" do
     it "is correct" do
-      theme_klass.theme_name.should eq("foundation_vertical")
+      theme_klass.theme_name.should eq("foundation")
     end
   end
 

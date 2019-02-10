@@ -1,6 +1,6 @@
 module FormBuilder
   class Themes
-    class FoundationVertical < Themes
+    class Foundation < Themes
 
       def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
