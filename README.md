@@ -8,8 +8,6 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 
 # TODO
 
-- Add Checkbox/Radio Support for `collection: {options: opts, selected: sel, disabled: dis}`
-- Ensure Select `collection[:options]` supports complete html option string or Array of html option strings
 - Complete FormBuilder::Themes class for each UI Library
 - Implement HTML for Field Errors in each Theme
 - Complete all missing specs

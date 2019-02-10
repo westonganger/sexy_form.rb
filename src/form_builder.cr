@@ -27,7 +27,7 @@ module FormBuilder
       themed_form_html["enctype"] = "multipart/form-data"
     end
 
-    content(element_name: "form", options: themed_form_html) do
+    content(element_name: "form", attrs: themed_form_html) do
       String.build do |str|
         unless ["get", "post"].includes?(method.to_s)
           str << %(<input type="hidden" name="_method" value="#{method}")
@@ -53,10 +53,10 @@ module FormBuilder
     form(action: action, method: method, theme: theme, errors: errors, form_html: form_html) do; end
   end
 
-  protected def self.content(element_name : String, options : StringHash, &block)
+  protected def self.content(element_name : String, attrs : StringHash, &block)
     String.build do |str|
       str << "<#{element_name}"
-      options.each do |k, v|
+      attrs.each do |k, v|
         next if v.nil?
         str << %( #{k}="#{v}")
       end

@@ -2,8 +2,8 @@ require "../../spec_helper"
 
 ### For Testing Private/Protected Methods
 module FormBuilder
-  def self._content(element_name : String, options : StringHash = StringHash.new, &block)
-    content(element_name: element_name, options: options) do
+  def self._content(element_name : String, attrs : StringHash = StringHash.new, &block)
+    content(element_name: element_name, attrs: attrs) do
       yield
     end
   end
@@ -73,7 +73,7 @@ describe FormBuilder do
 
   describe ".content" do
     it "accepts a block as input" do
-      result = FormBuilder._content(element_name: "div", options: {"id" => "foo"}) do
+      result = FormBuilder._content(element_name: "div", attrs: {"id" => "foo"}) do
         String.build do |str|
           str << "Hello"
         end
@@ -83,8 +83,8 @@ describe FormBuilder do
     end
 
     it "allows nested blocks" do
-      result = FormBuilder._content(element_name: "div", options: {"id" => "foo"}) do
-        FormBuilder._content(element_name: "span", options: {"id" => "bar"}) do
+      result = FormBuilder._content(element_name: "div", attrs: {"id" => "foo"}) do
+        FormBuilder._content(element_name: "span", attrs: {"id" => "bar"}) do
           "Hello"
         end
       end

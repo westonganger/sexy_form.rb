@@ -1,7 +1,7 @@
 module FormBuilder
   class Builder
     private FIELD_TYPES = {"checkbox", "file", "hidden", "password", "radio", "select", "text", "textarea"}
-    private INPUT_TYPES = FIELD_TYPES.to_a - ["select", "textarea"]
+    private INPUT_TYPES = {"checkbox", "file", "hidden", "password", "radio", "text"}
 
     @theme : FormBuilder::Themes
     @html : Array(String) = [] of String
@@ -43,27 +43,8 @@ module FormBuilder
         raise ArgumentError.new("Invalid :type argument, valid field types are: #{FIELD_TYPES.join(", ")}`")
       end
 
-      if collection
-        if type_str == "select"
-          safe_collection = FormBuilder.safe_stringify_hash_keys(collection.is_a?(NamedTuple) ? collection.to_h : collection)
-
-          if !collection["options"]?
-            raise ArgumentError.new("Required argument `collection[:options]` not provided while using field `type: :select`")
-          elsif !collection["options"].is_a?(Array)
-            raise ArgumentError.new("Invalid argument passed to `collection[:options]`, must be an Array`")
-          end
-
-          if value && safe_collection["selected"]?
-            raise ArgumentError.new("Cannot provide :value and :selected arguments together. The :selected argument is recommended for field `type: :select.`")
-          else
-            v = safe_collection["selected"]? || value
-            if v
-              safe_collection["selected"] = v
-            end
-          end
-        else
-          raise ArgumentError.new("Invalid :collection argument passed for field type: #{type_str}, :collection is only allowed with field `type: :select`")
-        end
+      if collection && type_str != "select"
+        raise ArgumentError.new("Argument :collection is not supported for type: :#{type_str}")
       end
 
       if label != false
@@ -79,16 +60,6 @@ module FormBuilder
       themed_input_html = @theme.input_html_attributes(html_attrs: FormBuilder.safe_string_hash(input_html.is_a?(NamedTuple) ? input_html.to_h : input_html), field_type: type_str)
 
       themed_label_html = @theme.label_html_attributes(html_attrs: FormBuilder.safe_string_hash(label_html.is_a?(NamedTuple) ? label_html.to_h : label_html), field_type: type_str)
-
-      if {"checkbox", "radio"}.includes?(type_str)
-        ### Allow passing checked=true/false
-
-        if themed_input_html["checked"]? == "true"
-          themed_input_html["checked"] = "checked"
-        elsif themed_input_html["checked"]? == "false"
-          themed_input_html.delete("checked")
-        end
-      end
 
       if name
         themed_input_html["name"] ||= name.to_s
@@ -106,35 +77,103 @@ module FormBuilder
         themed_label_html["for"] ||= themed_input_html["id"]
       end
 
+      if {"checkbox", "radio"}.includes?(type_str)
+        ### Allow passing checked=true/false
+        if themed_input_html["checked"]? == "true"
+          themed_input_html["checked"] = "checked"
+        elsif themed_input_html["checked"]? == "false"
+          themed_input_html.delete("checked")
+        end
+      end
+
       case type_str
       when "checkbox"
-        html_field = input_field(type: type_str, options: themed_input_html)
+        html_field = input_field(type: type_str, attrs: themed_input_html)
       when "file"
-        html_field = input_field(type: type_str, options: themed_input_html)
+        html_field = input_field(type: type_str, attrs: themed_input_html)
       when "hidden"
-        html_field = input_field(type: type_str, options: themed_input_html)
+        html_field = input_field(type: type_str, attrs: themed_input_html)
       when "password"
-        html_field = input_field(type: type_str, options: themed_input_html)
+        html_field = input_field(type: type_str, attrs: themed_input_html)
       when "radio"
-        html_field = input_field(type: type_str, options: themed_input_html)
+        html_field = input_field(type: type_str, attrs: themed_input_html)
       when "select"
-        if safe_collection
-          html_field = select_field(safe_collection, options: themed_input_html)
+        if !collection
+          raise ArgumentError.new("Required argument `:collection` not provided")
         end
+
+        safe_collection = FormBuilder.safe_stringify_hash_keys(collection.is_a?(NamedTuple) ? collection.to_h : collection)
+
+        if !safe_collection.has_key?("options")
+          raise ArgumentError.new("Required argument `collection[:options]` not provided")
+        end
+
+        if safe_collection["options"].is_a?(Array)
+          collection_options = safe_collection["options"].as(Array).map do |x|
+            if x.is_a?(Enumerable)
+              x.first(2).map{|x| x.responds_to?(:to_s) ? x.to_s : ""}
+            else
+              [(x.responds_to?(:to_s) ? x.to_s : "")]
+            end
+          end
+        elsif safe_collection["options"].is_a?(String)
+          collection_options = safe_collection["options"].as(String)
+        else
+          raise ArgumentError.new("Invalid argument type passed to `collection[:options]`, must be an Array`")
+        end
+
+        if collection_options.is_a?(String)
+          {"selected", "disabled", "include_blank"}.each do |k|
+            if safe_collection.has_key?(k)
+              raise ArgumentError.new("Argument `collection[:#{k}]` is not allowed when passing a pre-made HTML Options String to `collection[:options]`")
+            end
+          end
+        else
+          if safe_collection.has_key?("include_blank") && safe_collection["include_blank"] != false
+            collection_options.unshift(["#{safe_collection["include_blank"]}"])
+          end
+
+          if safe_collection.has_key?("selected")
+            if safe_collection["selected"].is_a?(Array)
+              collection_selected = safe_collection["selected"].as(Array).map{|x| x.responds_to?(:to_s) ? x.to_s : ""}
+            else
+              collection_selected = [safe_collection["selected"].to_s]
+            end
+          end
+
+          if safe_collection.has_key?("disabled")
+            if safe_collection["disabled"].is_a?(Array)
+              collection_disabled = safe_collection["disabled"].as(Array).map{|x| x.responds_to?(:to_s) ? x.to_s : ""}
+            else
+              collection_disabled = [safe_collection["disabled"].to_s]
+            end
+          end
+        end
+
+        if value && safe_collection["selected"]?
+          raise ArgumentError.new("Cannot provide :value and :selected arguments together. The :selected argument is recommended for field `type: :select.`")
+        else
+          v = safe_collection["selected"]? || value
+          if v
+            safe_collection["selected"] = v
+          end
+        end
+
+        html_field = select_field(options: collection_options, selected: collection_selected, disabled: collection_disabled, attrs: themed_input_html)
       when "text"
-        html_field = input_field(type: type_str, options: themed_input_html)
+        html_field = input_field(type: type_str, attrs: themed_input_html)
       when "textarea"
         if themed_input_html.has_key?("size")
           themed_input_html["cols"], themed_input_html["rows"] = themed_input_html.delete("size").to_s.split("x")
         end
 
-        html_field = FormBuilder.content(element_name: type_str, options: themed_input_html) do
+        html_field = FormBuilder.content(element_name: type_str, attrs: themed_input_html) do
           themed_input_html["value"]?
         end
       end
 
       if label_text
-        html_label = FormBuilder.content(element_name: "label", options: themed_label_html) do
+        html_label = FormBuilder.content(element_name: "label", attrs: themed_label_html) do
           label_text
         end
       end
@@ -146,61 +185,45 @@ module FormBuilder
       @theme.wrap_field(field_type: type_str, html_label: html_label, html_field: html_field.to_s, field_errors: field_errors, wrapper_html_attributes: FormBuilder.safe_string_hash(wrapper_html.is_a?(NamedTuple) ? wrapper_html.to_h : wrapper_html))
     end
 
-    private def input_field(type : String, options : StringHash? = StringHash.new)
+    private def input_field(type : String, attrs : StringHash? = StringHash.new)
       unless INPUT_TYPES.includes?(type.to_s)
         raise ArgumentError.new("Invalid input :type, valid input types are `#{INPUT_TYPES.join(", ")}`")
       end
 
-      options.delete("type")
+      attrs.delete("type")
 
-      boolean_attributes = {"disabled"}
+      boolean_opts = {"disabled"}
 
-      boolean_options = options.select(boolean_attributes)
-      tag_options = options.reject!(boolean_attributes).map{|k, v| "#{k}=\"#{v}\""}
-      tag_options = tag_options << boolean_options.keys.join(" ") if !boolean_options.empty?
+      boolean_attrs = attrs.select(boolean_opts)
+      tag_attrs = attrs.reject!(boolean_opts).map{|k, v| "#{k}=\"#{v}\""}
+      tag_attrs = tag_attrs << boolean_attrs.keys.join(" ") if !boolean_attrs.empty?
 
-      "<input type=\"#{type}\"#{" " unless tag_options.empty?}#{tag_options.join(" ")}>"
+      "<input type=\"#{type}\"#{" " unless tag_attrs.empty?}#{tag_attrs.join(" ")}>"
     end
 
-    private def select_field(collection : OptionHash, options : StringHash? = StringHash.new)
-      options_array =  collection["options"].as(Array).map{|x| x.is_a?(Enumerable) ? x : [x.to_s]}
+    private def select_field(options : (Array(Array(String)) | String)? = nil, selected : Array(String)? = nil, disabled : Array(String)? = nil, attrs : StringHash? = StringHash.new)
+      FormBuilder.content(element_name: "select", attrs: attrs) do
+        if options
+          if options.is_a?(String)
+            options
+          else
+            String.build do |str|
+              options.map do |option|
+                v = option[0]?.to_s
 
-      if collection.has_key?("include_blank") && collection["include_blank"] != false
-        options_array.unshift(["#{collection["include_blank"]}"])
-      end
+                str << "<option value=\"#{v}\""
 
-      if collection.has_key?("selected")
-        if collection["selected"].is_a?(Array)
-          selected_array = collection["selected"].as(Array).map{|x| x.to_s}
-        else
-          selected_array = [collection["selected"].to_s]
-        end
-      end
+                if selected
+                  str << "#{" selected=\"selected\"" if selected.includes?(v)}"
+                end
 
-      if collection.has_key?("disabled")
-        if collection["disabled"].is_a?(Array)
-          disabled_array = collection["disabled"].as(Array).map{|x| x.to_s}
-        else
-          disabled_array = [collection["disabled"].to_s]
-        end
-      end
+                if disabled
+                  str << "#{" disabled=\"disabled\"" if disabled.includes?(v)}"
+                end
 
-      FormBuilder.content(element_name: "select", options: options) do
-        String.build do |str|
-          options_array.map do |option|
-            v = option[0]?.to_s
-
-            str << "<option value=\"#{v}\""
-
-            if selected_array
-              str << "#{" selected=\"selected\"" if selected_array.includes?(v)}"
+                str << ">#{option[1]? || v}</option>"
+              end
             end
-
-            if disabled_array
-              str << "#{" disabled=\"disabled\"" if disabled_array.includes?(v)}"
-            end
-
-            str << ">#{option[1]? || v}</option>"
           end
         end
       end
