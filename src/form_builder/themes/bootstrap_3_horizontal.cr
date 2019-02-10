@@ -13,7 +13,10 @@ module FormBuilder
 
       def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
-          s << %(<div class="form-group">)
+          wrapper_html_attributes["class"] = "form-group #{wrapper_html_attributes["class"]?}".strip
+
+          attr_str = build_html_attr_string(wrapper_html_attributes)
+          s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
           if {"checkbox", "radio"}.includes?(field_type)
             s << %(<div class="#{@offset_class} #{@column_classes[1]}">)
@@ -37,23 +40,19 @@ module FormBuilder
       end
 
       def input_html_attributes(html_attrs : StringHash, field_type : String)
-        unless {"checkbox", "radio"}.includes?(field_type)
-          html_attrs["class"] = "#{html_attrs["class"]?} form-control".strip
-        end
-
         html_attrs
       end
 
       def label_html_attributes(html_attrs : StringHash, field_type : String)
         unless {"checkbox", "radio"}.includes?(field_type)
-          html_attrs["class"] = "#{html_attrs["class"]?} #{@column_classes[0]} control-label".strip
+          html_attrs["class"] = " #{@column_classes[0]} control-label #{html_attrs["class"]?}".strip
         end
 
         html_attrs
       end
 
       def form_html_attributes(html_attrs : StringHash)
-        html_attrs["class"] = "#{html_attrs["class"]?} form-horizontal".strip
+        html_attrs["class"] = "form-horizontal #{html_attrs["class"]?}".strip
         html_attrs
       end
 

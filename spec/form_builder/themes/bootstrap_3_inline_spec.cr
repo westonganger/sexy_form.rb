@@ -24,12 +24,12 @@ describe theme_klass do
         str << %(<form class="form-inline" method="post">)
           str << %(<div class="form-group">)
             str << %(<label for="email">Email</label>)
-            str << %(<input type="text" class="form-control" name="email" id="email">)
+            str << %(<input type="text" name="email" id="email">)
           str << "</div>"
 
           str << %(<div class="form-group">)
             str << %(<label for="password">Password</label>)
-            str << %(<input type="password" class="form-control" name="password" id="password">)
+            str << %(<input type="password" name="password" id="password">)
           str << "</div>"
 
           str << %(<div class="form-group">)
@@ -57,10 +57,6 @@ describe theme_klass do
     FIELD_TYPES.each do |field_type|
       it "returns correct #{field_type} attributes" do
         attrs = StringHash.new
-
-        unless {"checkbox", "radio"}.includes?(field_type)
-          attrs["class"] = "form-control"
-        end
 
         theme.input_html_attributes(html_attrs: StringHash.new, field_type: field_type).should eq(attrs)
       end

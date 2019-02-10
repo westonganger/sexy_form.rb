@@ -7,17 +7,14 @@ module FormBuilder
       end
 
       def input_html_attributes(html_attrs : StringHash, field_type : String)
-        html_attrs["class"] = "form-control"
         html_attrs
       end
 
       def label_html_attributes(html_attrs : StringHash, field_type : String)
-        html_attrs["class"] = "control"
         html_attrs
       end
 
       def form_html_attributes(html_attrs : StringHash)
-        html_attrs["class"] = "form-horizontal"
         html_attrs
       end
 

@@ -4,6 +4,9 @@ module FormBuilder
 
       def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
+          attr_str = build_html_attr_string(wrapper_html_attributes)
+          s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
+
           if {"checkbox", "radio"}.includes?(field_type)
             s << html_field
             s << html_label
@@ -11,6 +14,8 @@ module FormBuilder
             s << html_label
             s << html_field
           end
+
+          s << "</div>"
         end
       end
 
@@ -20,7 +25,7 @@ module FormBuilder
 
       def label_html_attributes(html_attrs : StringHash, field_type : String)
         if {"checkbox", "radio"}.includes?(field_type)
-          html_attrs["class"] = "#{html_attrs["class"]?} label-inline".strip
+          html_attrs["class"] = "label-inline #{html_attrs["class"]?}".strip
         end
 
         html_attrs

@@ -4,7 +4,9 @@ module FormBuilder
 
       def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
-          s << "<div>"
+          attr_str = build_html_attr_string(wrapper_html_attributes)
+          s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
+
           s << html_label
           s << html_field
           s << "</div>"

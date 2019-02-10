@@ -8,7 +8,10 @@ module FormBuilder
 
       def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
-          s << %(<div class="control-group">)
+          wrapper_html_attributes["class"] = "control-group #{wrapper_html_attributes["class"]?}".strip
+
+          attr_str = build_html_attr_string(wrapper_html_attributes)
+          s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
           if {"checkbox", "radio"}.includes?(field_type)
             s << %(<div class="controls">)
@@ -38,9 +41,9 @@ module FormBuilder
         html_attrs["class"] ||= ""
 
         if {"checkbox", "radio"}.includes?(field_type)
-          html_attrs["class"] = "#{html_attrs["class"]} #{field_type}".strip
+          html_attrs["class"] = "#{field_type} #{html_attrs["class"]}".strip
         else
-          html_attrs["class"] = "#{html_attrs["class"]} control-label".strip
+          html_attrs["class"] = "control-label #{html_attrs["class"]}".strip
         end
 
         html_attrs

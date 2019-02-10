@@ -13,7 +13,10 @@ module FormBuilder
 
       def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
-          s << %(<div class="form-group row">)
+          wrapper_html_attributes["class"] = "form-group row #{wrapper_html_attributes["class"]?}".strip
+
+          attr_str = build_html_attr_string(wrapper_html_attributes)
+          s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
           if {"checkbox", "radio"}.includes?(field_type)
             s << %(<div class="#{@offset_class} #{@column_classes[1]}">)
@@ -35,11 +38,11 @@ module FormBuilder
       def input_html_attributes(html_attrs : StringHash, field_type : String)
         case field_type
         when "checkbox", "radio"
-          html_attrs["class"] = "#{html_attrs["class"]?} form-check-input".strip
+          html_attrs["class"] = "form-check-input #{html_attrs["class"]?}".strip
         when "file"
-          html_attrs["class"] = "#{html_attrs["class"]?} form-control-file".strip
+          html_attrs["class"] = "form-control-file #{html_attrs["class"]?}".strip
         else
-          html_attrs["class"] = "#{html_attrs["class"]?} form-control".strip
+          html_attrs["class"] = "form-control #{html_attrs["class"]?}".strip
         end
 
         html_attrs
@@ -47,9 +50,9 @@ module FormBuilder
 
       def label_html_attributes(html_attrs : StringHash, field_type : String)
         if {"checkbox", "radio"}.includes?(field_type)
-          html_attrs["class"] = "#{html_attrs["class"]?} form-check-label".strip
+          html_attrs["class"] = "form-check-label #{html_attrs["class"]?}".strip
         else
-          html_attrs["class"] = "#{html_attrs["class"]?} #{@column_classes[0]} col-form-label".strip
+          html_attrs["class"] =  "#{@column_classes[0]} col-form-label #{html_attrs["class"]?}".strip
         end
 
         html_attrs

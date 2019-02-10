@@ -22,15 +22,22 @@ describe theme_klass do
     it "matches docs example with labels" do
       expected = String.build do |str|
         str << %(<form class="form-inline" method="post">)
-          str << %(<label for="email">Email</label>)
-          str << %(<input type="text" class="input-small" placeholder="Email" name="email" id="email">)
+          str << "<div>"
+            str << %(<label for="email">Email</label>)
+            str << %(<input type="text" class="input-small" placeholder="Email" name="email" id="email">)
+          str << "</div>"
 
-          str << %(<label for="password">Password</label>)
-          str << %(<input type="password" class="input-small" placeholder="Password" name="password" id="password">)
+          str << "<div>"
+            str << %(<label for="password">Password</label>)
+            str << %(<input type="password" class="input-small" placeholder="Password" name="password" id="password">)
+          str << "</div>"
 
-          str << %(<label class="checkbox" for="remember_me">)
-            str << %(<input type="checkbox" name="remember_me" id="remember_me"> Remember Me)
-          str << %(</label>)
+          str << "<div>"
+            str << %(<label class="checkbox" for="remember_me">)
+              str << %(<input type="checkbox" name="remember_me" id="remember_me"> Remember Me)
+            str << %(</label>)
+          str << "</div>"
+
           str << %(<button type="submit" class="btn">Sign in</button>)
         str <<%(</form>)
       end

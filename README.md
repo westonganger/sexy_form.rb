@@ -8,10 +8,10 @@ Dead simple HTML form builder for Crystal with built-in support for many popular
 
 # TODO
 
+- Add Checkbox/Radio Support for `collection: {options: opts, selected: sel, disabled: dis}`
+- Ensure Select `collection[:options]` supports complete html option string or Array of html option strings
 - Complete FormBuilder::Themes class for each UI Library
-- Implement Wrapper HTML attributes for each theme
 - Implement HTML for Field Errors in each Theme
-- Consider Adding Checkbox/Radio Support for `collection: {options: opts, selected: sel, disabled: dis}`
 - Complete all missing specs
 
 # Features
@@ -122,7 +122,7 @@ The following field types are supported:
 
   .row
     - collection = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"]]
-    == f.field name: "product[type]", label: "Type", type: :select, collection: collection, selected: ["B"], disabled: ["C"]
+    == f.field name: "product[type]", label: "Type", type: :select, collection: {options: collection, selected: ["B"], disabled: ["C"]}
 ```
 
 ## FormBuilder in Plain Crystal Code
@@ -181,33 +181,46 @@ module FormBuilder
   class Themes
     class Custom < Themes
 
-      ### This method only required if your theme name doesnt perfectly match the `.underscore` of the theme class name
+      ### (Optional) If your theme name doesnt perfectly match the `.underscore` of the theme class name
       def self.theme_name
         "custom"
       end
 
-      def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : Hash(String, String))
-        String.build do |str|
-          str << "Foo to the Bar"
+      ### (Optional) If your theme requires additional variables similar to `Bootstrap3Horizontal.new(columns: ["col-sm-3", "col-sm-9"])`
+      def initialize
+        ### For an example see `src/form_builders/themes/bootstrap_3_horizontal.cr`
+      end
+
+      def wrap_field(field_type : String, html_label : String?, html_field : String, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
+        String.build do |s|
+          wrapper_html_attributes["class"] = "form-group #{wrapper_html_attributes["class"]?}".strip
+          attr_str = build_html_attr_string(wrapper_html_attributes)
+
+          s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
+
+          s << html_label
+          s << html_field
+
+          s << "</div>"
         end
       end
 
       def input_html_attributes(html_attrs : Hash(String, String), field_type : String)
-        html_attrs["class"] = "form-label other-class"
-        html_attrs["style"] = "color: blue;"
-        html_attrs["data-foo"] = "bar"
+        html_attrs["class"] = "form-field other-class #{html_attrs["class"]?}".strip
+        html_attrs["style"] = "color: blue; #{html_attrs["style"]?}".strip
+        html_attrs["data-foo"] = "bar #{html_attrs["class"]?}"
         html_attrs
       end
 
       def label_html_attributes(html_attrs : Hash(String, String), field_type : String)
-        html_attrs["class"] = "form-label other-class"
-        html_attrs["style"] = "color: red;"
-        html_attrs["data-foo"] = "bar"
+        html_attrs["class"] = "form-label other-class #{html_attrs["class"]?}".strip
+        html_attrs["style"] = "color: red; #{html_attrs["style"]?}".strip
+        html_attrs["data-foo"] = "bar #{html_attrs["class"]?}"
         html_attrs
       end
 
       def form_html_attributes(html_attrs : Hash(String, String))
-        html_attrs["class"] = "form-inline"
+        html_attrs["class"] = "form-inline #{html_attrs["class"]}"
         html_attrs
       end
 
