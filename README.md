@@ -200,8 +200,12 @@ module FormBuilder
 
           s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
-          s << html_label
-          s << html_field
+          if {"checkbox", "radio"}.includes?(field_type) && html_label && (i = html_label.index(">"))
+            s << html_label.insert(i+1, "#{html_field} ")
+          else
+            s << html_label
+            s << html_field
+          end
 
           s << "</div>"
         end

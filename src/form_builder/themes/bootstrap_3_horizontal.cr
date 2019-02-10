@@ -22,8 +22,8 @@ module FormBuilder
             s << %(<div class="#{@offset_class} #{@column_classes[1]}">)
             s << %(<div class="#{field_type}">)
 
-            if html_label && (i = html_label.index("\">"))
-              s << "#{html_label.insert(i+2, "#{html_field} ")}"
+            if html_label
+              s << html_label.sub("\">", "\">#{html_field} ")
             else
               s << html_field
             end

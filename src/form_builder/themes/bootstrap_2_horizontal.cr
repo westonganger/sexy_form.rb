@@ -16,8 +16,8 @@ module FormBuilder
           if {"checkbox", "radio"}.includes?(field_type)
             s << %(<div class="controls">)
 
-            if html_label && (i = html_label.index(">"))
-              s << "#{html_label.insert(i+1, "#{html_field} ")}"
+            if html_label
+              s << html_label.sub("\">", "\">#{html_field} ")
             else
               s << html_label
               s << html_field

@@ -9,8 +9,8 @@ module FormBuilder
           attr_str = build_html_attr_string(wrapper_html_attributes)
           s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
-          if {"checkbox", "radio"}.includes?(field_type) && html_label && (i = html_label.index(">"))
-            s << %(<div class="control">#{html_label.insert(i+1, "#{html_field} ")}</div>)
+          if {"checkbox", "radio"}.includes?(field_type) && html_label
+            s << %(<div class="control">#{html_label.sub("\">", "\">#{html_field} ")}</div>)
           else
             s << html_label
             s << %(<div class="control">#{html_field}</div>)
