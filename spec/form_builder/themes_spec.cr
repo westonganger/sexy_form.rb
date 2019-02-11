@@ -45,10 +45,14 @@ describe FormBuilder::Themes do
       FIELD_TYPES.each do |field_type|
         it "theme: #{theme_class.name}, field_type: #{field_type}" do
           if field_type == "select"
-            b.field type: field_type, collection: {options: [["foo", "bar"]]}
+            actual = b.field type: :select, name: :foobar, label: "Hello", help_text: "World", errors: ["error1", "error2"], input_html: {class: "foo"}, label_html: {class: "foo"}, wrapper_html: {class: "foo"}, help_text_html: {class: "foo"}, error_html: {class: "foo"}, collection: {options: [["foo", "bar"], "foobar"], selected: "foobar", disabled: "other", include_blank: true}
           else
-            b.field type: field_type
+            actual = b.field type: field_type, name: :foobar, label: "Hello", help_text: "World", value: "foo", errors: ["error1", "error2"], input_html: {class: "foo"}, label_html: {class: "foo"}, wrapper_html: {class: "foo"}, help_text_html: {class: "foo"}, error_html: {class: "foo"}
           end
+
+          ### Ensure No Incorrect/Unparenthesized Ternary Values
+          actual.includes?("true").should eq(false)
+          actual.includes?("false").should eq(false)
         end
       end
     end

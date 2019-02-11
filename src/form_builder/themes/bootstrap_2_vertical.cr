@@ -55,22 +55,24 @@ module FormBuilder
         html_attrs
       end
 
-      def build_html_help_text(help_text : String, html_attrs : StringHash)
+      def build_html_help_text(help_text : String, html_attrs : StringHash, field_type : String)
         html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
 
         String.build do |s|
-          s << html_attrs.empty? ? "<span>" : %(<span #{FormBuilder.build_html_attr_string(html_attrs)}>)
+          s << (html_attrs.empty? ? "<span>" : %(<span #{FormBuilder.build_html_attr_string(html_attrs)}>))
           s << help_text
           s << "</span>"
         end
       end
 
-      def build_html_error(error : String, html_attrs : StringHash)
+      def build_html_error(error : String, html_attrs : StringHash, field_type : String)
         html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
 
-        s << html_attrs.empty? ? "<span>" : %(<span #{FormBuilder.build_html_attr_string(html_attrs)}>)
-        s << error
-        s << "</span>"
+        String.build do |s|
+          s << (html_attrs.empty? ? "<span>" : %(<span #{FormBuilder.build_html_attr_string(html_attrs)}>))
+          s << error
+          s << "</span>"
+        end
       end
 
     end

@@ -1,6 +1,6 @@
 module FormBuilder
   class Builder
-    alias CollectionHash = Hash(String, (String | Symbol | Bool | Array(String) | Array(Array(String)) | Nil))
+    alias CollectionHash = Hash(String, (String | Symbol | Bool | Array(String) | Array(Array(String)) | Array(String | Array(String)) | Nil))
 
     private FIELD_TYPES = {"checkbox", "file", "hidden", "password", "radio", "select", "text", "textarea"}
     private INPUT_TYPES = {"checkbox", "file", "hidden", "password", "radio", "text"}
@@ -41,6 +41,7 @@ module FormBuilder
       label_html : (NamedTuple | OptionHash) = OptionHash.new,
       help_text_html : (NamedTuple | OptionHash) = OptionHash.new,
       wrapper_html : (NamedTuple | OptionHash) = OptionHash.new,
+      error_html : (NamedTuple | OptionHash) = OptionHash.new,
       collection : (NamedTuple | OptionHash)? = nil,
     )
       type_str = type.to_s
@@ -64,6 +65,10 @@ module FormBuilder
           if !errors.empty?
             safe_errors = errors
           end
+        end
+
+        if safe_errors
+          safe_errors.map!{|x| @theme.build_html_error(error: x, field_type: type_str, html_attrs: FormBuilder.safe_string_hash(error_html.is_a?(NamedTuple) ? error_html.to_h : error_html))}
         end
       end
 
@@ -144,7 +149,7 @@ module FormBuilder
           end
         else
           if safe_collection.has_key?("include_blank") && safe_collection["include_blank"] != false
-            collection_options.unshift(["#{safe_collection["include_blank"]}"])
+            collection_options.unshift([(safe_collection["include_blank"]? == true ? "" : "#{safe_collection["include_blank"]}")])
           end
 
           if safe_collection.has_key?("selected")

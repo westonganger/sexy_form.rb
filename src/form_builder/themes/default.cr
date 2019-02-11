@@ -32,18 +32,20 @@ module FormBuilder
         html_attrs
       end
 
-      def build_html_help_text(help_text : String, html_attrs : StringHash)
+      def build_html_help_text(help_text : String, html_attrs : StringHash, field_type : String)
         String.build do |s|
-          s << html_attrs.empty? ? "<div>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>)
+          s << (html_attrs.empty? ? "<div>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>))
           s << help_text
           s << "</div>"
         end
       end
 
-      def build_html_error(error : String, html_attrs : StringHash)
-        s << html_attrs.empty? ? "<div>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>)
-        s << error
-        s << "</div>"
+      def build_html_error(error : String, html_attrs : StringHash, field_type : String)
+        String.build do |s|
+          s << (html_attrs.empty? ? "<div>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>))
+          s << error
+          s << "</div>"
+        end
       end
 
     end

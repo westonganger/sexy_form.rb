@@ -68,22 +68,24 @@ module FormBuilder
         html_attrs
       end
 
-      def build_html_help_text(help_text : String, html_attrs : StringHash)
+      def build_html_help_text(help_text : String, html_attrs : StringHash, field_type : String)
         html_attrs["class"] = "form-text #{html_attrs["class"]?}".strip
 
         String.build do |s|
-          s << html_attrs.empty? ? "<small>" : %(<small #{FormBuilder.build_html_attr_string(html_attrs)}>)
+          s << (html_attrs.empty? ? "<small>" : %(<small #{FormBuilder.build_html_attr_string(html_attrs)}>))
           s << help_text
           s << "</small>"
         end
       end
 
-      def build_html_error(error : String, html_attrs : StringHash)
+      def build_html_error(error : String, html_attrs : StringHash, field_type : String)
         html_attrs["class"] = "invalid-feedback #{html_attrs["class"]?}".strip
 
-        s << html_attrs.empty? ? "<div>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>)
-        s << error
-        s << "</div>"
+        String.build do |s|
+          s << (html_attrs.empty? ? "<div>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>))
+          s << error
+          s << "</div>"
+        end
       end
 
     end

@@ -37,7 +37,7 @@ module FormBuilder
         html_attrs
       end
 
-      def build_html_help_text(help_text : String, html_attrs : StringHash)
+      def build_html_help_text(help_text : String, html_attrs : StringHash, field_type : String)
         html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
 
         String.build do |s|
@@ -47,13 +47,15 @@ module FormBuilder
         end
       end
 
-      def build_html_error(error : String, html_attrs : StringHash)
+      def build_html_error(error : String, html_attrs : StringHash, field_type : String)
         html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
         html_attrs["style"] = "color: red; #{html_attrs["style"]?}".strip
 
-        s << %(<small #{FormBuilder.build_html_attr_string(html_attrs)}>)
-        s << error
-        s << "</small>"
+        String.build do |s|
+          s << %(<small #{FormBuilder.build_html_attr_string(html_attrs)}>)
+          s << error
+          s << "</small>"
+        end
       end
 
     end

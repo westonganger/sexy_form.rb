@@ -102,7 +102,8 @@ The following field types are supported:
       ### input_html : (Hash | NamedTuple)? ### contains attributes to be added to the input/field
       ### label_html : (Hash | NamedTuple)? ### contains attributes to be added to the label
       ### wrapper_html : (Hash | NamedTuple)? ### contains attributes to be added to the outer wrapper for the label and input
-      ### help_text_html : (Hash | NamedTuple)? ### contains attributes to be added to the outer wrapper for the label and input
+      ### help_text_html : (Hash | NamedTuple)? ### contains attributes to be added to the help text container
+      ### error_html : (Hash | NamedTuple)? ### contains attributes to be added to the error container(s) 
  
       == f.field name: "product[name]", label: "Name", type: :text, errors: product_errors["name"]
 
@@ -243,7 +244,7 @@ module FormBuilder
         html_attrs["class"] = "help-text #{html_attrs["class"]?}".strip
 
         String.build do |s|
-          s << html_attrs.empty? ? "<div>" : %(<div #{build_html_attr_string(html_attrs)}>)
+          s << (html_attrs.empty? ? "<div>" : %(<div #{build_html_attr_string(html_attrs)}>)
           s << help_text
           s << "</div>"
         end
@@ -254,7 +255,7 @@ module FormBuilder
         html_attrs["style"] = "color: red; #{html_attrs["style"]?}".strip
 
         String.build do |s|
-          s << html_attrs.empty? ? "<div>" : %(<div #{build_html_attr_string(html_attrs)}>)
+          s << (html_attrs.empty? ? "<div>" : %(<div #{build_html_attr_string(html_attrs)}>)
           s << error
           s << "</div>"
         end

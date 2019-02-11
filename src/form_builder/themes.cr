@@ -34,9 +34,9 @@ module FormBuilder
 
     abstract def form_html_attributes(html_attrs : StringHash)  : StringHash
 
-    abstract def build_html_help_text(help_text : String, html_attrs : StringHash)  : String
+    abstract def build_html_help_text(help_text : String, html_attrs : StringHash, field_type : String)  : String
 
-    abstract def build_html_error(error : String, html_attrs : StringHash)  : String
+    abstract def build_html_error(error : String, html_attrs : StringHash, field_type : String)  : String
 
   end
 end
