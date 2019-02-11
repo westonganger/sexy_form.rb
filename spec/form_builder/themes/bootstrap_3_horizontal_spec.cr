@@ -66,7 +66,7 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         attrs = StringHash.new
 
-        theme.input_html_attributes(html_attrs: StringHash.new, field_type: field_type).should eq(attrs)
+        theme.input_html_attributes(html_attrs: StringHash.new, field_type: field_type, has_errors?: false).should eq(attrs)
       end
     end
   end
@@ -80,7 +80,7 @@ describe theme_klass do
           attrs["class"] = "col-sm-3 control-label"
         end
 
-        theme.label_html_attributes(html_attrs: StringHash.new, field_type: field_type).should eq(attrs)
+        theme.label_html_attributes(html_attrs: StringHash.new, field_type: field_type, has_errors?: false).should eq(attrs)
       end
     end
   end

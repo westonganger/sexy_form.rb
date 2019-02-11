@@ -6,9 +6,9 @@ module FormBuilder
         "bootstrap_3_vertical"
       end
 
-      def wrap_field(field_type : String, html_field : String, html_label : String?, html_help_text : String?, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
+      def wrap_field(field_type : String, html_field : String, html_label : String?, html_help_text : String?, html_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
-          wrapper_html_attributes["class"] = "form-group #{wrapper_html_attributes["class"]?}".strip
+          wrapper_html_attributes["class"] = "form-group#{" has-error" if html_errors} #{wrapper_html_attributes["class"]?}".strip
 
           attr_str = build_html_attr_string(wrapper_html_attributes)
           s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
@@ -25,16 +25,17 @@ module FormBuilder
           end
 
           s << html_help_text
+          s << html_errors.join if html_errors
 
           s << "</div>"
         end
       end
 
-      def input_html_attributes(html_attrs : StringHash, field_type : String)
+      def input_html_attributes(html_attrs : StringHash, field_type : String, has_errors? : Bool)
         html_attrs
       end
 
-      def label_html_attributes(html_attrs : StringHash, field_type : String)
+      def label_html_attributes(html_attrs : StringHash, field_type : String, has_errors? : Bool)
         html_attrs
       end
 
@@ -43,12 +44,21 @@ module FormBuilder
       end
 
       def build_html_help_text(help_text : String, html_attrs : StringHash)
-        html_attrs["class"] = "help-text #{html_attrs["class"]?}".strip
+        html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
 
         String.build do |s|
-          s << html_attrs.empty? ? %(<div #{build_html_attr_string(html_attrs)}>) : "<div>"
-          s << "#{help_text}</div>"
+          s << html_attrs.empty? ? "<span>" : %(<div #{build_html_attr_string(html_attrs)}>)
+          s << help_text
+          s << "</span>"
         end
+      end
+
+      def build_html_error(error : String, html_attrs : StringHash)
+        html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
+
+        s << html_attrs.empty? ? "<span>" : %(<div #{build_html_attr_string(html_attrs)}>)
+        s << error
+        s << "</span>"
       end
 
     end

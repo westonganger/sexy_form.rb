@@ -74,7 +74,7 @@ describe theme_klass do
           attrs["class"] = "form-control"
         end
 
-        theme.input_html_attributes(html_attrs: StringHash.new, field_type: field_type).should eq(attrs)
+        theme.input_html_attributes(html_attrs: StringHash.new, field_type: field_type, has_errors?: false).should eq(attrs)
       end
     end
   end
@@ -90,7 +90,7 @@ describe theme_klass do
           attrs["class"] = "col-sm-3 col-form-label"
         end
 
-        theme.label_html_attributes(html_attrs: StringHash.new, field_type: field_type).should eq(attrs)
+        theme.label_html_attributes(html_attrs: StringHash.new, field_type: field_type, has_errors?: false).should eq(attrs)
       end
     end
   end

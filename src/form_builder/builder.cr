@@ -50,9 +50,23 @@ module FormBuilder
         raise ArgumentError.new("Argument :collection is not supported for type: :#{type_str}")
       end
 
-      themed_input_html = @theme.input_html_attributes(html_attrs: FormBuilder.safe_string_hash(input_html.is_a?(NamedTuple) ? input_html.to_h : input_html), field_type: type_str)
+      if errors
+        if errors.is_a?(String)
+          if !errors.empty?
+            safe_errors = [errors]
+          end
+        else
+          errors.reject!{|x| x.empty?}
 
-      themed_label_html = @theme.label_html_attributes(html_attrs: FormBuilder.safe_string_hash(label_html.is_a?(NamedTuple) ? label_html.to_h : label_html), field_type: type_str)
+          if !errors.empty?
+            safe_errors = errors
+          end
+        end
+      end
+
+      themed_input_html = @theme.input_html_attributes(html_attrs: FormBuilder.safe_string_hash(input_html.is_a?(NamedTuple) ? input_html.to_h : input_html), field_type: type_str, has_errors?: !safe_errors.nil?)
+
+      themed_label_html = @theme.label_html_attributes(html_attrs: FormBuilder.safe_string_hash(label_html.is_a?(NamedTuple) ? label_html.to_h : label_html), field_type: type_str, has_errors?: !safe_errors.nil?)
 
       if name
         themed_input_html["name"] ||= name.to_s
@@ -183,26 +197,12 @@ module FormBuilder
         html_help_text = @theme.build_html_help_text(field_type: type_str, help_text: help_text, html_attrs: FormBuilder.safe_string_hash(help_text_html.is_a?(NamedTuple) ? help_text_html.to_h : help_text_html))
       end
 
-      if errors
-        if errors.is_a?(String)
-          if !errors.empty?
-            safe_errors = [errors]
-          end
-        else
-          errors.reject!{|x| x.empty?}
-
-          if !errors.empty?
-            safe_errors = errors
-          end
-        end
-      end
-
       @theme.wrap_field(
         field_type: type_str,
         html_field: html_field.to_s,
         html_label: html_label,
         html_help_text: html_help_text,
-        field_errors: safe_errors,
+        html_errors: safe_errors,
         wrapper_html_attributes: FormBuilder.safe_string_hash(wrapper_html.is_a?(NamedTuple) ? wrapper_html.to_h : wrapper_html)
       )
     end

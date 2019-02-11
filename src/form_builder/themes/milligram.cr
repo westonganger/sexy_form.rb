@@ -2,7 +2,7 @@ module FormBuilder
   class Themes
     class Milligram < Themes
 
-      def wrap_field(field_type : String, html_field : String, html_label : String?, html_help_text : String?, field_errors : Array(String)?, wrapper_html_attributes : StringHash)
+      def wrap_field(field_type : String, html_field : String, html_label : String?, html_help_text : String?, html_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
           attr_str = build_html_attr_string(wrapper_html_attributes)
           s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
@@ -15,16 +15,17 @@ module FormBuilder
             s << html_field
           end
           s << html_help_text
+          s << html_errors.join if html_errors
 
           s << "</div>"
         end
       end
 
-      def input_html_attributes(html_attrs : StringHash, field_type : String)
+      def input_html_attributes(html_attrs : StringHash, field_type : String, has_errors? : Bool)
         html_attrs
       end
 
-      def label_html_attributes(html_attrs : StringHash, field_type : String)
+      def label_html_attributes(html_attrs : StringHash, field_type : String, has_errors? : Bool)
         if {"checkbox", "radio"}.includes?(field_type)
           html_attrs["class"] = "label-inline #{html_attrs["class"]?}".strip
         end
@@ -37,12 +38,22 @@ module FormBuilder
       end
 
       def build_html_help_text(help_text : String, html_attrs : StringHash)
-        html_attrs["class"] = "help-text #{html_attrs["class"]?}".strip
+        html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
 
         String.build do |s|
-          s << html_attrs.empty? ? %(<div #{build_html_attr_string(html_attrs)}>) : "<div>"
-          s << "#{help_text}</div>"
+          s << %(<small #{build_html_attr_string(html_attrs)}>)
+          s << help_text
+          s << "</small>"
         end
+      end
+
+      def build_html_error(error : String, html_attrs : StringHash)
+        html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
+        html_attrs["style"] = "color: red; #{html_attrs["style"]?}".strip
+
+        s << %(<small #{build_html_attr_string(html_attrs)}>)
+        s << error
+        s << "</small>"
       end
 
     end
