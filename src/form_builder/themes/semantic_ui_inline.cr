@@ -6,7 +6,7 @@ module FormBuilder
         String.build do |s|
           wrapper_html_attributes["class"] = "inline field#{" error" if html_errors} #{wrapper_html_attributes["class"]?}".strip
 
-          attr_str = build_html_attr_string(wrapper_html_attributes)
+          attr_str = FormBuilder.build_html_attr_string(wrapper_html_attributes)
           s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
           if {"checkbox", "radio"}.includes?(field_type)
@@ -40,7 +40,7 @@ module FormBuilder
 
       def build_html_help_text(help_text : String, html_attrs : StringHash)
         String.build do |s|
-          s << html_attrs.empty? ? "<div>" : %(<div #{build_html_attr_string(html_attrs)}>)
+          s << html_attrs.empty? ? "<div>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>)
           s << help_text
           s << "</div>"
         end
@@ -49,7 +49,7 @@ module FormBuilder
       def build_html_error(error : String, html_attrs : StringHash)
         html_attrs["style"] = "color: red; #{html_attrs["style"]?}".strip
 
-        s << html_attrs.empty? ? "<div>" : %(<div #{build_html_attr_string(html_attrs)}>)
+        s << html_attrs.empty? ? "<div>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>)
         s << error
         s << "</div>"
       end

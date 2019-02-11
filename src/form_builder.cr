@@ -26,18 +26,20 @@ module FormBuilder
       themed_form_html["enctype"] = "multipart/form-data"
     end
 
-    content(element_name: "form", attrs: themed_form_html) do
-      String.build do |str|
-        unless ["get", "post"].includes?(method.to_s)
-          str << %(<input type="hidden" name="_method" value="#{method}")
-        end
+    String.build do |str|
+      str << %(<form #{build_html_attr_string(themed_form_html)}>)
 
-        yield builder
-
-        unless builder.html_string.empty?
-          str << builder.html_string
-        end
+      unless ["get", "post"].includes?(method.to_s)
+        str << %(<input type="hidden" name="_method" value="#{method}")
       end
+
+      yield builder
+
+      unless builder.html_string.empty?
+        str << builder.html_string
+      end
+
+      str << "</form>"
     end
   end
 
@@ -51,15 +53,8 @@ module FormBuilder
     form(action: action, method: method, theme: theme, form_html: form_html) do; end
   end
 
-  protected def self.content(element_name : String, attrs : StringHash, &block)
-    String.build do |str|
-      str << "<#{element_name}"
-      attrs.each do |k, v|
-        next if v.nil?
-        str << %( #{k}="#{v}")
-      end
-      str << ">#{yield}</#{element_name}>"
-    end
+  protected def self.build_html_attr_string(h : Hash)
+    h.map{|k, v| "#{k}=\"#{v}\""}.join(" ")
   end
 
   protected def self.safe_string_hash(h : Hash)
@@ -74,7 +69,7 @@ module FormBuilder
     end
   end
 
-  protected def self.safe_stringify_hash_keys(h : Hash)
+  protected def self.safe_string_option_hash(h : Hash)
     h.each_with_object(StringOptionHash.new) do |(k, v), new_h|
       unless new_h.has_key?(k.to_s)
         if k.is_a?(String)

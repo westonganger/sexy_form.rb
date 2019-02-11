@@ -25,6 +25,10 @@ describe FormBuilder::Builder do
         end
       end
 
+      it "does not allow collection option" do
+        # TODO
+      end
+
     end
 
     describe "select fields" do
@@ -34,16 +38,18 @@ describe FormBuilder::Builder do
         builder.field(type: :select, label: false, name: "my-great-text-input", input_html: {foo: :bar}, collection: {options: ["foo", "bar"]}).should eq(expected)
       end
 
-      it "allows :selected option" do
-        # TODO
-      end
+      describe "collection argument" do
+        it "is required" do
+          # TODO
+        end
 
-      it "allows :disabled option" do
-        # TODO
-      end
+        it "all supported arguments work" do
+          # TODO
+        end
 
-      it "allows :include_blank option" do
-        # TODO
+        it "fails correctly" do
+          #TODO
+        end
       end
     end
   end

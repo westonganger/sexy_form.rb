@@ -109,7 +109,7 @@ module FormBuilder
           raise ArgumentError.new("Required argument `:collection` not provided")
         end
 
-        safe_collection = FormBuilder.safe_stringify_hash_keys(collection.is_a?(NamedTuple) ? collection.to_h : collection)
+        safe_collection = FormBuilder.safe_string_option_hash(collection.is_a?(NamedTuple) ? collection.to_h : collection)
 
         if !safe_collection.has_key?("options")
           raise ArgumentError.new("Required argument `collection[:options]` not provided")
@@ -174,8 +174,10 @@ module FormBuilder
           themed_input_html["cols"], themed_input_html["rows"] = themed_input_html.delete("size").to_s.split("x")
         end
 
-        html_field = FormBuilder.content(element_name: type_str, attrs: themed_input_html) do
-          themed_input_html["value"]?
+        html_field = String.build do |s|
+          s << (themed_input_html.empty? ? "<textarea>" : %(<textarea #{FormBuilder.build_html_attr_string(themed_input_html)}>))
+          s << themed_input_html["value"]?
+          s << "</textarea>"
         end
       end
 
@@ -187,8 +189,10 @@ module FormBuilder
         end
 
         if label_text
-          html_label = FormBuilder.content(element_name: "label", attrs: themed_label_html) do
-            label_text
+          html_label = String.build do |s|
+            s << (themed_label_html.empty? ? "<label>" : %(<label #{FormBuilder.build_html_attr_string(themed_label_html)}>))
+            s << label_text
+            s << "</label>"
           end
         end
       end
@@ -224,30 +228,32 @@ module FormBuilder
     end
 
     private def select_field(options : (Array(Array(String)) | String)? = nil, selected : Array(String)? = nil, disabled : Array(String)? = nil, attrs : StringHash? = StringHash.new)
-      FormBuilder.content(element_name: "select", attrs: attrs) do
+      String.build do |s|
+        s << (attrs.empty? ? "<select>" : %(<select #{FormBuilder.build_html_attr_string(attrs)}>))
+
         if options
           if options.is_a?(String)
-            options
+            s << options
           else
-            String.build do |str|
-              options.map do |option|
-                v = option[0]?.to_s
+            options.map do |option|
+              v = option[0]?.to_s
 
-                str << "<option value=\"#{v}\""
+              s << "<option value=\"#{v}\""
 
-                if selected
-                  str << "#{" selected=\"selected\"" if selected.includes?(v)}"
-                end
-
-                if disabled
-                  str << "#{" disabled=\"disabled\"" if disabled.includes?(v)}"
-                end
-
-                str << ">#{option[1]? || v}</option>"
+              if selected
+                s << "#{" selected=\"selected\"" if selected.includes?(v)}"
               end
+
+              if disabled
+                s << "#{" disabled=\"disabled\"" if disabled.includes?(v)}"
+              end
+
+              s << ">#{option[1]? || v}</option>"
             end
           end
         end
+
+        s << "</select>"
       end
     end
 

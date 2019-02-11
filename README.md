@@ -200,10 +200,10 @@ module FormBuilder
         String.build do |s|
           wrapper_html_attributes["class"] = "form-group #{wrapper_html_attributes["class"]?}".strip
 
-          ### `build_html_attr_string` is the one and only helper method available to Themes
+          ### `FormBuilder.build_html_attr_string` is the one and only helper method for Themes
           ### It converts any Hash to an HTML Attributes String
           ### Example: {"class" => "foo", "data-role" => "ninja"} converts to "class=\"foo\" data-role=\"ninja\""
-          attr_str = build_html_attr_string(wrapper_html_attributes)
+          attr_str = FormBuilder.build_html_attr_string(wrapper_html_attributes)
 
           s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 

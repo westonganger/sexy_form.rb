@@ -19,10 +19,6 @@ module FormBuilder
       raise ArgumentError.new("FormBuilder theme `#{name}` was not found")
     end
 
-    def build_html_attr_string(h : Hash)
-      h.map{|k, v| "#{k}=\"#{v}\""}.join(" ")
-    end
-
     abstract def wrap_field(
       field_type : String,
       html_field : String,

@@ -4,7 +4,7 @@ module FormBuilder
 
       def wrap_field(field_type : String, html_field : String, html_label : String?, html_help_text : String?, html_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
-          attr_str = build_html_attr_string(wrapper_html_attributes)
+          attr_str = FormBuilder.build_html_attr_string(wrapper_html_attributes)
           s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
           if {"checkbox", "radio"}.includes?(field_type) && html_label
@@ -34,14 +34,14 @@ module FormBuilder
 
       def build_html_help_text(help_text : String, html_attrs : StringHash)
         String.build do |s|
-          s << html_attrs.empty? ? "<div>" : %(<div #{build_html_attr_string(html_attrs)}>)
+          s << html_attrs.empty? ? "<div>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>)
           s << help_text
           s << "</div>"
         end
       end
 
       def build_html_error(error : String, html_attrs : StringHash)
-        s << html_attrs.empty? ? "<div>" : %(<div #{build_html_attr_string(html_attrs)}>)
+        s << html_attrs.empty? ? "<div>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>)
         s << error
         s << "</div>"
       end

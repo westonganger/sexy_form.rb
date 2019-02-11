@@ -1,13 +1,4 @@
-require "../../spec_helper"
-
-### For Testing Private/Protected Methods
-module FormBuilder
-  def self._content(element_name : String, attrs : StringHash = StringHash.new, &block)
-    content(element_name: element_name, attrs: attrs) do
-      yield
-    end
-  end
-end
+require "./spec_helper"
 
 describe FormBuilder do
 
@@ -53,29 +44,12 @@ describe FormBuilder do
     end
 
     it "String keys take precedence over Symbol keys on :form_html argument" do
-      # TODO
-    end
-  end
+      result = FormBuilder.form(action: "/test/1", form_html: {"id" => "string", :id => "symbol"})
 
-  describe ".content" do
-    it "accepts a block as input" do
-      result = FormBuilder._content(element_name: "div", attrs: {"id" => "foo"}) do
-        String.build do |str|
-          str << "Hello"
-        end
-      end
+      expected = "<form id=\"myForm\" method=\"post\" enctype=\"multipart/form-data\"></form>"
 
-      result.should eq("<div id=\"foo\">Hello</div>")
-    end
-
-    it "allows nested blocks" do
-      result = FormBuilder._content(element_name: "div", attrs: {"id" => "foo"}) do
-        FormBuilder._content(element_name: "span", attrs: {"id" => "bar"}) do
-          "Hello"
-        end
-      end
-
-      result.should eq("<div id=\"foo\"><span id=\"bar\">Hello</span></div>")
+      result.includes?("string").should eq(true)
+      result.includes?("symbol").should eq(false)
     end
   end
 
