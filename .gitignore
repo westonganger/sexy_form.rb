@@ -1,9 +1,21 @@
-/doc/
-/lib/
-/bin/
-/.shards/
-
+.bundle/
+.idea/
+.yardoc
+.DS_Store
+Gemfile.lock
+_yardoc/
+coverage/
+doc/
+pkg/
+spec/reports/
+test/dummy_app/**/*.sqlite3.db
+test/dummy_app/**/*.sqlite3
+test/dummy_app/**/*.log
+spec/dummy_app/**/*.sqlite3.db
+spec/dummy_app/**/*.sqlite3
+spec/dummy_app/**/*.log
+tmp/
+gemfiles/*.lock
 
 *~
 .~*
-.DS_Store

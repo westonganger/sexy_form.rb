@@ -1,20 +1,17 @@
-require "./form_builder/version"
-require "./form_builder/themes"
-require "./form_builder/themes/*"
-require "./form_builder/builder"
+require "sexy_form/version"
+require "sexy_form/themes"
+require "sexy_form/themes/*"
+require "sexy_form/builder"
 
-module FormBuilder
-  alias OptionHash = Hash((Symbol | String), (Nil | String | Symbol | Bool | Int8 | Int16 | Int32 | Int64 | Float32 | Float64 | Time | Bytes | Array(String) | Array(Int32) | Array(String | Int32)))
-  alias StringHash = Hash(String, String)
-
+module SexyForm
   def self.form(
     action : String? = nil,
     method : (String | Symbol)? = :post,
-    theme : (String | Symbol | FormBuilder::Themes)? = nil,
+    theme : (String | Symbol | SexyForm::Themes)? = nil,
     form_html : (NamedTuple | OptionHash)? = OptionHash.new,
     &block
   ) : String
-    builder = FormBuilder::Builder.new(theme: theme)
+    builder = SexyForm::Builder.new(theme: theme)
 
     themed_form_html = builder.theme.form_html_attributes(html_attrs: self.safe_string_hash(form_html.is_a?(NamedTuple) ? form_html.to_h : form_html))
 
@@ -40,16 +37,6 @@ module FormBuilder
 
       str << "</form>"
     end
-  end
-
-  ### Overload for optional &block
-  def self.form(
-    action : String? = nil,
-    method : (String | Symbol)? = :post,
-    theme : (String | Symbol)? = nil,
-    form_html : (NamedTuple | OptionHash)? = OptionHash.new
-  ) : String
-    form(action: action, method: method, theme: theme, form_html: form_html) do; end
   end
 
   protected def self.build_html_attr_string(h : Hash)

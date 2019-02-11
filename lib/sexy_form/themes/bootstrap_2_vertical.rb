@@ -1,16 +1,16 @@
-module FormBuilder
+module SexyForm
   class Themes
-    class Bootstrap2Horizontal < Themes
+    class Bootstrap2Vertical < Themes
 
       def self.theme_name
-        "bootstrap_2_horizontal"
+        "bootstrap_2_vertical"
       end
 
       def wrap_field(field_type : String, html_field : String, html_label : String?, html_help_text : String?, html_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
           wrapper_html_attributes["class"] = "control-group#{" error" if html_errors} #{wrapper_html_attributes["class"]?}".strip
 
-          attr_str = FormBuilder.build_html_attr_string(wrapper_html_attributes)
+          attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
           s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
           if {"checkbox", "radio"}.includes?(field_type)
@@ -52,7 +52,6 @@ module FormBuilder
       end
 
       def form_html_attributes(html_attrs : StringHash)
-        html_attrs["class"] = "form-horizontal #{html_attrs["class"]?}".strip
         html_attrs
       end
 
@@ -60,7 +59,7 @@ module FormBuilder
         html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
 
         String.build do |s|
-          s << (html_attrs.empty? ? "<span>" : %(<span #{FormBuilder.build_html_attr_string(html_attrs)}>))
+          s << (html_attrs.empty? ? "<span>" : %(<span #{SexyForm.build_html_attr_string(html_attrs)}>))
           s << help_text
           s << "</span>"
         end
@@ -70,7 +69,7 @@ module FormBuilder
         html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
 
         String.build do |s|
-          s << (html_attrs.empty? ? "<span>" : %(<span #{FormBuilder.build_html_attr_string(html_attrs)}>))
+          s << (html_attrs.empty? ? "<span>" : %(<span #{SexyForm.build_html_attr_string(html_attrs)}>))
           s << error
           s << "</span>"
         end

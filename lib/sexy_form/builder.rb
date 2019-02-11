@@ -1,24 +1,26 @@
-module FormBuilder
+module SexyForm
   class Builder
-    alias CollectionHash = Hash(String, (String | Symbol | Bool | Array(String) | Array(Array(String)) | Array(String | Array(String)) | Nil))
+    FIELD_TYPES = ["checkbox", "file", "hidden", "password", "radio", "select", "text", "textarea"].freeze
+    INPUT_TYPES = ["checkbox", "file", "hidden", "password", "radio", "text"].freeze
+    COLLECTION_KEYS = ["options", "selected", "disabled", "include_blank"].freeze
 
-    private FIELD_TYPES = {"checkbox", "file", "hidden", "password", "radio", "select", "text", "textarea"}
-    private INPUT_TYPES = {"checkbox", "file", "hidden", "password", "radio", "text"}
-    private COLLECTION_KEYS = {"options", "selected", "disabled", "include_blank"}
-
-    @theme : FormBuilder::Themes
+    @theme : SexyForm::Themes
     @html : Array(String) = [] of String
 
-    def initialize(theme : (String | Symbol | FormBuilder::Themes)? = nil)
+    def initialize(theme : (String | Symbol | SexyForm::Themes)? = nil)
       if theme
-        if theme.is_a?(FormBuilder::Themes)
+        if theme.is_a?(SexyForm::Themes)
           @theme = theme
         else
           @theme = Themes.from_name(theme.to_s).new
         end
       else
-        @theme = FormBuilder::Themes::Default.new
+        @theme = SexyForm::Themes::Default.new
       end
+    end
+
+    def theme
+      @theme
     end
 
     def <<(value)
@@ -26,8 +28,9 @@ module FormBuilder
       value.to_s
     end
 
-    def theme
-      @theme
+    ### This method should be considered private
+    def html_string
+      @html.join("")
     end
 
     def field(
@@ -68,13 +71,13 @@ module FormBuilder
         end
 
         if safe_errors
-          safe_errors.map!{|x| @theme.build_html_error(error: x, field_type: type_str, html_attrs: FormBuilder.safe_string_hash(error_html.is_a?(NamedTuple) ? error_html.to_h : error_html))}
+          safe_errors.map!{|x| @theme.build_html_error(error: x, field_type: type_str, html_attrs: SexyForm.safe_string_hash(error_html.is_a?(NamedTuple) ? error_html.to_h : error_html))}
         end
       end
 
-      themed_input_html = @theme.input_html_attributes(html_attrs: FormBuilder.safe_string_hash(input_html.is_a?(NamedTuple) ? input_html.to_h : input_html), field_type: type_str, has_errors?: !safe_errors.nil?)
+      themed_input_html = @theme.input_html_attributes(html_attrs: SexyForm.safe_string_hash(input_html.is_a?(NamedTuple) ? input_html.to_h : input_html), field_type: type_str, has_errors?: !safe_errors.nil?)
 
-      themed_label_html = @theme.label_html_attributes(html_attrs: FormBuilder.safe_string_hash(label_html.is_a?(NamedTuple) ? label_html.to_h : label_html), field_type: type_str, has_errors?: !safe_errors.nil?)
+      themed_label_html = @theme.label_html_attributes(html_attrs: SexyForm.safe_string_hash(label_html.is_a?(NamedTuple) ? label_html.to_h : label_html), field_type: type_str, has_errors?: !safe_errors.nil?)
 
       if name
         themed_input_html["name"] ||= name.to_s
@@ -187,7 +190,7 @@ module FormBuilder
         end
 
         html_field = String.build do |s|
-          s << (themed_input_html.empty? ? "<textarea>" : %(<textarea #{FormBuilder.build_html_attr_string(themed_input_html)}>))
+          s << (themed_input_html.empty? ? "<textarea>" : %(<textarea #{SexyForm.build_html_attr_string(themed_input_html)}>))
           s << themed_input_html["value"]?
           s << "</textarea>"
         end
@@ -202,7 +205,7 @@ module FormBuilder
 
         if label_text
           html_label = String.build do |s|
-            s << (themed_label_html.empty? ? "<label>" : %(<label #{FormBuilder.build_html_attr_string(themed_label_html)}>))
+            s << (themed_label_html.empty? ? "<label>" : %(<label #{SexyForm.build_html_attr_string(themed_label_html)}>))
             s << label_text
             s << "</label>"
           end
@@ -210,7 +213,7 @@ module FormBuilder
       end
 
       if help_text
-        html_help_text = @theme.build_html_help_text(field_type: type_str, help_text: help_text, html_attrs: FormBuilder.safe_string_hash(help_text_html.is_a?(NamedTuple) ? help_text_html.to_h : help_text_html))
+        html_help_text = @theme.build_html_help_text(field_type: type_str, help_text: help_text, html_attrs: SexyForm.safe_string_hash(help_text_html.is_a?(NamedTuple) ? help_text_html.to_h : help_text_html))
       end
 
       @theme.wrap_field(
@@ -219,11 +222,13 @@ module FormBuilder
         html_label: html_label,
         html_help_text: html_help_text,
         html_errors: safe_errors,
-        wrapper_html_attributes: FormBuilder.safe_string_hash(wrapper_html.is_a?(NamedTuple) ? wrapper_html.to_h : wrapper_html)
+        wrapper_html_attributes: SexyForm.safe_string_hash(wrapper_html.is_a?(NamedTuple) ? wrapper_html.to_h : wrapper_html)
       )
     end
 
-    private def input_field(type : String, attrs : StringHash? = StringHash.new)
+    private
+
+    def input_field(type : String, attrs : StringHash? = StringHash.new)
       unless INPUT_TYPES.includes?(type.to_s)
         raise ArgumentError.new("Invalid input :type, valid input types are `#{INPUT_TYPES.join(", ")}`")
       end
@@ -239,9 +244,9 @@ module FormBuilder
       "<input type=\"#{type}\"#{" " unless tag_attrs.empty?}#{tag_attrs.join(" ")}>"
     end
 
-    private def select_field(options : (Array(Array(String)) | String)? = nil, selected : Array(String)? = nil, disabled : Array(String)? = nil, attrs : StringHash? = StringHash.new)
+    def select_field(options : (Array(Array(String)) | String)? = nil, selected : Array(String)? = nil, disabled : Array(String)? = nil, attrs : StringHash? = StringHash.new)
       String.build do |s|
-        s << (attrs.empty? ? "<select>" : %(<select #{FormBuilder.build_html_attr_string(attrs)}>))
+        s << (attrs.empty? ? "<select>" : %(<select #{SexyForm.build_html_attr_string(attrs)}>))
 
         if options
           if options.is_a?(String)
@@ -269,21 +274,16 @@ module FormBuilder
       end
     end
 
-    ### This method should be considered private
-    def html_string
-      @html.join("")
-    end
-
-    private def css_safe(value)
+    def css_safe(value)
       values = value.to_s.strip.split(" ")
       values.map{|v| v.gsub(/[^\w-]+/, " ").strip.gsub(/\s+/, "_")}.join(" ")
     end
 
-    private def titleize(value)
+    def titleize(value)
       value.to_s.gsub(/\W|_/, " ").split(" ").join(" "){|x| x.capitalize}
     end
 
-    private def safe_collection_hash(h : Hash)
+    def safe_collection_hash(h : Hash)
       h.each_with_object(CollectionHash.new) do |(k, v), new_h|
         unless new_h.has_key?(k.to_s)
           if k.is_a?(String)
