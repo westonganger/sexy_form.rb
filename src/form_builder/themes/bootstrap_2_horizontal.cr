@@ -19,14 +19,14 @@ module FormBuilder
             if html_label
               s << html_label.sub("\">", "\">#{html_field} ")
             else
-              s << html_label
               s << html_field
             end
+            s << html_help_text
 
             s << "</div>"
           else
             s << html_label
-            s << %(<div class="controls">#{html_field}</div>)
+            s << %(<div class="controls">#{html_field}#{html_help_text}</div>)
           end
 
           s << "</div>"
@@ -55,11 +55,11 @@ module FormBuilder
       end
 
       def build_html_help_text(help_text : String, html_attrs : StringHash)
-        html_attrs["class"] = "help-text #{html_attrs["class"]?}".strip
+        html_attrs["class"] = "help-inline #{html_attrs["class"]?}".strip
 
         String.build do |s|
-          s << html_attrs.empty? ? %(<div #{build_html_attr_string(html_attrs)}>) : "<div>"
-          s << "#{help_text}</div>"
+          s << html_attrs.empty? ? %(<span #{build_html_attr_string(html_attrs)}>) : "<span>"
+          s << "#{help_text}</span>"
         end
       end
 

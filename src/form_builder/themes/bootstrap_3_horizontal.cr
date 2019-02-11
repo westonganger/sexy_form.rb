@@ -27,12 +27,16 @@ module FormBuilder
             else
               s << html_field
             end
+            s << html_help_text
 
             s << "</div>"
             s << "</div>"
           else
             s << html_label
-            s << %(<div class="#{"#{@offset_class} " unless html_label}#{@column_classes[1]}">#{html_field}</div>)
+            s << %(<div class="#{"#{@offset_class} " unless html_label}#{@column_classes[1]}">)
+            s << html_field
+            s << html_help_text
+            s << "</div>"
           end
 
           s << "</div>"

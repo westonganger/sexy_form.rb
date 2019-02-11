@@ -183,7 +183,28 @@ module FormBuilder
         html_help_text = @theme.build_html_help_text(field_type: type_str, help_text: help_text, html_attrs: FormBuilder.safe_string_hash(help_text_html.is_a?(NamedTuple) ? help_text_html.to_h : help_text_html))
       end
 
-      @theme.wrap_field(field_type: type_str, html_field: html_field.to_s, html_label: html_label, html_help_text: html_help_text, field_errors: errors, wrapper_html_attributes: FormBuilder.safe_string_hash(wrapper_html.is_a?(NamedTuple) ? wrapper_html.to_h : wrapper_html))
+      if errors
+        if errors.is_a?(String)
+          if !errors.empty?
+            safe_errors = [errors]
+          end
+        else
+          errors.reject!{|x| x.empty?}
+
+          if !errors.empty?
+            safe_errors = errors
+          end
+        end
+      end
+
+      @theme.wrap_field(
+        field_type: type_str,
+        html_field: html_field.to_s,
+        html_label: html_label,
+        html_help_text: html_help_text,
+        field_errors: safe_errors,
+        wrapper_html_attributes: FormBuilder.safe_string_hash(wrapper_html.is_a?(NamedTuple) ? wrapper_html.to_h : wrapper_html)
+      )
     end
 
     private def input_field(type : String, attrs : StringHash? = StringHash.new)

@@ -18,6 +18,7 @@ module FormBuilder
             s << html_label
             s << html_field
           end
+          s << html_help_text
 
           s << "</div>"
         end
