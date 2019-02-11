@@ -121,14 +121,15 @@ The following field types are supported:
   .row.select-example
     ### -- Additional Options for `type: :select`
     ### collection : (Hash | NamedTuple) = {
-    ###   options : (Array(Array) | Array | String) ### Required, Note: String type is for passing in a pre-built html options string
-    ###   selected : (String | Array)?
-    ###   disabled : (String | Array)?
+    ###   options : (Array(String) | Array(String | Array(String)) | String) ### Required, Note: The non-Array String type is for passing in a pre-built html options string
+    ###   selected : (String | Array(String))?
+    ###   disabled : (String | Array(String))?
+    ###   include_blank : (String | Bool)?
     ### }
     ### -- Note: String keys will take precedence over any Symbol keys
 
-    ### -- When passing Array(Array) to collection[:options] the Option pairs are defined as: [required_value, optional_label]
-    - opts = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"]]
+    ### -- When passing a nested array to collection[:options] the Option pairs are defined as: [required_value, optional_label]
+    - opts = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"], "Other"]
 
     == f.field name: "product[type]", label: "Type", type: :select, collection: {options: opts, selected: ["B"], disabled: ["C"]}
 ```

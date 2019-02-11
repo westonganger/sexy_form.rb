@@ -47,7 +47,7 @@ module FormBuilder
         html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
 
         String.build do |s|
-          s << (html_attrs.empty? ? "<span>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>))
+          s << (html_attrs.empty? ? "<span>" : %(<span #{FormBuilder.build_html_attr_string(html_attrs)}>))
           s << help_text
           s << "</span>"
         end
@@ -57,7 +57,7 @@ module FormBuilder
         html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
 
         String.build do |s|
-          s << (html_attrs.empty? ? "<span>" : %(<div #{FormBuilder.build_html_attr_string(html_attrs)}>))
+          s << (html_attrs.empty? ? "<span>" : %(<span #{FormBuilder.build_html_attr_string(html_attrs)}>))
           s << error
           s << "</span>"
         end

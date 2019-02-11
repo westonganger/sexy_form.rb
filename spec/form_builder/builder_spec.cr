@@ -19,6 +19,16 @@ describe FormBuilder::Builder do
     end
   end
 
+  describe "#<<" do
+    it "supports its own string interpolation" do
+      (builder << "foo").should eq("foo")
+      (builder << "--").should eq("--")
+      (builder << "bar").should eq("bar")
+
+      builder.html_string.should eq("foo--bar")
+    end
+  end
+
   describe "#field" do
     it "does not allow incorrect types" do
       expect_raises(ArgumentError) do
@@ -27,8 +37,8 @@ describe FormBuilder::Builder do
     end
 
     describe "input fields" do
-
       INPUT_TYPES.each do |field_type|
+
         it "works for type: #{field_type}" do
           expected = "<div><input type=\"#{field_type}\" foo=\"bar\" name=\"my-great-text-input\" id=\"my-great-text-input\"></div>"
 
@@ -40,8 +50,8 @@ describe FormBuilder::Builder do
             builder.field(type: field_type, label: false, name: "my-great-text-input", input_html: {foo: :bar}, collection: {options: ["foo", "bar"]})
           end
         end
-      end
 
+      end
     end
 
     describe "select fields" do

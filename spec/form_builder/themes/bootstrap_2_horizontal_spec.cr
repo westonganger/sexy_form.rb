@@ -56,34 +56,6 @@ describe theme_klass do
     end
   end
 
-  describe ".input_html_attributes" do
-    FIELD_TYPES.each do |field_type|
-      it "returns correct #{field_type} attributes" do
-        attrs = StringHash.new
-
-        theme.input_html_attributes(html_attrs: StringHash.new, field_type: field_type, has_errors?: false).should eq(attrs)
-      end
-    end
-  end
-
-  describe ".label_html_attributes" do
-    FIELD_TYPES.each do |field_type|
-      it "returns correct #{field_type} attributes" do
-        attrs = StringHash.new
-
-        if {"checkbox", "radio"}.includes?(field_type)
-          attrs["class"] = field_type
-        else
-          attrs["class"] = "control-label"
-        end
-
-        attrs["for"] = "foobar"
-
-        theme.label_html_attributes(html_attrs: {"for" => "foobar"}, field_type: field_type, has_errors?: false).should eq(attrs)
-      end
-    end
-  end
-
   describe ".form_html_attributes" do
     it "returns correct attributes" do
       attrs = StringHash.new
@@ -93,5 +65,50 @@ describe theme_klass do
       theme.form_html_attributes(html_attrs: StringHash.new).should eq(attrs)
     end
   end
+
+  FIELD_TYPES.each do |field_type|
+    describe ".input_html_attributes" do
+      it "returns correct #{field_type} attributes" do
+        attrs = StringHash.new
+
+        theme.input_html_attributes(html_attrs: StringHash.new, field_type: field_type, has_errors?: false).should eq(attrs)
+      end
+    end
+
+    describe ".label_html_attributes" do
+      it "returns correct #{field_type} attributes" do
+        attrs = StringHash.new
+
+        if {"checkbox", "radio"}.includes?(field_type)
+          attrs["class"] = field_type
+        else
+          attrs["class"] = "control-label"
+        end
+
+        theme.label_html_attributes(html_attrs: StringHash.new, field_type: field_type, has_errors?: false).should eq(attrs)
+      end
+    end
+
+    describe ".build_html_help_text" do
+      it "returns correct #{field_type} attributes" do
+        expected = "<span class=\"help-block\">foobar</span>"
+
+        attrs = StringHash.new
+
+        theme.build_html_help_text(html_attrs: attrs, field_type: field_type, help_text: "foobar").should eq(expected)
+      end
+    end
+
+    describe ".build_html_error" do
+      it "returns correct #{field_type} attributes" do
+        expected = "<span class=\"help-block\">foobar</span>"
+
+        attrs = StringHash.new
+
+        theme.build_html_error(html_attrs: attrs, field_type: field_type, error: "foobar").should eq(expected)
+      end
+    end
+  end
+
 
 end

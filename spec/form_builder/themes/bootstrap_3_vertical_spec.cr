@@ -81,4 +81,42 @@ describe theme_klass do
     end
   end
 
+  FIELD_TYPES.each do |field_type|
+    describe ".input_html_attributes" do
+      it "returns correct #{field_type} attributes" do
+        attrs = StringHash.new
+
+        theme.input_html_attributes(html_attrs: StringHash.new, field_type: field_type, has_errors?: false).should eq(attrs)
+      end
+    end
+
+    describe ".label_html_attributes" do
+      it "returns correct #{field_type} attributes" do
+        attrs = StringHash.new
+
+        theme.label_html_attributes(html_attrs: StringHash.new, field_type: field_type, has_errors?: false).should eq(attrs)
+      end
+    end
+
+    describe ".build_html_help_text" do
+      it "returns correct #{field_type} attributes" do
+        expected = "<span class=\"help-block\">foobar</span>"
+
+        attrs = StringHash.new
+
+        theme.build_html_help_text(html_attrs: attrs, field_type: field_type, help_text: "foobar").should eq(expected)
+      end
+    end
+
+    describe ".build_html_error" do
+      it "returns correct #{field_type} attributes" do
+        expected = "<span class=\"help-block\">foobar</span>"
+
+        attrs = StringHash.new
+
+        theme.build_html_error(html_attrs: attrs, field_type: field_type, error: "foobar").should eq(expected)
+      end
+    end
+  end
+
 end
