@@ -46,8 +46,6 @@ describe FormBuilder do
     it "String keys take precedence over Symbol keys on :form_html argument" do
       result = FormBuilder.form(action: "/test/1", form_html: {"id" => "string", :id => "symbol"})
 
-      expected = "<form id=\"myForm\" method=\"post\" enctype=\"multipart/form-data\"></form>"
-
       result.includes?("string").should eq(true)
       result.includes?("symbol").should eq(false)
     end

@@ -5,7 +5,18 @@ builder = FormBuilder::Builder.new
 describe FormBuilder::Builder do
 
   describe "#initialize" do
+    it "defaults to theme: :default" do
+      builder.theme.class.should eq(FormBuilder::Themes::Default)
+    end
 
+    it "allows string :theme name" do
+      FormBuilder::Builder.new(theme: "bootstrap_4_inline").theme.class.should eq(FormBuilder::Themes::Bootstrap4Inline)
+    end
+
+    it "allows class instance :theme" do
+      expected = FormBuilder::Themes::Bootstrap4Inline
+      FormBuilder::Builder.new(theme: expected.new).theme.class.should eq(expected)
+    end
   end
 
   describe "#field" do
@@ -23,10 +34,12 @@ describe FormBuilder::Builder do
 
           builder.field(type: field_type, label: false, name: "my-great-text-input", input_html: {foo: :bar}).should eq(expected)
         end
-      end
 
-      it "does not allow collection option" do
-        # TODO
+        it "does not allow collection option" do
+          expect_raises(ArgumentError) do
+            builder.field(type: field_type, label: false, name: "my-great-text-input", input_html: {foo: :bar}, collection: {options: ["foo", "bar"]})
+          end
+        end
       end
 
     end
@@ -40,15 +53,39 @@ describe FormBuilder::Builder do
 
       describe "collection argument" do
         it "is required" do
-          # TODO
+          expect_raises(ArgumentError) do
+            builder.field(type: :select, label: false, name: "my-great-text-input", input_html: {foo: :bar})
+          end
         end
 
-        it "all supported arguments work" do
-          # TODO
+        it "all supported keys work" do
+          builder.field(type: :select, collection: {options: ["foo", "bar", "foobar"], selected: ["bar"], disabled: ["foobar"], include_blank: "blank"})
+
+          builder.field(type: :select, collection: {options: ["foo", "bar", "foobar"], selected: "bar", disabled: "foobar", include_blank: true})
+
+          builder.field(type: :select, collection: {options: "foobar"})
         end
 
         it "fails correctly" do
-          #TODO
+          expect_raises(ArgumentError) do
+            builder.field(type: :select, collection: {selected: "bar"})
+          end
+
+          expect_raises(ArgumentError) do
+            builder.field(type: :select, collection: {options: ["foo", "bar", "foobar"], foobar: "error"})
+          end
+
+          expect_raises(ArgumentError) do
+            builder.field(type: :select, collection: {options: "foobar", selected: "asd"})
+          end
+
+          expect_raises(ArgumentError) do
+            builder.field(type: :select, collection: {options: "foobar", disabled: "asd"})
+          end
+
+          expect_raises(ArgumentError) do
+            builder.field(type: :select, collection: {options: "foobar", include_blank: "asd"})
+          end
         end
       end
     end

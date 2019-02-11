@@ -5,7 +5,6 @@ require "./form_builder/builder"
 
 module FormBuilder
   alias OptionHash = Hash((Symbol | String), (Nil | String | Symbol | Bool | Int8 | Int16 | Int32 | Int64 | Float32 | Float64 | Time | Bytes | Array(String) | Array(Int32) | Array(String | Int32)))
-  alias StringOptionHash = Hash(String, (Nil | String | Symbol | Bool | Int8 | Int16 | Int32 | Int64 | Float32 | Float64 | Time | Bytes | Array(String) | Array(Int32) | Array(String | Int32)))
   alias StringHash = Hash(String, String)
 
   def self.form(
@@ -27,7 +26,7 @@ module FormBuilder
     end
 
     String.build do |str|
-      str << %(<form #{build_html_attr_string(themed_form_html)}>)
+      str << %(<form #{self.build_html_attr_string(themed_form_html)}>)
 
       unless ["get", "post"].includes?(method.to_s)
         str << %(<input type="hidden" name="_method" value="#{method}")
@@ -64,18 +63,6 @@ module FormBuilder
           new_h[k] = v.to_s
         elsif !h.has_key?(k.to_s)
           new_h[k.to_s] = v.to_s
-        end
-      end
-    end
-  end
-
-  protected def self.safe_string_option_hash(h : Hash)
-    h.each_with_object(StringOptionHash.new) do |(k, v), new_h|
-      unless new_h.has_key?(k.to_s)
-        if k.is_a?(String)
-          new_h[k] = v
-        elsif !h.has_key?(k.to_s)
-          new_h[k.to_s] = v
         end
       end
     end

@@ -1,7 +1,10 @@
 module FormBuilder
   class Builder
+    alias CollectionHash = Hash(String, (String | Symbol | Bool | Array(String) | Array(Array(String)) | Nil))
+
     private FIELD_TYPES = {"checkbox", "file", "hidden", "password", "radio", "select", "text", "textarea"}
     private INPUT_TYPES = {"checkbox", "file", "hidden", "password", "radio", "text"}
+    private COLLECTION_KEYS = {"options", "selected", "disabled", "include_blank"}
 
     @theme : FormBuilder::Themes
     @html : Array(String) = [] of String
@@ -109,7 +112,11 @@ module FormBuilder
           raise ArgumentError.new("Required argument `:collection` not provided")
         end
 
-        safe_collection = FormBuilder.safe_string_option_hash(collection.is_a?(NamedTuple) ? collection.to_h : collection)
+        safe_collection = self.safe_collection_hash(collection.is_a?(NamedTuple) ? collection.to_h : collection)
+
+        if safe_collection.keys.any?{|x| !COLLECTION_KEYS.includes?(x) }
+          raise ArgumentError.new("Invalid key passed to :collection argument. Supported keys are #{COLLECTION_KEYS.map{|x| ":#{x}"}.join(", ")}")
+        end
 
         if !safe_collection.has_key?("options")
           raise ArgumentError.new("Required argument `collection[:options]` not provided")
@@ -269,6 +276,18 @@ module FormBuilder
 
     private def titleize(value)
       value.to_s.gsub(/\W|_/, " ").split(" ").join(" "){|x| x.capitalize}
+    end
+
+    private def safe_collection_hash(h : Hash)
+      h.each_with_object(CollectionHash.new) do |(k, v), new_h|
+        unless new_h.has_key?(k.to_s)
+          if k.is_a?(String)
+            new_h[k] = v
+          elsif !h.has_key?(k.to_s)
+            new_h[k.to_s] = v
+          end
+        end
+      end
     end
 
   end

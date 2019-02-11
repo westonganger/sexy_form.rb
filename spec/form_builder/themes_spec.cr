@@ -38,4 +38,20 @@ describe FormBuilder::Themes do
     end
   end
 
+  describe "Kitchen Sink" do
+    FormBuilder::Themes.subclasses.each do |theme_class|
+      b = FormBuilder::Builder.new(theme: theme_class.new)
+
+      FIELD_TYPES.each do |field_type|
+        it "theme: #{theme_class.name}, field_type: #{field_type}" do
+          if field_type == "select"
+            b.field type: field_type, collection: {options: [["foo", "bar"]]}
+          else
+            b.field type: field_type
+          end
+        end
+      end
+    end
+  end
+
 end
