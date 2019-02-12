@@ -110,7 +110,7 @@ The following field types are supported:
   .row.select-example
     ### -- Additional Options for `type: :select`
     ### collection: {
-    ###   options : (Required) Array, Nested Array or String ### Required, Note: The non-Array String type is for passing in a pre-built html options string
+    ###   options : (Required) Array, Nested Array or String. Note: The non-Array String type is for passing in a pre-built html options string
     ###   selected : (Optional) String or Array of Strings
     ###   disabled : (Optional) String or Array of Strings
     ###   include_blank : (Optional) String or Bool
