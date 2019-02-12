@@ -125,7 +125,7 @@ The following field types are supported:
 
 ## SexyForm in Plain Ruby Code
 
-When using the `SexyForm.form` method in plain Crystal code, the `<<` syntax is required to add the generated field HTML to the form HTML string
+When using the `SexyForm.form` method in plain Ruby code, the `<<` syntax is required to add the generated field HTML to the form HTML string
 
 ```ruby
 form_html_str = SexyForm.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
