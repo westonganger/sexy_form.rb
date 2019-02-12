@@ -7,7 +7,7 @@
 <a href='https://travis-ci.org/westonganger/sexy_form.rb' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://api.travis-ci.org/westonganger/sexy_form.rb.svg?branch=master' border='0' alt='Build Status' /></a>
 
 
-Dead simple HTML form builder for Crystal with built-in support for many popular UI libraries such as Bootstrap. Pairs nicely with any Ruby web framework such as Rails
+Dead simple HTML form builder for Ruby with built-in support for many popular UI libraries such as Bootstrap. Pairs nicely with any Ruby web framework such as Rails
 
 # Features
 
@@ -123,7 +123,7 @@ The following field types are supported:
     = f.field name: "product[type]", label: "Type", type: :select, collection: {options: opts, selected: ["B"], disabled: ["C"]}
 ```
 
-## SexyForm in Plain Crystal Code
+## SexyForm in Plain Ruby Code
 
 When using the `SexyForm.form` method in plain Crystal code, the `<<` syntax is required to add the generated field HTML to the form HTML string
 
@@ -132,18 +132,6 @@ form_html_str = SexyForm.form(theme: :bootstrap_4_vertical, action: "/products",
   f << f.field(name: "name", type: :text, label: "Name")
   f << f.field(name: "sku", type: :text, label: "SKU")
   f << "<strong>Hello World</strong>"
-end
-```
-
-OR you can use the lower level `String.build` instead:
-
-```ruby
-form_html_str = String.build do |str|
-  str << SexyForm.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
-    str << f.field(name: "name", type: :text, label: "Name")
-    str << f.field(name: "sku", type: :text, label: "SKU")
-    str << "<strong>Hello World</strong>"
-  end
 end
 ```
 
@@ -168,7 +156,15 @@ The form builder is capable of handling error messages too. If the `:errors` arg
 
 ## Custom Themes
 
-If you need to create a custom theme simply create an initializer with the following:
+SexyForm allows you to create custom themes very easily.
+
+Example Usage:
+
+```ruby
+SexyForm.form(theme: :custom)
+```
+
+Example Theme Class:
 
 ```ruby
 # config/initializers/sexy_form.rb
@@ -184,7 +180,7 @@ module SexyForm
 
       ### (Optional) If your theme requires additional variables similar to `Bootstrap3Horizontal.new(columns: ["col-sm-3", "col-sm-9"])`
       def initialize
-        ### For an example see `lib/sexy_forms/themes/bootstrap_3_horizontal.rb`
+        ### For an example see `lib/sexy_form/themes/bootstrap_3_horizontal.rb`
       end
 
       def wrap_field(field_type: , html_field: , html_label: nil, html_help_text: nil, html_errors: nil, wrapper_html_attributes: {})
@@ -258,17 +254,11 @@ module SexyForm
 end
 ```
 
-Now you can use the theme just like any other built-in theme.
-
-```ruby
-SexyForm.form(theme: :custom)
-```
-
 # Credits
 
 Created & Maintained by [Weston Ganger](https://westonganger.com) - [@westonganger](https://github.com/westonganger)
 
-Project Originally Based on [SexyForm.rb](https://github.com/westonganger/form_builder.rb)
+Project Originally Based on [FormBuilder.cr](https://github.com/westonganger/form_builder.cr)
 
 For any consulting or contract work please contact me via my company website: [Solid Foundation Web Development](https://solidfoundationwebdev.com)
 
