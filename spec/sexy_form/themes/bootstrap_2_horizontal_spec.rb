@@ -79,7 +79,7 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         attrs = StringHash.new
 
-        if ["checkbox", "radio"].includes?(field_type)
+        if ["checkbox", "radio"].include?(field_type)
           attrs["class"] = field_type
         else
           attrs["class"] = "control-label"

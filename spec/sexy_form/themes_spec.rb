@@ -51,8 +51,8 @@ describe FormBuilder::Themes do
           end
 
           ### Ensure No Incorrect/Unparenthesized Ternary Values
-          actual.includes?("true").should eq(false)
-          actual.includes?("false").should eq(false)
+          actual.include?("true").should eq(false)
+          actual.include?("false").should eq(false)
         end
       end
     end

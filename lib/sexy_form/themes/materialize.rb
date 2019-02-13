@@ -9,7 +9,7 @@ module SexyForm
           attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
           s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
-          if ["checkbox", "radio"].includes?(field_type) && html_label
+          if ["checkbox", "radio"].include?(field_type) && html_label
             s << html_label.sub("\">", "\">#{html_field}<span>").sub("</label>", "</span></label>")
           else
             s << html_field

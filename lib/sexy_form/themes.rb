@@ -5,7 +5,9 @@ module SexyForm
       self.name.to_s.split("::").last.underscore
     end
 
-    def self.from_name(name : String)
+    def self.from_name(name)
+      name = name.to_s
+
       subclasses.each do |klass|
         if klass.theme_name == name
           return klass

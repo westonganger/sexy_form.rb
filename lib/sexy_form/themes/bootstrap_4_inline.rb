@@ -8,12 +8,12 @@ module SexyForm
 
       def wrap_field(field_type : String, html_field : String, html_label : String?, html_help_text : String?, html_errors : Array(String)?, wrapper_html_attributes : StringHash)
         String.build do |s|
-          wrapper_html_attributes["class"] = "form-group #{"form-check" if ["checkbox", "radio"].includes?(field_type)} #{wrapper_html_attributes["class"]?}".strip
+          wrapper_html_attributes["class"] = "form-group #{"form-check" if ["checkbox", "radio"].include?(field_type)} #{wrapper_html_attributes["class"]?}".strip
 
           attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
           s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
-          if ["checkbox", "radio"].includes?(field_type)
+          if ["checkbox", "radio"].include?(field_type)
             s << html_field
             s << html_label
           else
@@ -41,7 +41,7 @@ module SexyForm
       end
 
       def label_html_attributes(html_attrs : StringHash, field_type : String, has_errors? : Bool)
-        if ["checkbox", "radio"].includes?(field_type)
+        if ["checkbox", "radio"].include?(field_type)
           html_attrs["class"] = "form-check-label #{html_attrs["class"]?}".strip
         end
 

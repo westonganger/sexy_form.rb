@@ -9,7 +9,7 @@ module SexyForm
           attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
           s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
-          unless ["checkbox", "radio"].includes?(field_type) && html_label
+          unless ["checkbox", "radio"].include?(field_type) && html_label
             s << html_label
           end
 
@@ -17,7 +17,7 @@ module SexyForm
           s << %(<div class="field">)
           s << %(<div class="control">)
 
-          if ["checkbox", "radio"].includes?(field_type) && html_label
+          if ["checkbox", "radio"].include?(field_type) && html_label
             s << html_label.sub("\">", "\">#{html_field} ")
           else
             s << html_field
@@ -42,7 +42,7 @@ module SexyForm
       end
 
       def label_html_attributes(html_attrs : StringHash, field_type : String, has_errors? : Bool)
-        if ["checkbox", "radio"].includes?(field_type)
+        if ["checkbox", "radio"].include?(field_type)
           html_attrs["class"] = "#{field_type} #{html_attrs["class"]?}".strip
         else
           html_attrs["class"] = "label is-normal #{html_attrs["class"]?}".strip

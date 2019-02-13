@@ -84,7 +84,7 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         attrs = StringHash.new
 
-        unless ["checkbox", "radio"].includes?(field_type)
+        unless ["checkbox", "radio"].include?(field_type)
           attrs["class"] = "col-sm-3 control-label"
         end
 

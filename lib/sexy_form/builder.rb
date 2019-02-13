@@ -4,10 +4,9 @@ module SexyForm
     INPUT_TYPES = ["checkbox", "file", "hidden", "password", "radio", "text"].freeze
     COLLECTION_KEYS = ["options", "selected", "disabled", "include_blank"].freeze
 
-    @theme : SexyForm::Themes
-    @html : Array(String) = [] of String
+    def initialize(theme: nil)
+      @html = []
 
-    def initialize(theme : (String | Symbol | SexyForm::Themes)? = nil)
       if theme
         if theme.is_a?(SexyForm::Themes)
           @theme = theme
@@ -23,9 +22,10 @@ module SexyForm
       @theme
     end
 
-    def <<(value)
-      @html.push(value.to_s)
-      value.to_s
+    def <<(v)
+      v = value.to_s
+      @html.push(v)
+      v
     end
 
     ### This method should be considered private
@@ -34,50 +34,48 @@ module SexyForm
     end
 
     def field(
-      type : (String | Symbol),
-      name : (String | Symbol)? = nil,
-      value : String? = nil,
-      label : (Bool | String)? = nil,
-      help_text : String? = nil,
-      errors : (Array(String) | String)? = nil,
-      input_html : (NamedTuple | OptionHash) = OptionHash.new,
-      label_html : (NamedTuple | OptionHash) = OptionHash.new,
-      help_text_html : (NamedTuple | OptionHash) = OptionHash.new,
-      wrapper_html : (NamedTuple | OptionHash) = OptionHash.new,
-      error_html : (NamedTuple | OptionHash) = OptionHash.new,
-      collection : (NamedTuple | OptionHash)? = nil,
+      type: ,
+      name: nil,
+      value: nil,
+      label: nil,
+      help_text: nil,
+      errors: nil,
+      input_html: {},
+      label_html: {},
+      help_text_html: {},
+      wrapper_html: {},
+      error_html: {},
+      collection: {},
     )
-      type_str = type.to_s
+      type = type.to_s
 
-      unless FIELD_TYPES.includes?(type_str)
+      unless FIELD_TYPES.include?(type)
         raise ArgumentError.new("Invalid :type argument, valid field types are: #{FIELD_TYPES.join(", ")}`")
       end
 
-      if collection && type_str != "select"
-        raise ArgumentError.new("Argument :collection is not supported for type: :#{type_str}")
+      if collection && type != "select"
+        raise ArgumentError.new("Argument :collection is not supported for type: :#{type}")
       end
 
       if errors
         if errors.is_a?(String)
-          if !errors.empty?
-            safe_errors = [errors]
-          end
+          errors = errors.empty? ? nil : [errors]
         else
           errors.reject!{|x| x.empty?}
 
-          if !errors.empty?
-            safe_errors = errors
+          if errors.empty?
+            errors = nil
           end
         end
 
-        if safe_errors
-          safe_errors.map!{|x| @theme.build_html_error(error: x, field_type: type_str, html_attrs: SexyForm.safe_string_hash(error_html.is_a?(NamedTuple) ? error_html.to_h : error_html))}
+        if errors
+          html_errors = errors.map{|x| @theme.build_html_error(error: x, field_type: type, html_attrs: SexyForm.safe_string_hash(error)}
         end
       end
 
-      themed_input_html = @theme.input_html_attributes(html_attrs: SexyForm.safe_string_hash(input_html.is_a?(NamedTuple) ? input_html.to_h : input_html), field_type: type_str, has_errors?: !safe_errors.nil?)
+      themed_input_html = @theme.input_html_attributes(html_attrs: SexyForm.safe_string_hash(errors), has_errors?: !error.empty?)
 
-      themed_label_html = @theme.label_html_attributes(html_attrs: SexyForm.safe_string_hash(label_html.is_a?(NamedTuple) ? label_html.to_h : label_html), field_type: type_str, has_errors?: !safe_errors.nil?)
+      themed_label_html = @theme.label_html_attributes(html_attrs: SexyForm.safe_string_hash(label_html), field_type: type, has_errors?: !error.empty?)
 
       if name
         themed_input_html["name"] ||= name.to_s
@@ -87,34 +85,34 @@ module SexyForm
         end
       end
 
-      if !themed_input_html["value"]? && value && !value.to_s.empty? && INPUT_TYPES.includes?(type_str)
-        themed_input_html["value"] = value
+      if !themed_input_html.has_key?("value") && value && !value.to_s.empty? && INPUT_TYPES.include?(type)
+        themed_input_html["value"] = value.to_s
       end
 
       if themed_input_html.has_key?("id")
         themed_label_html["for"] ||= themed_input_html["id"]
       end
 
-      if ["checkbox", "radio"].includes?(type_str)
+      if ["checkbox", "radio"].include?(type)
         ### Allow passing checked=true/false
-        if themed_input_html["checked"]? == "true"
+        if themed_input_html["checked"] == "true"
           themed_input_html["checked"] = "checked"
-        elsif themed_input_html["checked"]? == "false"
+        elsif themed_input_html["checked"] == "false"
           themed_input_html.delete("checked")
         end
       end
 
-      case type_str
+      case type
       when "checkbox"
-        html_field = input_field(type: type_str, attrs: themed_input_html)
+        html_field = input_field(type: type, attrs: themed_input_html)
       when "file"
-        html_field = input_field(type: type_str, attrs: themed_input_html)
+        html_field = input_field(type: type, attrs: themed_input_html)
       when "hidden"
-        html_field = input_field(type: type_str, attrs: themed_input_html)
+        html_field = input_field(type: type, attrs: themed_input_html)
       when "password"
-        html_field = input_field(type: type_str, attrs: themed_input_html)
+        html_field = input_field(type: type, attrs: themed_input_html)
       when "radio"
-        html_field = input_field(type: type_str, attrs: themed_input_html)
+        html_field = input_field(type: type, attrs: themed_input_html)
       when "select"
         if !collection
           raise ArgumentError.new("Required argument `:collection` not provided")
@@ -122,7 +120,7 @@ module SexyForm
 
         safe_collection = self.safe_collection_hash(collection.is_a?(NamedTuple) ? collection.to_h : collection)
 
-        if safe_collection.keys.any?{|x| !COLLECTION_KEYS.includes?(x) }
+        if safe_collection.keys.any?{|x| !COLLECTION_KEYS.include?(x) }
           raise ArgumentError.new("Invalid key passed to :collection argument. Supported keys are #{COLLECTION_KEYS.map{|x| ":#{x}"}.join(", ")}")
         end
 
@@ -183,7 +181,7 @@ module SexyForm
 
         html_field = select_field(options: collection_options, selected: collection_selected, disabled: collection_disabled, attrs: themed_input_html)
       when "text"
-        html_field = input_field(type: type_str, attrs: themed_input_html)
+        html_field = input_field(type: type, attrs: themed_input_html)
       when "textarea"
         if themed_input_html.has_key?("size")
           themed_input_html["cols"], themed_input_html["rows"] = themed_input_html.delete("size").to_s.split("x")
@@ -199,7 +197,7 @@ module SexyForm
       if label != false
         if label.is_a?(String)
           label_text = label
-        elsif {nil, true}.includes?(label) && name
+        elsif {nil, true}.include?(label) && name
           label_text = titleize(name)
         end
 
@@ -213,23 +211,23 @@ module SexyForm
       end
 
       if help_text
-        html_help_text = @theme.build_html_help_text(field_type: type_str, help_text: help_text, html_attrs: SexyForm.safe_string_hash(help_text_html.is_a?(NamedTuple) ? help_text_html.to_h : help_text_html))
+        html_help_text = @theme.build_html_help_text(field_type: type, help_text: help_text, html_attrs: SexyForm.safe_string_hash(help_text_html.is_a?(NamedTuple) ? help_text_html.to_h : help_text_html))
       end
 
       @theme.wrap_field(
-        field_type: type_str,
-        html_field: html_field.to_s,
+        field_type: type,
+        html_field: html_field,
         html_label: html_label,
         html_help_text: html_help_text,
-        html_errors: safe_errors,
-        wrapper_html_attributes: SexyForm.safe_string_hash(wrapper_html.is_a?(NamedTuple) ? wrapper_html.to_h : wrapper_html)
+        html_errors: html_errors,
+        wrapper_html_attributes: SexyForm.safe_string_hash(wrapper_html)
       )
     end
 
     private
 
-    def input_field(type : String, attrs : StringHash? = StringHash.new)
-      unless INPUT_TYPES.includes?(type.to_s)
+    def input_field(type: , attrs: {})
+      unless INPUT_TYPES.include?(type.to_s)
         raise ArgumentError.new("Invalid input :type, valid input types are `#{INPUT_TYPES.join(", ")}`")
       end
 
@@ -244,7 +242,7 @@ module SexyForm
       "<input type=\"#{type}\"#{" " unless tag_attrs.empty?}#{tag_attrs.join(" ")}>"
     end
 
-    def select_field(options : (Array(Array(String)) | String)? = nil, selected : Array(String)? = nil, disabled : Array(String)? = nil, attrs : StringHash? = StringHash.new)
+    def select_field(options: nil, selected: = nil, disabled: = nil, attrs: {})
       String.build do |s|
         s << (attrs.empty? ? "<select>" : %(<select #{SexyForm.build_html_attr_string(attrs)}>))
 
@@ -258,11 +256,11 @@ module SexyForm
               s << "<option value=\"#{v}\""
 
               if selected
-                s << "#{" selected=\"selected\"" if selected.includes?(v)}"
+                s << "#{" selected=\"selected\"" if selected.include?(v)}"
               end
 
               if disabled
-                s << "#{" disabled=\"disabled\"" if disabled.includes?(v)}"
+                s << "#{" disabled=\"disabled\"" if disabled.include?(v)}"
               end
 
               s << ">#{option[1]? || v}</option>"
