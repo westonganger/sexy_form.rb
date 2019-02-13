@@ -1,5 +1,5 @@
-require "../../spec_helper"
-require "./theme_spec_helper"
+require_relative "../../spec_helper"
+require_relative "./theme_spec_helper"
 
 theme_klass = FormBuilder::Themes::Bootstrap3Horizontal
 theme = theme_klass.new
@@ -84,7 +84,7 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         attrs = StringHash.new
 
-        unless {"checkbox", "radio"}.includes?(field_type)
+        unless ["checkbox", "radio"].includes?(field_type)
           attrs["class"] = "col-sm-3 control-label"
         end
 

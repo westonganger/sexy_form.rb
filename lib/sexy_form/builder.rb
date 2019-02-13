@@ -95,7 +95,7 @@ module SexyForm
         themed_label_html["for"] ||= themed_input_html["id"]
       end
 
-      if {"checkbox", "radio"}.includes?(type_str)
+      if ["checkbox", "radio"].includes?(type_str)
         ### Allow passing checked=true/false
         if themed_input_html["checked"]? == "true"
           themed_input_html["checked"] = "checked"
@@ -145,7 +145,7 @@ module SexyForm
         end
 
         if collection_options.is_a?(String)
-          {"selected", "disabled", "include_blank"}.each do |k|
+          ["selected", "disabled", "include_blank"].each do |k|
             if safe_collection.has_key?(k)
               raise ArgumentError.new("Argument `collection[:#{k}]` is not allowed when passing a pre-made HTML Options String to `collection[:options]`")
             end
@@ -235,7 +235,7 @@ module SexyForm
 
       attrs.delete("type")
 
-      boolean_opts = {"disabled"}
+      boolean_opts = ["disabled"]
 
       boolean_attrs = attrs.select(boolean_opts)
       tag_attrs = attrs.reject!(boolean_opts).map{|k, v| "#{k}=\"#{v}\""}

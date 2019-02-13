@@ -1,5 +1,5 @@
-require "../../spec_helper"
-require "./theme_spec_helper"
+require_relative "../../spec_helper"
+require_relative "./theme_spec_helper"
 
 theme_klass = FormBuilder::Themes::Foundation
 theme = theme_klass.new

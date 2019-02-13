@@ -195,7 +195,7 @@ module SexyForm
 
         s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
 
-        if {"checkbox", "radio"}.includes?(field_type) && html_label && (i = html_label.index(">"))
+        if ["checkbox", "radio"].includes?(field_type) && html_label && (i = html_label.index(">"))
           s << html_label.insert(i+1, "#{html_field} ")
         else
           s << html_label

@@ -1,5 +1,5 @@
-require "../../spec_helper"
-require "./theme_spec_helper"
+require_relative "../../spec_helper"
+require_relative "./theme_spec_helper"
 
 theme_klass = FormBuilder::Themes::Bootstrap2Inline
 theme = theme_klass.new
@@ -76,7 +76,7 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         attrs = StringHash.new
 
-        if {"checkbox", "radio"}.includes?(field_type)
+        if ["checkbox", "radio"].includes?(field_type)
           attrs["class"] = field_type
         end
 
