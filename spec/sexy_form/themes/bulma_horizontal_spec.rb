@@ -1,7 +1,7 @@
 require_relative "../../spec_helper"
 require_relative "./theme_spec_helper"
 
-theme_klass = FormBuilder::Themes::BulmaHorizontal
+theme_klass = SexyForm::Themes::BulmaHorizontal
 theme = theme_klass.new
 
 describe theme_klass do
@@ -18,53 +18,53 @@ describe theme_klass do
     end
   end
 
-  describe "FormBuilder.form" do
+  describe "SexyForm.form" do
     it "matches docs example with labels" do
       expected = String.build do |str|
-        str << %(<form method="post">)
-          str << %(<div class="field is-horizontal">)
-            str << %(<label class="label is-normal" for="email">Email</label>)
-            str << %(<div class="field-body">)
-              str << %(<div class="field">)
-                str << %(<div class="control">)
-                  str << %(<input type="text" name="email" id="email">)
+        str << %Q(<form method="post">)
+          str << %Q(<div class="field is-horizontal">)
+            str << %Q(<label class="label is-normal" for="email">Email</label>)
+            str << %Q(<div class="field-body">)
+              str << %Q(<div class="field">)
+                str << %Q(<div class="control">)
+                  str << %Q(<input type="text" name="email" id="email">)
                 str << "</div>"
               str << "</div>"
             str << "</div>"
           str << "</div>"
 
-          str << %(<div class="field is-horizontal">)
-            str << %(<label class="label is-normal" for="password">Password</label>)
-            str << %(<div class="field-body">)
-              str << %(<div class="field">)
-                str << %(<div class="control">)
-                  str << %(<input type="password" name="password" id="password">)
+          str << %Q(<div class="field is-horizontal">)
+            str << %Q(<label class="label is-normal" for="password">Password</label>)
+            str << %Q(<div class="field-body">)
+              str << %Q(<div class="field">)
+                str << %Q(<div class="control">)
+                  str << %Q(<input type="password" name="password" id="password">)
                 str << "</div>"
               str << "</div>"
             str << "</div>"
           str << "</div>"
 
-          str << %(<div class="field is-horizontal">)
-            str << %(<div class="field-body">)
-              str << %(<div class="field">)
-                str << %(<div class="control">)
-                  str << %(<label class="checkbox" for="remember_me">)
-                    str << %(<input type="checkbox" name="remember_me" id="remember_me"> Remember Me)
-                  str << %(</label>)
+          str << %Q(<div class="field is-horizontal">)
+            str << %Q(<div class="field-body">)
+              str << %Q(<div class="field">)
+                str << %Q(<div class="control">)
+                  str << %Q(<label class="checkbox" for="remember_me">)
+                    str << %Q(<input type="checkbox" name="remember_me" id="remember_me"> Remember Me)
+                  str << %Q(</label>)
                 str << "</div>"
               str << "</div>"
             str << "</div>"
           str << "</div>"
 
-          str << %(<button type="submit" class="button">Sign in</button>)
-        str <<%(</form>)
+          str << %Q(<button type="submit" class="button">Sign in</button>)
+        str << "</form>"
       end
 
-      actual = FormBuilder.form(theme: theme_klass.theme_name) do |f|
+      actual = SexyForm.form(theme: theme_klass.theme_name) do |f|
         f << f.field(type: :text, name: :email)
         f << f.field(type: :password, name: :password)
         f << f.field(type: :checkbox, name: :remember_me)
-        f << %(<button type="submit" class="button">Sign in</button>)
+        f << %Q(<button type="submit" class="button">Sign in</button>)
       end
 
       actual.should eq(expected)

@@ -1,7 +1,7 @@
 require_relative "../../spec_helper"
 require_relative "./theme_spec_helper"
 
-theme_klass = FormBuilder::Themes::Bootstrap2Inline
+theme_klass = SexyForm::Themes::Bootstrap2Inline
 theme = theme_klass.new
 
 describe theme_klass do
@@ -18,35 +18,35 @@ describe theme_klass do
     end
   end
 
-  describe "FormBuilder.form" do
+  describe "SexyForm.form" do
     it "matches docs example with labels" do
       expected = String.build do |str|
-        str << %(<form class="form-inline" method="post">)
+        str << %Q(<form class="form-inline" method="post">)
           str << "<div>"
-            str << %(<label for="email">Email</label>)
-            str << %(<input type="text" class="input-small" placeholder="Email" name="email" id="email">)
+            str << %Q(<label for="email">Email</label>)
+            str << %Q(<input type="text" class="input-small" placeholder="Email" name="email" id="email">)
           str << "</div>"
 
           str << "<div>"
-            str << %(<label for="password">Password</label>)
-            str << %(<input type="password" class="input-small" placeholder="Password" name="password" id="password">)
+            str << %Q(<label for="password">Password</label>)
+            str << %Q(<input type="password" class="input-small" placeholder="Password" name="password" id="password">)
           str << "</div>"
 
           str << "<div>"
-            str << %(<label class="checkbox" for="remember_me">)
-              str << %(<input type="checkbox" name="remember_me" id="remember_me"> Remember Me)
-            str << %(</label>)
+            str << %Q(<label class="checkbox" for="remember_me">)
+              str << %Q(<input type="checkbox" name="remember_me" id="remember_me"> Remember Me)
+            str << %Q(</label>)
           str << "</div>"
 
-          str << %(<button type="submit" class="btn">Sign in</button>)
-        str <<%(</form>)
+          str << %Q(<button type="submit" class="btn">Sign in</button>)
+        str << "</form>"
       end
 
-      actual = FormBuilder.form(theme: theme_klass.theme_name) do |f|
+      actual = SexyForm.form(theme: theme_klass.theme_name) do |f|
         f << f.field(type: :text, name: :email, input_html: {class: "input-small", placeholder: "Email"})
         f << f.field(type: :password, name: :password, input_html: {class: "input-small", placeholder: "Password"})
         f << f.field(type: :checkbox, name: :remember_me)
-        f << %(<button type="submit" class="btn">Sign in</button>)
+        f << %Q(<button type="submit" class="btn">Sign in</button>)
       end
 
       actual.should eq(expected)

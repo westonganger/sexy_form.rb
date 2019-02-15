@@ -131,7 +131,7 @@ When using the `SexyForm.form` method in plain Ruby code, the `<<` syntax is req
 form_html_str = SexyForm.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
   f << f.field(name: "name", type: :text, label: "Name")
   f << f.field(name: "sku", type: :text, label: "SKU")
-  f << "<strong>Hello World</strong>"
+  f << %Q(<strong>Hello World</strong>"
 end
 ```
 
@@ -193,7 +193,7 @@ module SexyForm
         ### Example: {"class" => "foo", "data-role" => "ninja"} converts to "class=\"foo\" data-role=\"ninja\""
         attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
 
-        s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
+        s << "#{attr_str.empty? ? "<div>" : (<div #{attr_str}>)}"
 
         if ["checkbox", "radio"].include?(field_type) && html_label && (i = html_label.index(">"))
           s << html_label.insert(i+1, "#{html_field} ")
@@ -204,7 +204,7 @@ module SexyForm
         
         s << html_help_text
 
-        s << "</div>"
+        s << %Q(</div>"
 
         s
       end
@@ -232,9 +232,9 @@ module SexyForm
         html_attrs["class"] = "help-text #{html_attrs["class"]?}".strip
 
         s = ""
-        s << (html_attrs.empty? ? "<div>" : %(<div #{build_html_attr_string(html_attrs)}>)
+        s << %Q(html_attrs.empty? ? "<div>" : (<div #{build_html_attr_string(html_attrs)}>)
         s << help_text
-        s << "</div>"
+        s << %Q(</div>"
         s
       end
 
@@ -243,9 +243,9 @@ module SexyForm
         html_attrs["style"] = "color: red; #{html_attrs["style"]?}".strip
 
         s = ""
-        s << (html_attrs.empty? ? "<div>" : %(<div #{build_html_attr_string(html_attrs)}>)
+        s << %Q(html_attrs.empty? ? "<div>" : (<div #{build_html_attr_string(html_attrs)}>)
         s << error
-        s << "</div>"
+        s << %Q(</div>"
         s
       end
 

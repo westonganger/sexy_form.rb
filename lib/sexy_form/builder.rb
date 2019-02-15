@@ -45,7 +45,7 @@ module SexyForm
       help_text_html: {},
       wrapper_html: {},
       error_html: {},
-      collection: {},
+      collection: {}
     )
       type = type.to_s
 
@@ -69,7 +69,9 @@ module SexyForm
         end
 
         if errors
-          html_errors = errors.map{|x| @theme.build_html_error(error: x, field_type: type, html_attrs: SexyForm.safe_string_hash(error)}
+          html_errors = errors.map{|x| 
+            @theme.build_html_error(error: x, field_type: type, html_attrs: SexyForm.safe_string_hash(error))
+          }
         end
       end
 
@@ -118,11 +120,7 @@ module SexyForm
           raise ArgumentError.new("Required argument `:collection` not provided")
         end
 
-        safe_collection = self.safe_collection_hash(collection.is_a?(NamedTuple) ? collection.to_h : collection)
-
-        if safe_collection.keys.any?{|x| !COLLECTION_KEYS.include?(x) }
-          raise ArgumentError.new("Invalid key passed to :collection argument. Supported keys are #{COLLECTION_KEYS.map{|x| ":#{x}"}.join(", ")}")
-        end
+        safe_collection = FormBuilder.stringify_hash_keys(collection)
 
         if !safe_collection.has_key?("options")
           raise ArgumentError.new("Required argument `collection[:options]` not provided")
@@ -139,7 +137,7 @@ module SexyForm
         elsif safe_collection["options"].is_a?(String)
           collection_options = safe_collection["options"].as(String)
         else
-          raise ArgumentError.new("Invalid argument type passed to `collection[:options]`, must be an Array`")
+          raise ArgumentError.new("Invalid type passed to argument `collection[:options]``")
         end
 
         if collection_options.is_a?(String)
@@ -150,7 +148,7 @@ module SexyForm
           end
         else
           if safe_collection.has_key?("include_blank") && safe_collection["include_blank"] != false
-            collection_options.unshift([(safe_collection["include_blank"]? == true ? "" : "#{safe_collection["include_blank"]}")])
+            collection_options.unshift([(safe_collection["include_blank"] == true ? "" : "#{safe_collection["include_blank"]}")])
           end
 
           if safe_collection.has_key?("selected")
@@ -170,10 +168,10 @@ module SexyForm
           end
         end
 
-        if value && safe_collection["selected"]?
+        if value && safe_collection["selected"]
           raise ArgumentError.new("Cannot provide :value and :selected arguments together. The :selected argument is recommended for field `type: :select.`")
         else
-          v = safe_collection["selected"]? || value
+          v = safe_collection["selected"] || value
           if v
             safe_collection["selected"] = v
           end
@@ -188,8 +186,8 @@ module SexyForm
         end
 
         html_field = String.build do |s|
-          s << (themed_input_html.empty? ? "<textarea>" : %(<textarea #{SexyForm.build_html_attr_string(themed_input_html)}>))
-          s << themed_input_html["value"]?
+          s << %Q(themed_input_html.empty? ? "<textarea>" : (<textarea #{SexyForm.build_html_attr_string(themed_input_html)}>))
+          s << themed_input_html["value"]
           s << "</textarea>"
         end
       end
@@ -197,13 +195,13 @@ module SexyForm
       if label != false
         if label.is_a?(String)
           label_text = label
-        elsif {nil, true}.include?(label) && name
+        elsif [nil, true].include?(label) && name
           label_text = titleize(name)
         end
 
         if label_text
           html_label = String.build do |s|
-            s << (themed_label_html.empty? ? "<label>" : %(<label #{SexyForm.build_html_attr_string(themed_label_html)}>))
+            s << %Q(themed_label_html.empty? ? "<label>" : (<label #{SexyForm.build_html_attr_string(themed_label_html)}>))
             s << label_text
             s << "</label>"
           end
@@ -242,29 +240,27 @@ module SexyForm
       "<input type=\"#{type}\"#{" " unless tag_attrs.empty?}#{tag_attrs.join(" ")}>"
     end
 
-    def select_field(options: nil, selected: = nil, disabled: = nil, attrs: {})
+    def select_field(options:, selected: nil, disabled: nil, attrs: {})
       String.build do |s|
-        s << (attrs.empty? ? "<select>" : %(<select #{SexyForm.build_html_attr_string(attrs)}>))
+        s << %Q(attrs.empty? ? "<select>" : (<select #{SexyForm.build_html_attr_string(attrs)}>))
 
-        if options
-          if options.is_a?(String)
-            s << options
-          else
-            options.map do |option|
-              v = option[0]?.to_s
+        if options.is_a?(String)
+          s << options
+        else
+          options.map do |option|
+            v = option[0].to_s
 
-              s << "<option value=\"#{v}\""
+            s << "<option value=\"#{v}\""
 
-              if selected
-                s << "#{" selected=\"selected\"" if selected.include?(v)}"
-              end
-
-              if disabled
-                s << "#{" disabled=\"disabled\"" if disabled.include?(v)}"
-              end
-
-              s << ">#{option[1]? || v}</option>"
+            if selected
+              s << "#{" selected=\"selected\"" if selected.include?(v)}"
             end
+
+            if disabled
+              s << "#{" disabled=\"disabled\"" if disabled.include?(v)}"
+            end
+
+            s << ">#{option[1] || v}</option>"
           end
         end
 
@@ -279,18 +275,6 @@ module SexyForm
 
     def titleize(value)
       value.to_s.gsub(/\W|_/, " ").split(" ").join(" "){|x| x.capitalize}
-    end
-
-    def safe_collection_hash(h : Hash)
-      h.each_with_object(CollectionHash.new) do |(k, v), new_h|
-        unless new_h.has_key?(k.to_s)
-          if k.is_a?(String)
-            new_h[k] = v
-          elsif !h.has_key?(k.to_s)
-            new_h[k.to_s] = v
-          end
-        end
-      end
     end
 
   end

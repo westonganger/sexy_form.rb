@@ -1,7 +1,7 @@
 require_relative "../../spec_helper"
 require_relative "./theme_spec_helper"
 
-theme_klass = FormBuilder::Themes::Default
+theme_klass = SexyForm::Themes::Default
 theme = theme_klass.new
 
 describe theme_klass do
@@ -18,35 +18,35 @@ describe theme_klass do
     end
   end
 
-  describe "FormBuilder.form" do
+  describe "SexyForm.form" do
     it "matches docs example with labels" do
       expected = String.build do |str|
-        str << %(<form method="post">)
-          str << %(<div>)
-            str << %(<label for="email">Email</label>)
-            str << %(<input type="text" name="email" id="email">)
+        str << %Q(<form method="post">)
+          str << %Q(<div>)
+            str << %Q(<label for="email">Email</label>)
+            str << %Q(<input type="text" name="email" id="email">)
           str << "</div>"
 
-          str << %(<div>)
-            str << %(<label for="password">Password</label>)
-            str << %(<input type="password" name="password" id="password">)
+          str << %Q(<div>)
+            str << %Q(<label for="password">Password</label>)
+            str << %Q(<input type="password" name="password" id="password">)
           str << "</div>"
 
-          str << %(<div>)
-            str << %(<label for="remember_me">)
-              str << %(<input type="checkbox" name="remember_me" id="remember_me"> Remember Me)
-            str << %(</label>)
+          str << %Q(<div>)
+            str << %Q(<label for="remember_me">)
+              str << %Q(<input type="checkbox" name="remember_me" id="remember_me"> Remember Me)
+            str << %Q(</label>)
           str << "</div>"
 
-          str << %(<button type="submit">Sign in</button>)
-        str <<%(</form>)
+          str << %Q(<button type="submit">Sign in</button>)
+        str << "</form>"
       end
 
-      actual = FormBuilder.form(theme: theme_klass.theme_name) do |f|
+      actual = SexyForm.form(theme: theme_klass.theme_name) do |f|
         f << f.field(type: :text, name: :email)
         f << f.field(type: :password, name: :password)
         f << f.field(type: :checkbox, name: :remember_me)
-        f << %(<button type="submit">Sign in</button>)
+        f << %Q(<button type="submit">Sign in</button>)
       end
 
       actual.should eq(expected)

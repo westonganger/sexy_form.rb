@@ -1,6 +1,11 @@
 require "sexy_form/version"
 require "sexy_form/themes"
-require "sexy_form/themes/*"
+
+### Require all themes
+Dir[File.join(__dir__, "sexy_form/themes/*.rb")].each do |f| 
+  require "sexy_form/themes/#{f.split("/").last}"
+end
+
 require "sexy_form/builder"
 
 module SexyForm
@@ -21,10 +26,10 @@ module SexyForm
 
     str = ""
 
-    str << %(<form #{self.build_html_attr_string(themed_form_html)}>)
+    str << %Q(<form #{self.build_html_attr_string(themed_form_html)}>)
 
     unless ["get", "post"].include?(method.to_s)
-      str << %(<input type="hidden" name="_method" value="#{method}")
+      str << %Q(<input type="hidden" name="_method" value="#{method}")
     end
 
     yield builder
@@ -38,11 +43,13 @@ module SexyForm
     str
   end
 
-  protected def self.build_html_attr_string(hash)
+  protected
+
+  def self.build_html_attr_string(hash)
     hash.map{|k, v| "#{k}=\"#{v}\""}.join(" ")
   end
 
-  protected def self.safe_string_hash(h)
+  def self.safe_string_hash(h)
     # TODO
     h.each_with_object(StringHash.new) do |(k, v), new_h|
       unless new_h.has_key?(k.to_s)
@@ -54,5 +61,7 @@ module SexyForm
       end
     end
   end
+
+  ### END PROTECTED METHODS
 
 end

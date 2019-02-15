@@ -1,21 +1,21 @@
 require "spec_helper"
 
-builder = FormBuilder::Builder.new
+builder = SexyForm::Builder.new
 
-describe FormBuilder::Builder do
+describe SexyForm::Builder do
 
   describe "#initialize" do
     it "defaults to theme: :default" do
-      builder.theme.class.should eq(FormBuilder::Themes::Default)
+      builder.theme.class.should eq(SexyForm::Themes::Default)
     end
 
     it "allows string :theme name" do
-      FormBuilder::Builder.new(theme: "bootstrap_4_inline").theme.class.should eq(FormBuilder::Themes::Bootstrap4Inline)
+      SexyForm::Builder.new(theme: "bootstrap_4_inline").theme.class.should eq(SexyForm::Themes::Bootstrap4Inline)
     end
 
     it "allows class instance :theme" do
-      expected = FormBuilder::Themes::Bootstrap4Inline
-      FormBuilder::Builder.new(theme: expected.new).theme.class.should eq(expected)
+      expected = SexyForm::Themes::Bootstrap4Inline
+      SexyForm::Builder.new(theme: expected.new).theme.class.should eq(expected)
     end
   end
 

@@ -6,12 +6,12 @@ module SexyForm
         "bootstrap_3_inline"
       end
 
-      def wrap_field(field_type : String, html_field : String, html_label : String?, html_help_text : String?, html_errors : Array(String)?, wrapper_html_attributes : StringHash)
+      def wrap_field(field_type:, html_field:, html_label:, html_help_text: nil, html_errors: nil, wrapper_html_attributes:)
         String.build do |s|
-          wrapper_html_attributes["class"] = "form-group#{" has-error" if html_errors} #{wrapper_html_attributes["class"]?}".strip
+          wrapper_html_attributes["class"] = "form-group#{" has-error" if html_errors} #{wrapper_html_attributes["class"]}".strip
 
           attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
-          s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
+          s << "#{attr_str.empty? ? "<div>" : "<div #{attr_str}>"}"
 
           if ["checkbox", "radio"].include?(field_type)
             if html_label
@@ -30,34 +30,34 @@ module SexyForm
         end
       end
 
-      def input_html_attributes(html_attrs : StringHash, field_type : String, has_errors? : Bool)
+      def input_html_attributes(html_attrs:, field_type:, has_errors:)
         html_attrs
       end
 
-      def label_html_attributes(html_attrs : StringHash, field_type : String, has_errors? : Bool)
+      def label_html_attributes(html_attrs:, field_type:, has_errors:)
         html_attrs
       end
 
-      def form_html_attributes(html_attrs : StringHash)
-        html_attrs["class"] = "form-inline #{html_attrs["class"]?}".strip
+      def form_html_attributes(html_attrs:)
+        html_attrs["class"] = "form-inline #{html_attrs["class"]}".strip
         html_attrs
       end
 
-      def build_html_help_text(help_text : String, html_attrs : StringHash, field_type : String)
-        html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
+      def build_html_help_text(help_text:, html_attrs:, field_type:)
+        html_attrs["class"] = "help-block #{html_attrs["class"]}".strip
 
         String.build do |s|
-          s << (html_attrs.empty? ? "<span>" : %(<span #{SexyForm.build_html_attr_string(html_attrs)}>))
+          s << %Q(html_attrs.empty? ? "<span>" : (<span #{SexyForm.build_html_attr_string(html_attrs)}>))
           s << help_text
           s << "</span>"
         end
       end
 
-      def build_html_error(error : String, html_attrs : StringHash, field_type : String)
-        html_attrs["class"] = "help-block #{html_attrs["class"]?}".strip
+      def build_html_error(error:, html_attrs:, field_type:)
+        html_attrs["class"] = "help-block #{html_attrs["class"]}".strip
 
         String.build do |s|
-          s << (html_attrs.empty? ? "<span>" : %(<span #{SexyForm.build_html_attr_string(html_attrs)}>))
+          s << %Q(html_attrs.empty? ? "<span>" : (<span #{SexyForm.build_html_attr_string(html_attrs)}>))
           s << error
           s << "</span>"
         end

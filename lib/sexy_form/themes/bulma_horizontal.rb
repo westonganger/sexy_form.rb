@@ -2,20 +2,20 @@ module SexyForm
   class Themes
     class BulmaHorizontal < Themes
 
-      def wrap_field(field_type : String, html_field : String, html_label : String?, html_help_text : String?, html_errors : Array(String)?, wrapper_html_attributes : StringHash)
+      def wrap_field(field_type:, html_field:, html_label:, html_help_text: nil, html_errors: nil, wrapper_html_attributes:)
         String.build do |s|
-          wrapper_html_attributes["class"] = "field is-horizontal #{wrapper_html_attributes["class"]?}".strip
+          wrapper_html_attributes["class"] = "field is-horizontal #{wrapper_html_attributes["class"]}".strip
 
           attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
-          s << "#{attr_str.empty? ? "<div>" : %(<div #{attr_str}>)}"
+          s << "#{attr_str.empty? ? "<div>" : "<div #{attr_str}>"}"
 
           unless ["checkbox", "radio"].include?(field_type) && html_label
             s << html_label
           end
 
-          s << %(<div class="field-body">)
-          s << %(<div class="field">)
-          s << %(<div class="control">)
+          s << %Q(<div class="field-body">)
+          s << %Q(<div class="field">)
+          s << %Q(<div class="control">)
 
           if ["checkbox", "radio"].include?(field_type) && html_label
             s << html_label.sub("\">", "\">#{html_field} ")
@@ -33,42 +33,42 @@ module SexyForm
         end
       end
 
-      def input_html_attributes(html_attrs : StringHash, field_type : String, has_errors? : Bool)
+      def input_html_attributes(html_attrs:, field_type:, has_errors:)
         if has_errors?
-          html_attrs["class"] = "is-danger #{html_attrs["class"]?}".strip
+          html_attrs["class"] = "is-danger #{html_attrs["class"]}".strip
         end
 
         html_attrs
       end
 
-      def label_html_attributes(html_attrs : StringHash, field_type : String, has_errors? : Bool)
+      def label_html_attributes(html_attrs:, field_type:, has_errors:)
         if ["checkbox", "radio"].include?(field_type)
-          html_attrs["class"] = "#{field_type} #{html_attrs["class"]?}".strip
+          html_attrs["class"] = "#{field_type} #{html_attrs["class"]}".strip
         else
-          html_attrs["class"] = "label is-normal #{html_attrs["class"]?}".strip
+          html_attrs["class"] = "label is-normal #{html_attrs["class"]}".strip
         end
         html_attrs
       end
 
-      def form_html_attributes(html_attrs : StringHash)
+      def form_html_attributes(html_attrs:)
         html_attrs
       end
 
-      def build_html_help_text(help_text : String, html_attrs : StringHash, field_type : String)
-        html_attrs["class"] = "help #{html_attrs["class"]?}".strip
+      def build_html_help_text(help_text:, html_attrs:, field_type:)
+        html_attrs["class"] = "help #{html_attrs["class"]}".strip
 
         String.build do |s|
-          s << (html_attrs.empty? ? "<p>" : %(<p #{SexyForm.build_html_attr_string(html_attrs)}>))
+          s << %Q(html_attrs.empty? ? "<p>" : (<p #{SexyForm.build_html_attr_string(html_attrs)}>))
           s << help_text
           s << "</p>"
         end
       end
 
-      def build_html_error(error : String, html_attrs : StringHash, field_type : String)
-        html_attrs["class"] = "help is-danger #{html_attrs["class"]?}".strip
+      def build_html_error(error:, html_attrs:, field_type:)
+        html_attrs["class"] = "help is-danger #{html_attrs["class"]}".strip
 
         String.build do |s|
-          s << (html_attrs.empty? ? "<p>" : %(<p #{SexyForm.build_html_attr_string(html_attrs)}>))
+          s << %Q(html_attrs.empty? ? "<p>" : (<p #{SexyForm.build_html_attr_string(html_attrs)}>))
           s << error
           s << "</p>"
         end

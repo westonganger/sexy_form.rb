@@ -1,8 +1,12 @@
 module SexyForm
-  abstract class Themes
+  class Themes
 
     def self.theme_name
       self.name.to_s.split("::").last.underscore
+    end
+
+    def self.subclasses
+      ObjectSpace.each_object(Class).select{|klass| klass < SexyForm::Themes }
     end
 
     def self.from_name(name)
