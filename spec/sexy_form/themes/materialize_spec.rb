@@ -20,7 +20,7 @@ describe theme_klass do
 
   describe "SexyForm.form" do
     it "matches docs example with labels" do
-      expected = String.build do |str|
+      expected = build_string do |str|
         str << %Q(<form method="post">)
           str << %Q(<div class="input-field">)
             str << %Q(<input type="text" name="email" id="email">)
@@ -56,26 +56,26 @@ describe theme_klass do
 
   describe ".form_html_attributes" do
     it "returns correct attributes" do
-      attrs = StringHash.new
+      attrs = {}
 
-      theme.form_html_attributes(html_attrs: StringHash.new).should eq(attrs)
+      theme.form_html_attributes(html_attrs: {}).should eq(attrs)
     end
   end
 
-  FIELD_TYPES.each do |field_type|
+  SexyForm::Builder::FIELD_TYPES.each do |field_type|
     describe ".input_html_attributes" do
       it "returns correct #{field_type} attributes" do
-        attrs = StringHash.new
+        attrs = {}
 
-        theme.input_html_attributes(html_attrs: StringHash.new, field_type: field_type, has_errors?: false).should eq(attrs)
+        theme.input_html_attributes(html_attrs: {}, field_type: field_type, has_errors?: false).should eq(attrs)
       end
     end
 
     describe ".label_html_attributes" do
       it "returns correct #{field_type} attributes" do
-        attrs = StringHash.new
+        attrs = {}
 
-        theme.label_html_attributes(html_attrs: StringHash.new, field_type: field_type, has_errors?: false).should eq(attrs)
+        theme.label_html_attributes(html_attrs: {}, field_type: field_type, has_errors?: false).should eq(attrs)
       end
     end
 
@@ -83,7 +83,7 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         expected = "<span class=\"helper-text\">foobar</span>"
 
-        attrs = StringHash.new
+        attrs = {}
 
         theme.build_html_help_text(html_attrs: attrs, field_type: field_type, help_text: "foobar").should eq(expected)
       end
@@ -93,7 +93,7 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         expected = "<span class=\"helper-text\">foobar</span>"
 
-        attrs = StringHash.new
+        attrs = {}
 
         theme.build_html_error(html_attrs: attrs, field_type: field_type, error: "foobar").should eq(expected)
       end

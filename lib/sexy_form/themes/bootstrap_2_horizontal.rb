@@ -7,32 +7,34 @@ module SexyForm
       end
 
       def wrap_field(field_type:, html_field:, html_label:, html_help_text: nil, html_errors: nil, wrapper_html_attributes:)
-        String.build do |s|
-          wrapper_html_attributes["class"] = "control-group#{" error" if html_errors} #{wrapper_html_attributes["class"]}".strip
+        s = ""
 
-          attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
-          s << "#{attr_str.empty? ? "<div>" : "<div #{attr_str}>"}"
+        wrapper_html_attributes["class"] = "control-group#{" error" if html_errors} #{wrapper_html_attributes["class"]}".strip
 
-          if ["checkbox", "radio"].include?(field_type)
-            s << %Q(<div class="controls">)
+        attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
+        s << "#{attr_str.empty? ? "<div>" : "<div #{attr_str}>"}"
 
-            if html_label
-              s << html_label.sub("\">", "\">#{html_field} ")
-            else
-              s << html_field
-            end
+        if ["checkbox", "radio"].include?(field_type)
+          s << %Q(<div class="controls">)
+
+          if html_label
+            s << html_label.sub("\">", "\">#{html_field} ")
           else
-            s << html_label
-            s << %Q(<div class="controls">)
             s << html_field
           end
-
-          s << html_help_text
-          s << html_errors.join if html_errors
-          s << "</div>"
-
-          s << "</div>"
+        else
+          s << html_label
+          s << %Q(<div class="controls">)
+          s << html_field
         end
+
+        s << html_help_text
+        s << html_errors.join if html_errors
+        s << "</div>"
+
+        s << "</div>"
+
+        s
       end
 
       def input_html_attributes(html_attrs:, field_type:, has_errors:)
@@ -59,21 +61,21 @@ module SexyForm
       def build_html_help_text(help_text:, html_attrs:, field_type:)
         html_attrs["class"] = "help-block #{html_attrs["class"]}".strip
 
-        String.build do |s|
-          s << %Q(html_attrs.empty? ? "<span>" : (<span #{SexyForm.build_html_attr_string(html_attrs)}>))
-          s << help_text
-          s << "</span>"
-        end
+        s = ""
+        s << (html_attrs.empty? ? "<span>" : "<span #{SexyForm.build_html_attr_string(html_attrs)}>")
+        s << help_text
+        s << "</span>"
+        s
       end
 
       def build_html_error(error:, html_attrs:, field_type:)
         html_attrs["class"] = "help-block #{html_attrs["class"]}".strip
 
-        String.build do |s|
-          s << %Q(html_attrs.empty? ? "<span>" : (<span #{SexyForm.build_html_attr_string(html_attrs)}>))
-          s << error
-          s << "</span>"
-        end
+        s = ""
+        s << (html_attrs.empty? ? "<span>" : "<span #{SexyForm.build_html_attr_string(html_attrs)}>")
+        s << error
+        s << "</span>"
+        s
       end
 
     end

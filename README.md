@@ -9,6 +9,10 @@
 
 Dead simple HTML form builder for Ruby with built-in support for many popular UI libraries such as Bootstrap. Pairs nicely with any Ruby web framework such as Rails
 
+# TODO
+
+- Add Type Checking for method arguments
+
 # Features
 
 - Easily generate HTML markup for forms, labels, inputs, help text and errors
@@ -173,7 +177,7 @@ module SexyForm
   class Themes
     class Custom < Themes
 
-      ### (Optional) If your theme name doesnt perfectly match the `.underscore` of the theme class name
+      ### (Optional) If your theme name doesnt perfectly match the underscored of the theme class name
       def self.theme_name
         "custom"
       end

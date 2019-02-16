@@ -3,26 +3,28 @@ module SexyForm
     class SemanticUIVertical < Themes
 
       def wrap_field(field_type:, html_field:, html_label:, html_help_text: nil, html_errors: nil, wrapper_html_attributes:)
-        String.build do |s|
-          wrapper_html_attributes["class"] = "field#{" error" if html_errors} #{wrapper_html_attributes["class"]}".strip
+        s = ""
 
-          attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
-          s << "#{attr_str.empty? ? "<div>" : "<div #{attr_str}>"}"
+        wrapper_html_attributes["class"] = "field#{" error" if html_errors} #{wrapper_html_attributes["class"]}".strip
 
-          if ["checkbox", "radio"].include?(field_type)
-            s << %Q(<div class="ui checkbox#{" radio" if field_type == "radio"}">)
-            s << html_field
-            s << html_label
-            s << "</div>"
-          else
-            s << html_label
-            s << html_field
-          end
-          s << html_help_text
-          s << html_errors.join if html_errors
+        attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
+        s << "#{attr_str.empty? ? "<div>" : "<div #{attr_str}>"}"
 
+        if ["checkbox", "radio"].include?(field_type)
+          s << %Q(<div class="ui checkbox#{" radio" if field_type == "radio"}">)
+          s << html_field
+          s << html_label
           s << "</div>"
+        else
+          s << html_label
+          s << html_field
         end
+        s << html_help_text
+        s << html_errors.join if html_errors
+
+        s << "</div>"
+
+        s
       end
 
       def input_html_attributes(html_attrs:, field_type:, has_errors:)
@@ -39,21 +41,21 @@ module SexyForm
       end
 
       def build_html_help_text(help_text:, html_attrs:, field_type:)
-        String.build do |s|
-          s << %Q(html_attrs.empty? ? "<div>" : (<div #{SexyForm.build_html_attr_string(html_attrs)}>))
-          s << help_text
-          s << "</div>"
-        end
+        s = ""
+        s << (html_attrs.empty? ? "<div>" : "<div #{SexyForm.build_html_attr_string(html_attrs)}>")
+        s << help_text
+        s << "</div>"
+        s
       end
 
       def build_html_error(error:, html_attrs:, field_type:)
         html_attrs["style"] = "color: red; #{html_attrs["style"]}".strip
 
-        String.build do |s|
-          s << %Q(html_attrs.empty? ? "<div>" : (<div #{SexyForm.build_html_attr_string(html_attrs)}>))
-          s << error
-          s << "</div>"
-        end
+        s = ""
+        s << (html_attrs.empty? ? "<div>" : "<div #{SexyForm.build_html_attr_string(html_attrs)}>")
+        s << error
+        s << "</div>"
+        s
       end
 
     end

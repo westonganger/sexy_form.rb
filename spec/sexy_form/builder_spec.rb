@@ -31,13 +31,13 @@ describe SexyForm::Builder do
 
   describe "#field" do
     it "does not allow incorrect types" do
-      expect_raises(ArgumentError) do
+      expect {
         builder.field(type: "submit", name: :foobar)
-      end
+      }.to raise_exception(ArgumentError)
     end
 
     describe "input fields" do
-      INPUT_TYPES.each do |field_type|
+      SexyForm::Builder::INPUT_TYPES.each do |field_type|
 
         it "works for type: #{field_type}" do
           expected = "<div><input type=\"#{field_type}\" foo=\"bar\" name=\"my-great-text-input\" id=\"my-great-text-input\"></div>"
@@ -46,9 +46,9 @@ describe SexyForm::Builder do
         end
 
         it "does not allow collection option" do
-          expect_raises(ArgumentError) do
+          expect {
             builder.field(type: field_type, label: false, name: "my-great-text-input", input_html: {foo: :bar}, collection: {options: ["foo", "bar"]})
-          end
+          }.to raise_exception(ArgumentError)
         end
 
       end
@@ -63,9 +63,9 @@ describe SexyForm::Builder do
 
       describe "collection argument" do
         it "is required" do
-          expect_raises(ArgumentError) do
+          expect {
             builder.field(type: :select, label: false, name: "my-great-text-input", input_html: {foo: :bar})
-          end
+          }.to raise_exception(ArgumentError)
         end
 
         it "all supported keys work" do
@@ -77,25 +77,25 @@ describe SexyForm::Builder do
         end
 
         it "fails correctly" do
-          expect_raises(ArgumentError) do
+          expect {
             builder.field(type: :select, collection: {selected: "bar"})
-          end
+          }.to raise_exception(ArgumentError)
 
-          expect_raises(ArgumentError) do
-            builder.field(type: :select, collection: {options: ["foo", "bar", "foobar"], foobar: "error"})
-          end
+          expect {
+            builder.field(type: :select, collection: {options: ["foo", "bar", "foobar"], foobar: "exception"})
+          }.to raise_exception(ArgumentError)
 
-          expect_raises(ArgumentError) do
+          expect {
             builder.field(type: :select, collection: {options: "foobar", selected: "asd"})
-          end
+          }.to raise_exception(ArgumentError)
 
-          expect_raises(ArgumentError) do
+          expect {
             builder.field(type: :select, collection: {options: "foobar", disabled: "asd"})
-          end
+          }.to raise_exception(ArgumentError)
 
-          expect_raises(ArgumentError) do
+          expect {
             builder.field(type: :select, collection: {options: "foobar", include_blank: "asd"})
-          end
+          }.to raise_exception(ArgumentError)
         end
       end
     end

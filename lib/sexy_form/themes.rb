@@ -2,7 +2,15 @@ module SexyForm
   class Themes
 
     def self.theme_name
-      self.name.to_s.split("::").last.underscore
+      the_name = self.name.to_s.split("::").last
+
+      underscored_name = the_name.gsub(/::/, '/')
+        .gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
+        .gsub(/([a-z\d])([A-Z])/,'\1_\2')
+        .tr("-", "_")
+        .downcase
+
+      underscored_name
     end
 
     def self.subclasses
@@ -40,5 +48,10 @@ module SexyForm
 
     # abstract def build_html_error(error : String, html_attrs : StringHash, field_type : String)  : String
 
+  end
+
+  private
+
+  def self.underscore(str)
   end
 end

@@ -51,15 +51,17 @@ module SexyForm
 
   def self.safe_string_hash(h)
     # TODO
-    h.each_with_object(StringHash.new) do |(k, v), new_h|
+    new_h = {}
+    h.each do |k, v|
       unless new_h.has_key?(k.to_s)
         if k.is_a?(String)
-          new_h[k] = v.to_s
+          new_h[k] = v
         elsif !h.has_key?(k.to_s)
-          new_h[k.to_s] = v.to_s
+          new_h[k.to_s] = v
         end
       end
     end
+    new_h
   end
 
   ### END PROTECTED METHODS

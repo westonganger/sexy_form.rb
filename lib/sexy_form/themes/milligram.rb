@@ -3,22 +3,24 @@ module SexyForm
     class Milligram < Themes
 
       def wrap_field(field_type:, html_field:, html_label:, html_help_text: nil, html_errors: nil, wrapper_html_attributes:)
-        String.build do |s|
-          attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
-          s << "#{attr_str.empty? ? "<div>" : "<div #{attr_str}>"}"
+        s = ""
 
-          if ["checkbox", "radio"].include?(field_type)
-            s << html_field
-            s << html_label
-          else
-            s << html_label
-            s << html_field
-          end
-          s << html_help_text
-          s << html_errors.join if html_errors
+        attr_str = SexyForm.build_html_attr_string(wrapper_html_attributes)
+        s << "#{attr_str.empty? ? "<div>" : "<div #{attr_str}>"}"
 
-          s << "</div>"
+        if ["checkbox", "radio"].include?(field_type)
+          s << html_field
+          s << html_label
+        else
+          s << html_label
+          s << html_field
         end
+        s << html_help_text
+        s << html_errors.join if html_errors
+
+        s << "</div>"
+
+        s
       end
 
       def input_html_attributes(html_attrs:, field_type:, has_errors:)
@@ -38,21 +40,21 @@ module SexyForm
       end
 
       def build_html_help_text(help_text:, html_attrs:, field_type:)
-        String.build do |s|
-          s << %Q(html_attrs.empty? ? "<small>" : (<small #{SexyForm.build_html_attr_string(html_attrs)}>))
-          s << help_text
-          s << "</small>"
-        end
+        s = ""
+        s << (html_attrs.empty? ? "<small>" : "<small #{SexyForm.build_html_attr_string(html_attrs)}>")
+        s << help_text
+        s << "</small>"
+        s
       end
 
       def build_html_error(error:, html_attrs:, field_type:)
         html_attrs["style"] = "color: red; #{html_attrs["style"]}".strip
 
-        String.build do |s|
-          s << %Q(html_attrs.empty? ? "<small>" : (<small #{SexyForm.build_html_attr_string(html_attrs)}>))
-          s << error
-          s << "</small>"
-        end
+        s = ""
+        s << (html_attrs.empty? ? "<small>" : "<small #{SexyForm.build_html_attr_string(html_attrs)}>")
+        s << error
+        s << "</small>"
+        s
       end
 
     end
