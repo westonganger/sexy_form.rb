@@ -58,6 +58,16 @@ module SexyForm
       end
 
       if errors
+        SexyForm.verify_argument_type(arg_name: :errors, value: errors, expected_type: [Array, String])
+      end
+
+      SexyForm.verify_argument_type(arg_name: :input_html, value: input_html, expected_type: Hash)
+      SexyForm.verify_argument_type(arg_name: :label_html, value: label_html, expected_type: Hash)
+      SexyForm.verify_argument_type(arg_name: :wrapper_html, value: wrapper_html, expected_type: Hash)
+      SexyForm.verify_argument_type(arg_name: :help_text_html, value: help_text_html, expected_type: Hash)
+      SexyForm.verify_argument_type(arg_name: :error_html, value: error_html, expected_type: Hash)
+
+      if errors
         if errors.is_a?(String)
           errors = errors.empty? ? nil : [errors]
         else
@@ -119,6 +129,8 @@ module SexyForm
         if !collection
           raise ArgumentError.new("Required argument `:collection` not provided")
         end
+
+        SexyForm.verify_argument_type(arg_name: :collection, value: collection, expected_type: Hash)
 
         safe_collection = SexyForm.safe_string_hash(collection)
 

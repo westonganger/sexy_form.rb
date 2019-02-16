@@ -10,6 +10,8 @@ require "sexy_form/builder"
 
 module SexyForm
   def self.form(action: nil, method: "post", theme: nil, form_html: {})
+    self.verify_argument_type(arg_name: :form_html, value: form_html, expected_type: Hash)
+
     action = action.to_s
     method = method.to_s
 
@@ -52,7 +54,6 @@ module SexyForm
   end
 
   def self.safe_string_hash(h)
-    # TODO
     new_h = {}
     h.each do |k, v|
       unless new_h.has_key?(k.to_s)
@@ -66,6 +67,17 @@ module SexyForm
     new_h
   end
 
+  def self.verify_argument_type(arg_name:, value:, expected_type:)
+    if expected_type.is_a?(Array)
+      invalid = expected_type.all?{|t| !value.is_a?(t) }
+    elsif !value.is_a?(expected_type)
+      invalid = true
+    end
+
+    if invalid
+      raise ArgumentError.new("Invalid type passed to argument :#{arg_name}")
+    end
+  end
   ### END PROTECTED METHODS
 
 end

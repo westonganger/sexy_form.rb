@@ -8,11 +8,6 @@
 
 Dead simple HTML form builder for Ruby with built-in support for many popular UI libraries such as Bootstrap. Pairs nicely with any Ruby web framework such as Rails
 
-# TODO
-
-- Add Type Checking for method arguments
-- Ensure correct type conversion for method arguments
-
 # Features
 
 - Easily generate HTML markup for forms, labels, inputs, help text and errors
@@ -73,7 +68,7 @@ The following field types are supported:
 - `:text`
 - `:textarea`
 
-## SexyForm in View Templates (Tilt, Slim, HAML, ERB, etc.)
+## SexyForm in View Templates (Example in Slim)
 
 ```ruby
 = SexyForm.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
@@ -202,13 +197,17 @@ module SexyForm
         if ["checkbox", "radio"].include?(field_type) && html_label && (i = html_label.index(">"))
           s << html_label.insert(i+1, "#{html_field} ")
         else
-          s << html_label
-          s << html_field
+          s << "#{html_label}"
+          s << "#{html_field}"
         end
         
-        s << html_help_text
+        s << "#{html_help_text}"
+        
+        if html_errors
+          s << html_errors.join
+        end
 
-        s << %Q(</div>"
+        s << "</div>"
 
         s
       end
@@ -236,9 +235,9 @@ module SexyForm
         html_attrs["class"] = "help-text #{html_attrs["class"]?}".strip
 
         s = ""
-        s << %Q(html_attrs.empty? ? "<div>" : (<div #{build_html_attr_string(html_attrs)}>)
-        s << help_text
-        s << %Q(</div>"
+        s << (html_attrs.empty? ? "<div>" : "<div #{build_html_attr_string(html_attrs)}>")
+        s << "#{help_text}"
+        s << "</div>"
         s
       end
 
@@ -247,9 +246,9 @@ module SexyForm
         html_attrs["style"] = "color: red; #{html_attrs["style"]?}".strip
 
         s = ""
-        s << %Q(html_attrs.empty? ? "<div>" : (<div #{build_html_attr_string(html_attrs)}>)
-        s << error
-        s << %Q(</div>"
+        s << (html_attrs.empty? ? "<div>" : "<div #{build_html_attr_string(html_attrs)}>")
+        s << "#{error}"
+        s << "</div>"
         s
       end
 
@@ -258,11 +257,15 @@ module SexyForm
 end
 ```
 
+# Crystal Alternative
+
+This library was originally written for Crystal language as [FormBuilder.cr](https://github.com/westonganger/form_builder.cr)
+
+The pattern/implementation of FormBuilder.cr turned out so beautifully that I felt the desire to have the same syntax available in the Ruby language. Many Ruby developers also write Crystal and vice versa so this only made sense. What was awesome is that, the Crystal and Ruby syntax is so similar that converting Crystal code to Ruby was straight forward and quite simple.
+
 # Credits
 
 Created & Maintained by [Weston Ganger](https://westonganger.com) - [@westonganger](https://github.com/westonganger)
-
-Project Originally Based on [FormBuilder.cr](https://github.com/westonganger/form_builder.cr)
 
 For any consulting or contract work please contact me via my company website: [Solid Foundation Web Development](https://solidfoundationwebdev.com)
 
