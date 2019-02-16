@@ -287,7 +287,7 @@ module SexyForm
     end
 
     def titleize(value)
-      value.to_s.gsub(/\W|_/, " ").split(" ").join(" "){|x| x.capitalize}
+      value.to_s.gsub(/\W|_/, " ").split(" ").map{|x| x.capitalize}.join(" ")
     end
 
   end

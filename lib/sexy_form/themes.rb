@@ -50,8 +50,4 @@ module SexyForm
 
   end
 
-  private
-
-  def self.underscore(str)
-  end
 end

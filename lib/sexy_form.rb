@@ -9,13 +9,13 @@ end
 require "sexy_form/builder"
 
 module SexyForm
-  def self.form(action: nil, method: "post", theme: nil, form_html: {}, &block)
+  def self.form(action: nil, method: "post", theme: nil, form_html: {})
     action = action.to_s
     method = method.to_s
 
     builder = SexyForm::Builder.new(theme: theme)
 
-    themed_form_html = builder.theme.form_html_attributes(self.safe_string_hash(form_html))
+    themed_form_html = builder.theme.form_html_attributes(html_attrs: self.safe_string_hash(form_html))
 
     themed_form_html["method"] = method.to_s == "get" ? "get" : "post"
 
@@ -32,7 +32,9 @@ module SexyForm
       str << %Q(<input type="hidden" name="_method" value="#{method}")
     end
 
-    yield builder
+    if block_given?
+      yield builder
+    end
 
     unless builder.html_string.empty?
       str << builder.html_string
