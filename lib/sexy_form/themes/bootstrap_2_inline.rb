@@ -19,10 +19,11 @@ module SexyForm
         if ["checkbox", "radio"].include?(field_type) && html_label
           s << html_label.sub("\">", "\">#{html_field} ")
         else
-          s << html_label
-          s << html_field
+          s << "#{html_label}"
+          s << "#{html_field}"
         end
-        s << html_help_text
+
+        s << "#{html_help_text}"
         s << html_errors.join if html_errors
 
         s << "</div>"
@@ -52,7 +53,7 @@ module SexyForm
 
         s = ""
         s << (html_attrs.empty? ? "<span>" : "<span #{SexyForm.build_html_attr_string(html_attrs)}>")
-        s << help_text
+        s << "#{help_text}"
         s << "</span>"
         s
       end
@@ -62,7 +63,7 @@ module SexyForm
 
         s = ""
         s << (html_attrs.empty? ? "<span>" : "<span #{SexyForm.build_html_attr_string(html_attrs)}>")
-        s << error
+        s << "#{error}"
         s << "</span>"
         s
       end

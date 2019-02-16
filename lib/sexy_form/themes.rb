@@ -14,7 +14,7 @@ module SexyForm
     end
 
     def self.subclasses
-      ObjectSpace.each_object(Class).select{|klass| klass < SexyForm::Themes }
+      ObjectSpace.each_object(Class).select{|klass| klass < SexyForm::Themes }.sort_by{|x| x.name}
     end
 
     def self.from_name(name)

@@ -61,16 +61,16 @@ module SexyForm
         if errors.is_a?(String)
           errors = errors.empty? ? nil : [errors]
         else
-          errors.reject!{|x| x.empty?}
+          errors = errors.reject{|x| x.empty?}
 
           if errors.empty?
             errors = nil
           end
         end
 
-        if errors
+        if errors.nil?
           html_errors = errors.map{|x| 
-            @theme.build_html_error(error: x, field_type: type, html_attrs: SexyForm.safe_string_hash(error))
+            @theme.build_html_error(error: x, field_type: type, html_attrs: SexyForm.safe_string_hash(errors))
           }
         end
       end
@@ -191,7 +191,7 @@ module SexyForm
 
         html_field = ""
         html_field << (themed_input_html.empty? ? "<textarea>" : "<textarea #{SexyForm.build_html_attr_string(themed_input_html)}>")
-        html_field << themed_input_html["value"]
+        html_field << "#{themed_input_html["value"]}"
         html_field << "</textarea>"
       end
 

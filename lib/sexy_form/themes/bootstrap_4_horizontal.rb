@@ -8,7 +8,9 @@ module SexyForm
 
       def initialize(column_classes: ["col-sm-3", "col-sm-9"])
         @column_classes = column_classes.first(2)
-        @offset_class = (i = @column_classes[0].index(/-\d/)) ? @column_classes[0].insert(i+1, "offset-") : ""
+
+        s = "#{@column_classes[0]}"
+        @offset_class = (i = s.index(/-\d/)) ? s.insert(i+1, "offset-") : ""
       end
 
       def wrap_field(field_type:, html_field:, html_label:, html_help_text: nil, html_errors: nil, wrapper_html_attributes:)
@@ -22,17 +24,17 @@ module SexyForm
         if ["checkbox", "radio"].include?(field_type)
           s << %Q(<div class="#{@offset_class} #{@column_classes[1]}">)
           s << %Q(<div class="form-check">)
-          s << html_field
-          s << html_label
-          s << html_help_text
+          s << "#{html_field}"
+          s << "#{html_label}"
+          s << "#{html_help_text}"
           s << html_errors.join if html_errors
           s << "</div>"
           s << "</div>"
         else
-          s << html_label
+          s << "#{html_label}"
           s << %Q(<div class="#{"#{@offset_class} " unless html_label}#{@column_classes[1]}">)
-          s << html_field
-          s << html_help_text
+          s << "#{html_field}"
+          s << "#{html_help_text}"
           s << html_errors.join if html_errors
           s << "</div>"
 
@@ -73,7 +75,7 @@ module SexyForm
 
         s = ""
         s << (html_attrs.empty? ? "<small>" : "<small #{SexyForm.build_html_attr_string(html_attrs)}>")
-        s << help_text
+        s << "#{help_text}"
         s << "</small>"
         s
       end
@@ -83,7 +85,7 @@ module SexyForm
 
         s = ""
         s << (html_attrs.empty? ? "<div>" : "<div #{SexyForm.build_html_attr_string(html_attrs)}>")
-        s << error
+        s << "#{error}"
         s << "</div>"
         s
       end

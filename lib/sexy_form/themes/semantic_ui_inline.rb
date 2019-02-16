@@ -12,14 +12,14 @@ module SexyForm
 
         if ["checkbox", "radio"].include?(field_type)
           s << %Q(<div class="ui checkbox#{" radio" if field_type == "radio"}">)
-          s << html_field
-          s << html_label
+          s << "#{html_field}"
+          s << "#{html_label}"
           s << "</div>"
         else
-          s << html_label
-          s << html_field
+          s << "#{html_label}"
+          s << "#{html_field}"
         end
-        s << html_help_text
+        s << "#{html_help_text}"
         s << html_errors.join if html_errors
 
         s << "</div>"
@@ -43,7 +43,7 @@ module SexyForm
       def build_html_help_text(help_text:, html_attrs:, field_type:)
         s = ""
         s << (html_attrs.empty? ? "<div>" : "<div #{SexyForm.build_html_attr_string(html_attrs)}>")
-        s << help_text
+        s << "#{help_text}"
         s << "</div>"
         s
       end
@@ -53,7 +53,7 @@ module SexyForm
 
         s = ""
         s << (html_attrs.empty? ? "<div>" : "<div #{SexyForm.build_html_attr_string(html_attrs)}>")
-        s << error
+        s << "#{error}"
         s << "</div>"
         s
       end

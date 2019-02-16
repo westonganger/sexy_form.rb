@@ -53,6 +53,7 @@ describe SexyForm::Themes do
           ### Ensure No Incorrect/Unparenthesized Ternary Values
           actual.include?("true").should eq(false)
           actual.include?("false").should eq(false)
+          actual.include?("empty?").should eq(false)
         end
       end
     end

@@ -14,11 +14,11 @@ module SexyForm
           s << %Q(<div class="control">)
           s << html_label.sub("\">", "\">#{html_field} ")
         else
-          s << html_label
+          s << "#{html_label}"
           s << %Q(<div class="control">)
-          s << html_field
+          s << "#{html_field}"
         end
-        s << html_help_text
+        s << "#{html_help_text}"
         s << html_errors.join if html_errors
         s << "</div>"
 
@@ -28,7 +28,7 @@ module SexyForm
       end
 
       def input_html_attributes(html_attrs:, field_type:, has_errors:)
-        if has_errors?
+        if has_errors
           html_attrs["class"] = "is-danger #{html_attrs["class"]}".strip
         end
 
@@ -53,7 +53,7 @@ module SexyForm
 
         s = ""
         s << (html_attrs.empty? ? "<p>" : "<p #{SexyForm.build_html_attr_string(html_attrs)}>")
-        s << help_text
+        s << "#{help_text}"
         s << "</p>"
         s
       end
@@ -63,7 +63,7 @@ module SexyForm
 
         s = ""
         s << (html_attrs.empty? ? "<p>" : "<p #{SexyForm.build_html_attr_string(html_attrs)}>")
-        s << error
+        s << "#{error}"
         s << "</p>"
         s
       end

@@ -69,7 +69,7 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         attrs = {}
 
-        theme.input_html_attributes(html_attrs: {}, field_type: field_type, has_errors?: false).should eq(attrs)
+        theme.input_html_attributes(html_attrs: {}, field_type: field_type, has_errors: false).should eq(attrs)
       end
     end
 
@@ -77,7 +77,7 @@ describe theme_klass do
       it "returns correct #{field_type} attributes" do
         attrs = {}
 
-        theme.label_html_attributes(html_attrs: {}, field_type: field_type, has_errors?: false).should eq(attrs)
+        theme.label_html_attributes(html_attrs: {}, field_type: field_type, has_errors: false).should eq(attrs)
       end
     end
 

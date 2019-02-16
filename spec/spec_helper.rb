@@ -9,7 +9,7 @@ RSpec.configure do |config|
 end
 
 ### Easier than rewriting all the Crystal String.build calls in spec folder
-def self.build_string(&block)
+def build_string(&block)
   s = ""
   block.call(s)
   return s

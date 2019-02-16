@@ -37,7 +37,7 @@ module SexyForm
       def build_html_help_text(help_text:, html_attrs:, field_type:)
         s = ""
         s << (html_attrs.empty? ? "<div>" : "<div #{SexyForm.build_html_attr_string(html_attrs)}>")
-        s << help_text
+        s << "#{help_text}"
         s << "</div>"
         s
       end
@@ -45,7 +45,7 @@ module SexyForm
       def build_html_error(error:, html_attrs:, field_type:)
         s = ""
         s << (html_attrs.empty? ? "<div>" : "<div #{SexyForm.build_html_attr_string(html_attrs)}>")
-        s << error
+        s << "#{error}"
         s << "</div>"
         s
       end

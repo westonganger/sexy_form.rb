@@ -12,6 +12,7 @@ Dead simple HTML form builder for Ruby with built-in support for many popular UI
 # TODO
 
 - Add Type Checking for method arguments
+- Ensure correct type conversion for method arguments
 
 # Features
 
