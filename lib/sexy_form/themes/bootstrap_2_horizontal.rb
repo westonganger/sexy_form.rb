@@ -1,6 +1,6 @@
 module SexyForm
-  class Themes
-    class Bootstrap2Horizontal < Themes
+  module Themes
+    class Bootstrap2Horizontal < BaseTheme
 
       def self.theme_name
         "bootstrap_2_horizontal"

@@ -4,25 +4,15 @@ theme = SexyForm::Themes::Bootstrap4Inline
 
 describe SexyForm::Themes do
 
-  describe ".theme_name" do
-    it "works by default" do
-      SexyForm::Themes.theme_name.should eq("themes")
-    end
-
-    it "works with custom" do
-      theme.theme_name.should eq("bootstrap_4_inline")
-    end
-  end
-
-  describe ".subclasses" do
+  describe ".classes" do
     it "Comes with default themes" do
-      subclasses = [SexyForm::Themes::Bootstrap2Horizontal, SexyForm::Themes::Bootstrap2Inline, SexyForm::Themes::Bootstrap2Vertical, SexyForm::Themes::Bootstrap3Horizontal, SexyForm::Themes::Bootstrap3Inline, SexyForm::Themes::Bootstrap3Vertical, SexyForm::Themes::Bootstrap4Horizontal, SexyForm::Themes::Bootstrap4Inline, SexyForm::Themes::Bootstrap4Vertical, SexyForm::Themes::BulmaHorizontal, SexyForm::Themes::BulmaVertical, SexyForm::Themes::Default, SexyForm::Themes::Foundation, SexyForm::Themes::Materialize, SexyForm::Themes::Milligram, SexyForm::Themes::SemanticUIInline, SexyForm::Themes::SemanticUIVertical]
+      classes = [SexyForm::Themes::Bootstrap2Horizontal, SexyForm::Themes::Bootstrap2Inline, SexyForm::Themes::Bootstrap2Vertical, SexyForm::Themes::Bootstrap3Horizontal, SexyForm::Themes::Bootstrap3Inline, SexyForm::Themes::Bootstrap3Vertical, SexyForm::Themes::Bootstrap4Horizontal, SexyForm::Themes::Bootstrap4Inline, SexyForm::Themes::Bootstrap4Vertical, SexyForm::Themes::BulmaHorizontal, SexyForm::Themes::BulmaVertical, SexyForm::Themes::Default, SexyForm::Themes::Foundation, SexyForm::Themes::Materialize, SexyForm::Themes::Milligram, SexyForm::Themes::SemanticUIInline, SexyForm::Themes::SemanticUIVertical]
 
-      SexyForm::Themes.subclasses.should eq(subclasses)
+      SexyForm::Themes.classes.should eq(classes)
 
       expected = ["bootstrap_2_horizontal", "bootstrap_2_inline", "bootstrap_2_vertical", "bootstrap_3_horizontal", "bootstrap_3_inline", "bootstrap_3_vertical", "bootstrap_4_horizontal", "bootstrap_4_inline", "bootstrap_4_vertical", "bulma_horizontal", "bulma_vertical", "default", "foundation", "materialize", "milligram", "semantic_ui_inline", "semantic_ui_vertical"]
 
-      subclasses.map{|x| x.theme_name}.should eq(expected)
+      classes.map{|x| x.theme_name}.should eq(expected)
     end
   end
 
@@ -39,7 +29,7 @@ describe SexyForm::Themes do
   end
 
   describe "Kitchen Sink" do
-    SexyForm::Themes.subclasses.each do |theme_class|
+    SexyForm::Themes.classes.each do |theme_class|
       b = SexyForm::Builder.new(theme: theme_class.new)
 
       SexyForm::Builder::FIELD_TYPES.each do |field_type|

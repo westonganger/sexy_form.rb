@@ -1,6 +1,6 @@
 module SexyForm
-  class Themes
-    class Bootstrap2Inline < Themes
+  module Themes
+    class Bootstrap2Inline < BaseTheme
 
       def self.theme_name
         "bootstrap_2_inline"

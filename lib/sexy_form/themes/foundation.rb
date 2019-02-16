@@ -1,6 +1,6 @@
 module SexyForm
-  class Themes
-    class Foundation < Themes
+  module Themes
+    class Foundation < BaseTheme
 
       def wrap_field(field_type:, html_field:, html_label:, html_help_text: nil, html_errors: nil, wrapper_html_attributes:)
         s = ""

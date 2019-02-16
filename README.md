@@ -4,7 +4,6 @@
 <a href='https://travis-ci.org/westonganger/sexy_form.rb' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://travis-ci.org/westonganger/sexy_form.rb.svg?branch=master' border='0' alt='Build Status'></a>
 <a href='https://rubygems.org/gems/sexy_form.rb' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://ruby-gem-downloads-badge.herokuapp.com/sexy_form.rb?label=rubygems&type=total&total_label=downloads&color=brightgreen' border='0' alt='RubyGems Downloads' /></a>
 <a href='https://ko-fi.com/A5071NK' target='_blank'><img height='22' style='border:0px;height:22px;' src='https://az743702.vo.msecnd.net/cdn/kofi1.png?v=a' border='0' alt='Buy Me a Coffee'></a>
-<a href='https://travis-ci.org/westonganger/sexy_form.rb' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://api.travis-ci.org/westonganger/sexy_form.rb.svg?branch=master' border='0' alt='Build Status' /></a>
 
 
 Dead simple HTML form builder for Ruby with built-in support for many popular UI libraries such as Bootstrap. Pairs nicely with any Ruby web framework such as Rails
@@ -176,7 +175,7 @@ Example Theme Class:
 
 module SexyForm
   class Themes
-    class Custom < Themes
+    class Custom < BaseTheme
 
       ### (Optional) If your theme name doesnt perfectly match the underscored of the theme class name
       def self.theme_name

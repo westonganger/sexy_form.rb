@@ -8,7 +8,7 @@ module SexyForm
       @html = []
 
       if theme
-        if theme.is_a?(SexyForm::Themes)
+        if theme.is_a?(SexyForm::Themes::BaseTheme)
           @theme = theme
         else
           @theme = Themes.from_name(theme.to_s).new
