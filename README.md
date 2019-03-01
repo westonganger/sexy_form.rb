@@ -215,14 +215,17 @@ module SexyForm
       def input_html_attributes(field_type: , has_errors: , html_attrs:)
         html_attrs["class"] = "form-field other-class #{html_attrs["class"]?}".strip
         html_attrs["style"] = "color: blue; #{html_attrs["style"]?}".strip
-        html_attrs["data-foo"] = "bar #{html_attrs["class"]?}"
+        
+        unless html_attrs.has_key?("data-foo")
+          html_attrs["data-foo"] = "bar"
+        end
+        
         html_attrs
       end
 
       def label_html_attributes(html_attrs: , field_type: , has_errors:)
         html_attrs["class"] = "form-label other-class #{html_attrs["class"]?}".strip
         html_attrs["style"] = "color: red; #{html_attrs["style"]?}".strip
-        html_attrs["data-foo"] = "bar #{html_attrs["class"]?}"
         html_attrs
       end
 
