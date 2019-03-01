@@ -185,7 +185,7 @@ module SexyForm
       def wrap_field(field_type: , html_field: , html_label: nil, html_help_text: nil, html_errors: nil, wrapper_html_attributes: {})
         s = ""
 
-        wrapper_html_attributes["class"] = "form-group #{wrapper_html_attributes["class"]?}".strip
+        wrapper_html_attributes["class"] = "form-group #{wrapper_html_attributes["class"]}".strip
 
         ### `SexyForm.build_html_attr_string` is the one and only helper method for Themes
         ### It converts any Hash to an HTML Attributes String
@@ -213,8 +213,8 @@ module SexyForm
       end
 
       def input_html_attributes(field_type: , has_errors: , html_attrs:)
-        html_attrs["class"] = "form-field other-class #{html_attrs["class"]?}".strip
-        html_attrs["style"] = "color: blue; #{html_attrs["style"]?}".strip
+        html_attrs["class"] = "form-field other-class #{html_attrs["class"]}".strip
+        html_attrs["style"] = "color: blue; #{html_attrs["style"]}".strip
         
         unless html_attrs.has_key?("data-foo")
           html_attrs["data-foo"] = "bar"
@@ -224,8 +224,8 @@ module SexyForm
       end
 
       def label_html_attributes(html_attrs: , field_type: , has_errors:)
-        html_attrs["class"] = "form-label other-class #{html_attrs["class"]?}".strip
-        html_attrs["style"] = "color: red; #{html_attrs["style"]?}".strip
+        html_attrs["class"] = "form-label other-class #{html_attrs["class"]}".strip
+        html_attrs["style"] = "color: red; #{html_attrs["style"]}".strip
         html_attrs
       end
 
@@ -235,7 +235,7 @@ module SexyForm
       end
 
       def build_html_help_text(help_text: , html_attrs:)
-        html_attrs["class"] = "help-text #{html_attrs["class"]?}".strip
+        html_attrs["class"] = "help-text #{html_attrs["class"]}".strip
 
         s = ""
         s << (html_attrs.empty? ? "<div>" : "<div #{build_html_attr_string(html_attrs)}>")
@@ -245,8 +245,8 @@ module SexyForm
       end
 
       def build_html_error(error: , html_attrs:)
-        html_attrs["class"] = "help-text error #{html_attrs["class"]?}".strip
-        html_attrs["style"] = "color: red; #{html_attrs["style"]?}".strip
+        html_attrs["class"] = "help-text error #{html_attrs["class"]}".strip
+        html_attrs["style"] = "color: red; #{html_attrs["style"]}".strip
 
         s = ""
         s << (html_attrs.empty? ? "<div>" : "<div #{build_html_attr_string(html_attrs)}>")
