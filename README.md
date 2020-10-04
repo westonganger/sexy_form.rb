@@ -1,4 +1,4 @@
-# Sexy Form.rb
+# HTML FORMS
 
 <a href="https://badge.fury.io/rb/sexy_form" target="_blank"><img height="21" style='border:0px;height:21px;' border='0' src="https://badge.fury.io/rb/sexy_form.svg" alt="Gem Version"></a>
 <a href='https://travis-ci.org/westonganger/sexy_form.rb' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://travis-ci.org/westonganger/sexy_form.rb.svg?branch=master' border='0' alt='Build Status'></a>
@@ -68,7 +68,7 @@ The following field types are supported:
 - `:text`
 - `:textarea`
 
-## SexyForm in View Templates (Example in Slim)
+## HTML Form in View Templates (Example in Slim)
 
 ```ruby
 = SexyForm.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
@@ -122,7 +122,7 @@ The following field types are supported:
     = f.field name: "product[type]", label: "Type", type: :select, collection: {options: opts, selected: ["B"], disabled: ["C"]}
 ```
 
-## SexyForm in Plain Ruby Code
+## HTMLForm in Plain Ruby Code
 
 When using the `SexyForm.form` method in plain Ruby code, the `<<` syntax is required to add the generated field HTML to the form HTML string
 
@@ -134,7 +134,7 @@ form_html_str = SexyForm.form(theme: :bootstrap_4_vertical, action: "/products",
 end
 ```
 
-## SexyForm without a Form
+## HTML Form without a Form
 
 ```ruby
 - f = SexyForm::Builder.new(theme: :bootstrap_4_vertical)
