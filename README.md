@@ -1,7 +1,7 @@
 # Sexy Form.rb
 
 <a href="https://badge.fury.io/rb/sexy_form" target="_blank"><img height="21" style='border:0px;height:21px;' border='0' src="https://badge.fury.io/rb/sexy_form.svg" alt="Gem Version"></a>
-<a href='https://travis-ci.org/westonganger/sexy_form.rb' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://travis-ci.org/westonganger/sexy_form.rb.svg?branch=master' border='0' alt='Build Status'></a>
+<a href='https://github.com/westonganger/sexy_form.rb/actions' target='_blank'><img src="https://github.com/westonganger/sexy_form.rb/workflows/Tests/badge.svg" style="max-width:100%;" height='21' style='border:0px;height:21px;' border='0' alt="CI Status"></a>
 <a href='https://rubygems.org/gems/sexy_form.rb' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://ruby-gem-downloads-badge.herokuapp.com/sexy_form?label=rubygems&type=total&total_label=downloads&color=brightgreen' border='0' alt='RubyGems Downloads' /></a>
 <a href='https://ko-fi.com/A5071NK' target='_blank'><img height='22' style='border:0px;height:22px;' src='https://az743702.vo.msecnd.net/cdn/kofi1.png?v=a' border='0' alt='Buy Me a Coffee'></a>
 
