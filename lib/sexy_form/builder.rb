@@ -1,6 +1,5 @@
 module SexyForm
   class Builder
-    FIELD_TYPES = ["checkbox", "file", "hidden", "password", "radio", "select", "text", "textarea"].freeze
     INPUT_TYPES = ["checkbox", "file", "hidden", "password", "radio", "text"].freeze
     COLLECTION_KEYS = ["options", "selected", "disabled", "include_blank"].freeze
 
@@ -49,10 +48,6 @@ module SexyForm
     )
       type = type.to_s
 
-      unless FIELD_TYPES.include?(type)
-        raise ArgumentError.new("Invalid :type argument, valid field types are: #{FIELD_TYPES.join(", ")}`")
-      end
-
       if collection && type != "select"
         raise ArgumentError.new("Argument :collection is not supported for type: :#{type}")
       end
@@ -79,7 +74,7 @@ module SexyForm
         end
 
         if errors.nil?
-          html_errors = errors.map{|x| 
+          html_errors = errors.map{|x|
             @theme.build_html_error(error: x, field_type: type, html_attrs: SexyForm.safe_string_hash(errors))
           }
         end

@@ -54,7 +54,7 @@ describe theme_klass do
   end
 
   describe ".input_html_attributes" do
-    SexyForm::Builder::FIELD_TYPES.each do |field_type|
+    TESTED_FIELD_TYPES.each do |field_type|
       it "returns correct #{field_type} attributes" do
         attrs = {}
 
@@ -64,7 +64,7 @@ describe theme_klass do
   end
 
   describe ".label_html_attributes" do
-    SexyForm::Builder::FIELD_TYPES.each do |field_type|
+    TESTED_FIELD_TYPES.each do |field_type|
       it "returns correct #{field_type} attributes" do
         attrs = {}
 
@@ -81,7 +81,7 @@ describe theme_klass do
     end
   end
 
-  SexyForm::Builder::FIELD_TYPES.each do |field_type|
+  TESTED_FIELD_TYPES.each do |field_type|
     describe ".input_html_attributes" do
       it "returns correct #{field_type} attributes" do
         attrs = {}

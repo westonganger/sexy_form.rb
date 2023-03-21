@@ -14,3 +14,5 @@ def build_string(&block)
   block.call(s)
   return s
 end
+
+TESTED_FIELD_TYPES = ["checkbox", "file", "hidden", "password", "radio", "select", "text", "textarea", "date", "datetime-local", "time"].freeze

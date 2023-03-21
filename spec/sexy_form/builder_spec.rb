@@ -30,10 +30,8 @@ describe SexyForm::Builder do
   end
 
   describe "#field" do
-    it "does not allow incorrect types" do
-      expect {
-        builder.field(type: "submit", name: :foobar)
-      }.to raise_exception(ArgumentError)
+    it "allows any arbitrary input type" do
+      builder.field(type: "submit", name: :foobar)
     end
 
     describe "input fields" do

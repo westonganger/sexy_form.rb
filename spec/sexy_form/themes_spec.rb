@@ -32,7 +32,7 @@ describe SexyForm::Themes do
     SexyForm::Themes.classes.each do |theme_class|
       b = SexyForm::Builder.new(theme: theme_class.new)
 
-      SexyForm::Builder::FIELD_TYPES.each do |field_type|
+      TESTED_FIELD_TYPES.each do |field_type|
         it "theme: #{theme_class.name}, field_type: #{field_type}" do
           if field_type == "select"
             actual = b.field type: :select, name: :foobar, label: "Hello", help_text: "World", errors: ["error1", "error2"], input_html: {class: "foo"}, label_html: {class: "foo"}, wrapper_html: {class: "foo"}, help_text_html: {class: "foo"}, error_html: {class: "foo"}, collection: {options: [["foo", "bar"], "foobar"], selected: "foobar", disabled: "other", include_blank: true}
