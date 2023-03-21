@@ -1,7 +1,6 @@
 module SexyForm
   class Builder
-    FIELD_TYPES = ["checkbox", "file", "hidden", "password", "radio", "select", "text", "textarea"].freeze
-    INPUT_TYPES = ["checkbox", "file", "hidden", "password", "radio", "text"].freeze
+    NON_INPUT_TYPES = ["select", "textarea"].freeze
     COLLECTION_KEYS = ["options", "selected", "disabled", "include_blank"].freeze
 
     def initialize(theme: nil)
@@ -49,10 +48,6 @@ module SexyForm
     )
       type = type.to_s
 
-      unless FIELD_TYPES.include?(type)
-        raise ArgumentError.new("Invalid :type argument, valid field types are: #{FIELD_TYPES.join(", ")}`")
-      end
-
       if collection && type != "select"
         raise ArgumentError.new("Argument :collection is not supported for type: :#{type}")
       end
@@ -79,7 +74,7 @@ module SexyForm
         end
 
         if errors.nil?
-          html_errors = errors.map{|x| 
+          html_errors = errors.map{|x|
             @theme.build_html_error(error: x, field_type: type, html_attrs: SexyForm.safe_string_hash(errors))
           }
         end
@@ -97,7 +92,7 @@ module SexyForm
         end
       end
 
-      if !themed_input_html.has_key?("value") && value && !value.to_s.empty? && INPUT_TYPES.include?(type)
+      if !themed_input_html.has_key?("value") && value && !value.to_s.empty? && !NON_INPUT_TYPES.include?(type)
         themed_input_html["value"] = value.to_s
       end
 
@@ -205,6 +200,8 @@ module SexyForm
         html_field << (themed_input_html.empty? ? "<textarea>" : "<textarea #{SexyForm.build_html_attr_string(themed_input_html)}>")
         html_field << "#{themed_input_html["value"]}"
         html_field << "</textarea>"
+      else
+        html_field = input_field(type: type, attrs: themed_input_html)
       end
 
       if label != false
@@ -239,10 +236,6 @@ module SexyForm
     private
 
     def input_field(type: , attrs: {})
-      unless INPUT_TYPES.include?(type.to_s)
-        raise ArgumentError.new("Invalid input :type, valid input types are `#{INPUT_TYPES.join(", ")}`")
-      end
-
       attrs.delete("type")
 
       boolean_attrs = []

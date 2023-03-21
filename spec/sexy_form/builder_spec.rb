@@ -30,14 +30,12 @@ describe SexyForm::Builder do
   end
 
   describe "#field" do
-    it "does not allow incorrect types" do
-      expect {
-        builder.field(type: "submit", name: :foobar)
-      }.to raise_exception(ArgumentError)
+    it "allows any arbitrary input type" do
+      builder.field(type: "submit", name: :foobar)
     end
 
     describe "input fields" do
-      SexyForm::Builder::INPUT_TYPES.each do |field_type|
+      (TESTED_FIELD_TYPES - SexyForm::Builder::NON_INPUT_TYPES).each do |field_type|
 
         it "works for type: #{field_type}" do
           expected = "<div><input type=\"#{field_type}\" foo=\"bar\" name=\"my-great-text-input\" id=\"my-great-text-input\"></div>"
