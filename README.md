@@ -18,7 +18,11 @@ Dead simple HTML form builder for Ruby with built-in support for many popular UI
 
 Out of the box Form Builder can generate HTML markup for the following UI libraries:
 
-- Bootstrap 4 
+- Bootstrap 5
+  * `theme: :bootstrap_5_vertical`
+  * `theme: :bootstrap_5_inline`
+  * `theme: :bootstrap_5_horizontal` or `theme: SexyForm::Themes::Bootstrap4Horizontal.new(column_classes: ["col-sm-3","col-sm-9"])`
+- Bootstrap 4
   * `theme: :bootstrap_4_vertical`
   * `theme: :bootstrap_4_inline`
   * `theme: :bootstrap_4_horizontal` or `theme: SexyForm::Themes::Bootstrap4Horizontal.new(column_classes: ["col-sm-3","col-sm-9"])`
@@ -91,8 +95,8 @@ The following field types are supported:
       ### label_html : (Optional) Hash ### contains attributes to be added to the label
       ### wrapper_html : (Optional) Hash ### contains attributes to be added to the outer wrapper for the label and input
       ### help_text_html : (Optional) Hash ### contains attributes to be added to the help text container
-      ### error_html : (Optional) Hash ### contains attributes to be added to the error container(s) 
- 
+      ### error_html : (Optional) Hash ### contains attributes to be added to the error container(s)
+
       = f.field name: "product[name]", label: "Name", type: :text, errors: product_errors["name"]
 
       = f.field name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"}
@@ -200,9 +204,9 @@ module SexyForm
           s << "#{html_label}"
           s << "#{html_field}"
         end
-        
+
         s << "#{html_help_text}"
-        
+
         if html_errors
           s << html_errors.join
         end
@@ -215,11 +219,11 @@ module SexyForm
       def input_html_attributes(field_type: , has_errors: , html_attrs:)
         html_attrs["class"] = "form-field other-class #{html_attrs["class"]}".strip
         html_attrs["style"] = "color: blue; #{html_attrs["style"]}".strip
-        
+
         unless html_attrs.has_key?("data-foo")
           html_attrs["data-foo"] = "bar"
         end
-        
+
         html_attrs
       end
 

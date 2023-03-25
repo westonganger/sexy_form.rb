@@ -6,7 +6,7 @@ describe SexyForm do
     SexyForm::VERSION.should be_a(String)
   end
 
-  describe ".form" do
+  describe "form" do
     it "allows no block" do
       result = SexyForm.form(action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo": "bar"})
 
@@ -48,6 +48,30 @@ describe SexyForm do
 
       result.include?("string").should eq(true)
       result.include?("symbol").should eq(false)
+    end
+  end
+
+  describe "build_html_attr_string" do
+    it "removes nil and blank values" do
+      expect(SexyForm.build_html_attr_string({foo: nil, bar: " "})).to eq("")
+    end
+
+    it "works with symbol values" do
+      expect(SexyForm.build_html_attr_string({foo: :bar})).to eq(%Q(foo="bar"))
+    end
+
+    it "strips present values" do
+      expect(SexyForm.build_html_attr_string({foo: "bar "})).to eq(%Q(foo="bar"))
+    end
+  end
+
+  describe "build_html_element" do
+    it "works without attrs" do
+      expect(SexyForm.build_html_element(:span, {})).to eq("<span>")
+    end
+
+    it "works with attrs" do
+      expect(SexyForm.build_html_element(:span, {foo: :bar})).to eq(%Q(<span foo="bar">))
     end
   end
 
