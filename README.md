@@ -5,8 +5,10 @@
 <a href='https://rubygems.org/gems/sexy_form.rb' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://img.shields.io/gem/dt/sexy_form?color=brightgreen&label=Rubygems%20Downloads' border='0' alt='RubyGems Downloads' /></a>
 <a href='https://ko-fi.com/A5071NK' target='_blank'><img height='22' style='border:0px;height:22px;' src='https://az743702.vo.msecnd.net/cdn/kofi1.png?v=a' border='0' alt='Buy Me a Coffee'></a>
 
-
 Dead simple HTML form builder for Ruby with built-in support for many popular UI libraries such as Bootstrap. Pairs nicely with any Ruby web framework such as Rails
+
+#### DEPRECRATED
+> While this was a fun experiment, this library has some [usability issues currently](https://github.com/westonganger/sexy_form.rb/issues/4) and I intend to no longer support this gem to be more effective with my time. For Rails, please just use [simple_form](https://github.com/heartcombo/simple_form). If someone really loves this gem and wants to contribute I am still happy to accept PRs and also happy to talk maintainership for consistent contributors.
 
 # Features
 
@@ -18,7 +20,7 @@ Dead simple HTML form builder for Ruby with built-in support for many popular UI
 
 Out of the box Form Builder can generate HTML markup for the following UI libraries:
 
-- Bootstrap 4 
+- Bootstrap 4
   * `theme: :bootstrap_4_vertical`
   * `theme: :bootstrap_4_inline`
   * `theme: :bootstrap_4_horizontal` or `theme: SexyForm::Themes::Bootstrap4Horizontal.new(column_classes: ["col-sm-3","col-sm-9"])`
@@ -91,8 +93,8 @@ The following field types are supported:
       ### label_html : (Optional) Hash ### contains attributes to be added to the label
       ### wrapper_html : (Optional) Hash ### contains attributes to be added to the outer wrapper for the label and input
       ### help_text_html : (Optional) Hash ### contains attributes to be added to the help text container
-      ### error_html : (Optional) Hash ### contains attributes to be added to the error container(s) 
- 
+      ### error_html : (Optional) Hash ### contains attributes to be added to the error container(s)
+
       = f.field name: "product[name]", label: "Name", type: :text, errors: product_errors["name"]
 
       = f.field name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"}
@@ -200,9 +202,9 @@ module SexyForm
           s << "#{html_label}"
           s << "#{html_field}"
         end
-        
+
         s << "#{html_help_text}"
-        
+
         if html_errors
           s << html_errors.join
         end
@@ -215,11 +217,11 @@ module SexyForm
       def input_html_attributes(field_type: , has_errors: , html_attrs:)
         html_attrs["class"] = "form-field other-class #{html_attrs["class"]}".strip
         html_attrs["style"] = "color: blue; #{html_attrs["style"]}".strip
-        
+
         unless html_attrs.has_key?("data-foo")
           html_attrs["data-foo"] = "bar"
         end
-        
+
         html_attrs
       end
 
