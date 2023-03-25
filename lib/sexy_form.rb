@@ -51,7 +51,12 @@ module SexyForm
   protected
 
   def self.build_html_attr_string(hash)
-    hash.map{|k, v| "#{k}=\"#{v}\""}.join(" ")
+    hash.delete_if{|_,v| v.nil? || v.to_s.strip.empty? }.map{|k, v| "#{k}=\"#{v.to_s.strip}\""}.join(" ")
+  end
+
+  def self.build_html_element(type, hash)
+    attr_str = build_html_attr_string(hash)
+    attr_str.empty? ? "<#{type}>" : "<#{type} #{attr_str}>"
   end
 
   def self.safe_string_hash(h)
