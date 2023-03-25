@@ -3,7 +3,7 @@ require "sexy_form/themes"
 
 ### Require all themes
 require "sexy_form/themes/base_theme"
-Dir[File.join(__dir__, "sexy_form/themes/*.rb")].each do |f| 
+Dir[File.join(__dir__, "sexy_form/themes/*.rb")].each do |f|
   require "sexy_form/themes/#{f.split("/").last}"
 end
 

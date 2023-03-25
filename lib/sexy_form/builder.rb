@@ -73,7 +73,7 @@ module SexyForm
           end
         end
 
-        if errors.nil?
+        if errors
           html_errors = errors.map{|x|
             @theme.build_html_error(error: x, field_type: type, html_attrs: SexyForm.safe_string_hash(errors))
           }

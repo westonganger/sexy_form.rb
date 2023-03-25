@@ -34,6 +34,10 @@ describe SexyForm::Builder do
       builder.field(type: "submit", name: :foobar)
     end
 
+    it "doesnt fail when errors is empty" do
+      expect(builder.field(type: :text, label: false, name: "my-great-text-input", errors: [])).to eq("<div><input type=\"text\" name=\"my-great-text-input\" id=\"my-great-text-input\"></div>")
+    end
+
     describe "input fields" do
       (TESTED_FIELD_TYPES - SexyForm::Builder::NON_INPUT_TYPES).each do |field_type|
 
