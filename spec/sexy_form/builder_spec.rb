@@ -19,16 +19,6 @@ describe SexyForm::Builder do
     end
   end
 
-  describe "#<<" do
-    it "supports its own string interpolation" do
-      (builder << "foo").should eq("foo")
-      (builder << "--").should eq("--")
-      (builder << "bar").should eq("bar")
-
-      builder.html_string.should eq("foo--bar")
-    end
-  end
-
   describe "#field" do
     it "allows any arbitrary input type" do
       builder.field(type: "submit", name: :foobar)

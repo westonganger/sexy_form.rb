@@ -4,8 +4,6 @@ module SexyForm
     COLLECTION_KEYS = ["options", "selected", "disabled", "include_blank"].freeze
 
     def initialize(theme: nil)
-      @html = []
-
       if theme
         if theme.is_a?(SexyForm::Themes::BaseTheme)
           @theme = theme
@@ -19,17 +17,6 @@ module SexyForm
 
     def theme
       @theme
-    end
-
-    def <<(v)
-      v = v.to_s
-      @html.push(v)
-      v
-    end
-
-    ### This method should be considered private
-    def html_string
-      @html.join("")
     end
 
     def field(

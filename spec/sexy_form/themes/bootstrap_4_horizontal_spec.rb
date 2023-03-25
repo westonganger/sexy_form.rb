@@ -4,7 +4,7 @@ require_relative "./theme_spec_helper"
 theme_klass = SexyForm::Themes::Bootstrap4Horizontal
 theme = theme_klass.new
 
-describe theme_klass do
+describe SexyForm::ActionViewHelpers do
 
   describe ".theme_name" do
     it "is correct" do
@@ -18,7 +18,7 @@ describe theme_klass do
     end
   end
 
-  describe "SexyForm.form" do
+  describe "helpers.sexy_form" do
     it "matches docs example" do
       expected = build_string do |str|
         str << %Q(<form method="post">)
@@ -49,7 +49,7 @@ describe theme_klass do
         str << %Q(</form>)
       end
 
-      actual = SexyForm.form(theme: theme_klass.new(column_classes: ["col-sm-3", "col-sm-9"])) do |f|
+      actual = helpers.sexy_form(theme: theme_klass.new(column_classes: ["col-sm-3", "col-sm-9"])) do |f|
         f << f.field(type: :text, name: :email)
         f << f.field(type: :password, name: :password)
         f << f.field(type: :checkbox, name: :remember_me)

@@ -18,7 +18,7 @@ Dead simple HTML form builder for Ruby with built-in support for many popular UI
 
 Out of the box Form Builder can generate HTML markup for the following UI libraries:
 
-- Bootstrap 4 
+- Bootstrap 4
   * `theme: :bootstrap_4_vertical`
   * `theme: :bootstrap_4_inline`
   * `theme: :bootstrap_4_horizontal` or `theme: SexyForm::Themes::Bootstrap4Horizontal.new(column_classes: ["col-sm-3","col-sm-9"])`
@@ -71,7 +71,7 @@ The following field types are supported:
 ## SexyForm in View Templates (Example in Slim)
 
 ```ruby
-= SexyForm.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
+= sexy_form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
   .row.main-examples
     .col-sm-6
       ### -- Field Options
@@ -91,8 +91,8 @@ The following field types are supported:
       ### label_html : (Optional) Hash ### contains attributes to be added to the label
       ### wrapper_html : (Optional) Hash ### contains attributes to be added to the outer wrapper for the label and input
       ### help_text_html : (Optional) Hash ### contains attributes to be added to the help text container
-      ### error_html : (Optional) Hash ### contains attributes to be added to the error container(s) 
- 
+      ### error_html : (Optional) Hash ### contains attributes to be added to the error container(s)
+
       = f.field name: "product[name]", label: "Name", type: :text, errors: product_errors["name"]
 
       = f.field name: "product[description]", label: "Description", type: :textarea, input_html: {class: "foobar"}, wrapper_html: {style: "margin-top: 10px"}, label_html: {style: "color: red;"}
@@ -120,18 +120,6 @@ The following field types are supported:
     - opts = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"], "Other"]
 
     = f.field name: "product[type]", label: "Type", type: :select, collection: {options: opts, selected: ["B"], disabled: ["C"]}
-```
-
-## SexyForm in Plain Ruby Code
-
-When using the `SexyForm.form` method in plain Ruby code, the `<<` syntax is required to add the generated field HTML to the form HTML string
-
-```ruby
-form_html_str = SexyForm.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
-  f << f.field(name: "name", type: :text, label: "Name")
-  f << f.field(name: "sku", type: :text, label: "SKU")
-  f << %Q(<strong>Hello World</strong>"
-end
 ```
 
 ## SexyForm without a Form
@@ -200,9 +188,9 @@ module SexyForm
           s << "#{html_label}"
           s << "#{html_field}"
         end
-        
+
         s << "#{html_help_text}"
-        
+
         if html_errors
           s << html_errors.join
         end
@@ -215,11 +203,11 @@ module SexyForm
       def input_html_attributes(field_type: , has_errors: , html_attrs:)
         html_attrs["class"] = "form-field other-class #{html_attrs["class"]}".strip
         html_attrs["style"] = "color: blue; #{html_attrs["style"]}".strip
-        
+
         unless html_attrs.has_key?("data-foo")
           html_attrs["data-foo"] = "bar"
         end
-        
+
         html_attrs
       end
 

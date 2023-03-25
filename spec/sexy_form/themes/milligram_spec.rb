@@ -4,7 +4,7 @@ require_relative "./theme_spec_helper"
 theme_klass = SexyForm::Themes::Milligram
 theme = theme_klass.new
 
-describe theme_klass do
+describe SexyForm::ActionViewHelpers do
 
   describe ".theme_name" do
     it "is correct" do
@@ -18,7 +18,7 @@ describe theme_klass do
     end
   end
 
-  describe "SexyForm.form" do
+  describe "helpers.sexy_form" do
     it "matches docs example with labels" do
       expected = build_string do |str|
         str << %Q(<form method="post">)
@@ -53,7 +53,7 @@ describe theme_klass do
         str << "</form>"
       end
 
-      actual = SexyForm.form(theme: theme_klass.theme_name) do |f|
+      actual = helpers.sexy_form(theme: theme_klass.theme_name) do |f|
         f << f.field(type: :text, name: :nameField, label: "Name", input_html: {placeholder: "Name"})
         f << f.field(type: :select, name: :ageRangeField, label: "Age Range", collection: {options: ["0-13","14-17","18-23","24+"]})
         f << f.field(type: :textarea, name: :commentField, label: "Comment", input_html: {placeholder: "Hello World"})

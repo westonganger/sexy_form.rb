@@ -4,7 +4,7 @@ require_relative "./theme_spec_helper"
 theme_klass = SexyForm::Themes::Bootstrap2Inline
 theme = theme_klass.new
 
-describe theme_klass do
+describe SexyForm::ActionViewHelpers do
 
   describe ".theme_name" do
     it "is correct" do
@@ -18,7 +18,7 @@ describe theme_klass do
     end
   end
 
-  describe "SexyForm.form" do
+  describe "helpers.sexy_form" do
     it "matches docs example with labels" do
       expected = build_string do |str|
         str << %Q(<form class="form-inline" method="post">)
@@ -42,7 +42,7 @@ describe theme_klass do
         str << "</form>"
       end
 
-      actual = SexyForm.form(theme: theme_klass.theme_name) do |f|
+      actual = helpers.sexy_form(theme: theme_klass.theme_name) do |f|
         f << f.field(type: :text, name: :email, input_html: {class: "input-small", placeholder: "Email"})
         f << f.field(type: :password, name: :password, input_html: {class: "input-small", placeholder: "Password"})
         f << f.field(type: :checkbox, name: :remember_me)
