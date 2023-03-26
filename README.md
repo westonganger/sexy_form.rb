@@ -73,7 +73,7 @@ The following field types are supported:
 ## SexyForm in View Templates (Example in Slim)
 
 ```ruby
-= SexyForm.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
+= sexy_form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
   .row.main-examples
     .col-sm-6
       ### -- Field Options
@@ -122,18 +122,6 @@ The following field types are supported:
     - opts = [["A", "Type A"], ["B" "Type B"], ["C", "Type C"], "Other"]
 
     = f.field name: "product[type]", label: "Type", type: :select, collection: {options: opts, selected: ["B"], disabled: ["C"]}
-```
-
-## SexyForm in Plain Ruby Code
-
-When using the `SexyForm.form` method in plain Ruby code, the `<<` syntax is required to add the generated field HTML to the form HTML string
-
-```ruby
-form_html_str = SexyForm.form(theme: :bootstrap_4_vertical, action: "/products", method: :post, form_html: {style: "margin-top: 20px;", "data-foo" => "bar"}) do |f|
-  f << f.field(name: "name", type: :text, label: "Name")
-  f << f.field(name: "sku", type: :text, label: "SKU")
-  f << %Q(<strong>Hello World</strong>"
-end
 ```
 
 ## SexyForm without a Form

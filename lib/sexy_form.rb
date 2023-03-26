@@ -8,50 +8,18 @@ Dir[File.join(__dir__, "sexy_form/themes/*.rb")].each do |f|
 end
 
 require "sexy_form/builder"
+require "sexy_form/action_view_helpers"
 
 module SexyForm
-  def self.form(action: nil, method: "post", theme: nil, form_html: {})
-    self.verify_argument_type(arg_name: :form_html, value: form_html, expected_type: Hash)
-
-    action = action.to_s
-    method = method.to_s
-
-    builder = SexyForm::Builder.new(theme: theme)
-
-    themed_form_html = builder.theme.form_html_attributes(html_attrs: self.safe_string_hash(form_html))
-
-    themed_form_html["method"] = method.to_s == "get" ? "get" : "post"
-
-    if themed_form_html["multipart"] == true
-      themed_form_html.delete("multipart")
-      themed_form_html["enctype"] = "multipart/form-data"
-    end
-
-    str = ""
-
-    str << %Q(<form #{self.build_html_attr_string(themed_form_html)}>)
-
-    unless ["get", "post"].include?(method.to_s)
-      str << %Q(<input type="hidden" name="_method" value="#{method}")
-    end
-
-    if block_given?
-      yield builder
-    end
-
-    unless builder.html_string.empty?
-      str << builder.html_string
-    end
-
-    str << "</form>"
-
-    str
-  end
-
   protected
 
   def self.build_html_attr_string(hash)
-    hash.map{|k, v| "#{k}=\"#{v}\""}.join(" ")
+    hash.delete_if{|_,v| v.nil? || v.to_s.strip.empty? }.map{|k, v| "#{k}=\"#{v.to_s.strip}\""}.join(" ")
+  end
+
+  def self.build_html_element(type, hash)
+    attr_str = build_html_attr_string(hash)
+    attr_str.empty? ? "<#{type}>" : "<#{type} #{attr_str}>"
   end
 
   def self.safe_string_hash(h)
@@ -79,6 +47,4 @@ module SexyForm
       raise ArgumentError.new("Invalid type passed to argument :#{arg_name}")
     end
   end
-  ### END PROTECTED METHODS
-
 end
